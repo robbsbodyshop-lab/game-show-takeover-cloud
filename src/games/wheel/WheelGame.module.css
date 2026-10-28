@@ -3,9 +3,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  width: var(--stage-w);
-  height: var(--stage-h);
-  padding: var(--space-5) var(--space-7);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-5) var(--space-6);
   overflow: hidden;
   color: var(--c-cream);
 }
@@ -16,10 +16,17 @@
   gap: var(--space-3);
 }
 
+/*
+ * The stage hands a game 1500 px beside the sidebar and 1920 px in show mode, so nothing here is a fixed
+ * width: the board takes what the wheel/side column leaves, and the wheel sizes itself from its slot.
+ */
 .main {
+  --side-col: clamp(440px, 36%, 640px);
+
   display: grid;
   flex: 1;
-  grid-template-columns: 1200px 1fr;
+  grid-template-columns: minmax(0, 1fr) var(--side-col);
+  grid-template-rows: minmax(0, 1fr);
   gap: var(--space-5);
   min-height: 0;
 }
@@ -44,6 +51,16 @@
   max-width: 100%;
 }
 
+/* The wheel fills what the column leaves (below any banner) and stays round; see GameWheel.module.css. */
+.wheelSlot {
+  container-type: size;
+  display: grid;
+  flex: 1 1 0;
+  place-items: center;
+  width: 100%;
+  min-height: 0;
+}
+
 .prompt {
   min-height: 36px;
   font-family: var(--font-display);
@@ -58,8 +75,8 @@
 
 .wild {
   position: absolute;
-  right: var(--space-7);
+  right: var(--space-6);
   bottom: 250px;
-  left: var(--space-7);
+  left: var(--space-6);
   z-index: 10;
 }

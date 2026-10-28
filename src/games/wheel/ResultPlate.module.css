@@ -7,7 +7,9 @@
   flex-direction: column;
   gap: var(--space-3);
   align-items: center;
-  min-width: 720px;
+  width: max-content;
+  min-width: min(720px, calc(100% - var(--space-7)));
+  max-width: calc(100% - var(--space-7));
   text-align: center;
   background-color: var(--c-ink);
   border-color: var(--c-gold);

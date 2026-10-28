@@ -7,7 +7,9 @@
   flex-direction: column;
   gap: var(--space-4);
   align-items: center;
-  min-width: 1000px;
+  width: max-content;
+  min-width: min(1000px, calc(100% - var(--space-7)));
+  max-width: calc(100% - var(--space-7));
   text-align: center;
   transform: translate(-50%, -50%);
 }

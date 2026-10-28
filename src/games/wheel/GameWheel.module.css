@@ -1,7 +1,7 @@
 .wheel {
   position: relative;
-  width: 600px;
-  height: 600px;
+  width: min(100cqw, 100cqh, 640px);
+  aspect-ratio: 1;
   flex: none;
 }
 
@@ -115,7 +115,7 @@
 .label {
   font-family: var(--font-groovy);
   font-weight: 700;
-  font-size: 22px;
+  font-size: 24px;
   fill: var(--c-ink);
   pointer-events: none;
 }
@@ -124,21 +124,21 @@
 .label[data-kind='mystery'],
 .label[data-kind='trip'] {
   fill: var(--c-cream);
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .label[data-kind='lose-turn'] {
-  font-size: 19px;
+  font-size: 21px;
 }
 
 .label[data-kind='wild-card'],
 .label[data-kind='express'] {
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .label[data-kind='million'] {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 21px;
 }
 
 .bulb {

@@ -1,5 +1,5 @@
 .menu {
-  min-width: 560px;
+  min-width: min(560px, 100%);
 }
 
 .list {

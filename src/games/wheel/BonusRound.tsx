@@ -107,7 +107,11 @@ export const BonusRound = ({
               ))}
             </Panel>
           ) : null}
-          {showWheel ? <BonusWheel angleDeg={wheelDeg} spinning={spinning} /> : null}
+          {showWheel ? (
+            <div className={styles.wheelSlot}>
+              <BonusWheel angleDeg={wheelDeg} spinning={spinning} />
+            </div>
+          ) : null}
           {view.phase === 'bonus-spin' && !spinning && showButtons ? (
             <Button variant="primary" size="lg" onClick={onSpin}>
               Spin (Space)

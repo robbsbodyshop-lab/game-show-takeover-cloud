@@ -59,7 +59,7 @@
   --font-body: 'Pixelify Sans', 'Courier New', monospace;
   --font-numeral: 'Silkscreen', 'Courier New', monospace;
   --fs-audience: 18px;
-  --fs-small: 16px;
+  --fs-small: 18px; /* NFR-007: nothing the audience reads goes below 18px on the 1920 frame */
   --fs-title: 32px;
   --fs-hero: 56px;
 

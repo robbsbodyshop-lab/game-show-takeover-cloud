@@ -10,7 +10,7 @@
 .label {
   font-family: var(--font-groovy);
   font-weight: 700;
-  font-size: var(--fs-small);
+  font-size: var(--fs-audience);
   color: var(--c-mist);
   white-space: nowrap;
 }

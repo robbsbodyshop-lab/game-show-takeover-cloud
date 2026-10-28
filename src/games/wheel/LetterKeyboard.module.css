@@ -1,16 +1,21 @@
+/* 11 consonant columns and 5 vowel columns share the row, so it fits any width up to 64 px a key. */
 .keyboard {
   display: flex;
   gap: var(--space-4);
+  max-width: 1124px;
 }
 
 .group {
   display: grid;
-  grid-template-columns: repeat(11, 64px);
+  flex: 11 1 0;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
   gap: 6px;
+  min-width: 0;
 }
 
 .group[data-vowels='true'] {
-  grid-template-columns: repeat(5, 64px);
+  flex: 5 1 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-content: start;
 }
 

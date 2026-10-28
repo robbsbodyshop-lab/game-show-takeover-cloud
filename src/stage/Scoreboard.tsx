@@ -2,6 +2,7 @@ import { Button, Label, Stripes } from '@/design';
 import { leaders, type EventSession, type GamePhase } from '@/engines/event';
 import { AbandonButton } from './AbandonButton';
 import { shortJoinAddress } from './joinLink';
+import { QrCanvas } from './QrCanvas';
 import { ScoreRow } from './ScoreRow';
 import styles from './Scoreboard.module.css';
 
@@ -61,14 +62,21 @@ export const Scoreboard = ({
         ))}
       </ul>
       <div className={styles.join}>
-        <Label>Join</Label>
-        <span className={styles.code} aria-label="Room code">
-          {roomCode ?? '----'}
-        </span>
-        <span className={styles.link}>
-          {shortJoinAddress(origin)}
-          {roomCode ? ` (room ${roomCode})` : ''}
-        </span>
+        <div className={styles.joinText}>
+          <Label>Join</Label>
+          <span className={styles.code} aria-label="Room code">
+            {roomCode ?? '----'}
+          </span>
+          <span className={styles.link}>
+            {shortJoinAddress(origin)}
+            {roomCode ? ` (room ${roomCode})` : ''}
+          </span>
+        </div>
+        {roomCode ? (
+          <div className={styles.joinQr}>
+            <QrCanvas value={`${origin}/play?room=${roomCode}`} size={120} />
+          </div>
+        ) : null}
       </div>
       <div className={styles.buttons}>
         <Button size="sm" variant="host" onClick={onTogglePause}>

@@ -1,5 +1,12 @@
+/*
+ * The tiles are sized from the frame's own width (14 across), so the board fits the 1500 px game area
+ * and the 1920 px show-mode one; 76 px is the most a tile grows.
+ */
 .frame {
+  --tile-w: min(76px, calc((100cqw - 13 * 6px) / 14));
+
   position: relative;
+  container-type: inline-size;
   padding: var(--space-5);
   background-color: var(--c-ink);
   border: var(--bw-4) solid var(--c-gold);
@@ -44,8 +51,9 @@
 
 .void {
   display: block;
-  width: 76px;
-  height: 84px;
+  flex: none;
+  width: var(--tile-w);
+  aspect-ratio: 76 / 84;
   background-color: var(--c-night);
   border: 3px solid var(--c-ink);
 }
@@ -54,10 +62,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 76px;
-  height: 84px;
+  flex: none;
+  width: var(--tile-w);
+  aspect-ratio: 76 / 84;
   font-family: var(--font-display);
-  font-size: 40px;
+  font-size: calc(var(--tile-w) * 0.52);
   line-height: 1;
   color: var(--c-ink);
   background-color: var(--c-teal);
