@@ -9,6 +9,7 @@ import {
   UNUSED_CUES,
   isSoundName,
 } from './cues.ts';
+import { PUZZLE_CUE_NAMES } from './puzzleCues.ts';
 
 const root = process.cwd();
 const audioDir = join(root, 'public', 'audio');
@@ -29,14 +30,16 @@ describe('cue registry', () => {
     const files = readdirSync(audioDir).filter((f) => f.endsWith('.mp3'));
     const registered = SOUND_NAMES.map((n) => SOUND_FILES[n].replace('/audio/', ''));
     expect(new Set(registered).size).toBe(registered.length);
-    expect([...registered].sort()).toEqual([...files].sort());
-    expect(SOUND_NAMES).toHaveLength(64);
+    const showCues = registered.filter((f) => f.endsWith('.mp3'));
+    expect([...showCues].sort()).toEqual([...files].sort());
+    expect(showCues).toHaveLength(64);
+    expect(SOUND_NAMES).toHaveLength(64 + PUZZLE_CUE_NAMES.length);
   });
 
   it('lists every cue named in docs/reference/AUDIO_CUES_V1.md with its file', () => {
     const doc = readFileSync(join(root, 'docs', 'reference', 'AUDIO_CUES_V1.md'), 'utf8');
     const rows = [...doc.matchAll(/^\| `([a-z0-9_]+)`\s*\| `([a-z0-9_]+\.mp3)`/gm)];
-    expect(rows.length).toBe(SOUND_NAMES.length);
+    expect(rows.length).toBe(SOUND_NAMES.filter((n) => !n.startsWith('puzzle-')).length);
     for (const [, name, file] of rows) {
       expect(isSoundName(name ?? '')).toBe(true);
       expect(SOUND_FILES[name as keyof typeof SOUND_FILES]).toBe(`/audio/${file}`);

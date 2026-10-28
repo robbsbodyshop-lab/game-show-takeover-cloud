@@ -1,9 +1,13 @@
 /**
- * Cue registry for docs/reference/AUDIO_CUES_V1.md: every cue name maps to its MP3 under `public/audio/`.
+ * Cue registry: the show cues from docs/reference/AUDIO_CUES_V1.md (MP3) plus the puzzle game cues (WAV).
  * The `SoundName` union makes a typo a compile error. Timed beds and loops are listed below so a
  * controller can start a bed in the same tick as its game clock.
  */
+import { PUZZLE_SOUND_FILES } from './puzzleCues';
+
 export const SOUND_FILES = {
+  // Puzzle game (WAV, see puzzleCues.ts)
+  ...PUZZLE_SOUND_FILES,
   // Shared
   hub_theme: '/audio/hub_theme.mp3',
   applause: '/audio/applause.mp3',

@@ -1,44 +1,17 @@
 /**
- * Cue names and files for the puzzle game. These are NOT in `src/audio/cues.ts` (another module owns
- * that registry); `puzzleAudio.ts` plays them through the shared player. The WAV files are written by
- * `scripts/generate-puzzle-cues.ts` into `public/audio/puzzle/`.
+ * Cue names for the puzzle game. The names and files live in `src/audio/puzzleCues.ts` so the shared
+ * registry (`src/audio/cues.ts`) includes them; this module adds the music choice and cascade helper.
  */
 
-export const PUZZLE_SFX_CUES = [
-  'puzzle-move',
-  'puzzle-rotate',
-  'puzzle-lock',
-  'puzzle-fall',
-  'puzzle-clear',
-  'puzzle-germ-clear',
-  'puzzle-cascade-1',
-  'puzzle-cascade-2',
-  'puzzle-cascade-3',
-  'puzzle-cascade-4',
-  'puzzle-garbage-send',
-  'puzzle-garbage-land',
-  'puzzle-top-out',
-  'puzzle-round-win',
-  'puzzle-match-win',
-  'puzzle-level-clear',
-  'puzzle-game-over',
-  'puzzle-pause',
-  'puzzle-resume',
-  'puzzle-hover',
-  'puzzle-select',
-] as const;
-
-export const PUZZLE_MUSIC_CUES = ['puzzle-music-a', 'puzzle-music-b'] as const;
-
-export const PUZZLE_CUE_NAMES = [...PUZZLE_SFX_CUES, ...PUZZLE_MUSIC_CUES] as const;
-
-export type PuzzleCue = (typeof PUZZLE_CUE_NAMES)[number];
-export type PuzzleMusicCue = (typeof PUZZLE_MUSIC_CUES)[number];
-
-/** Cue name to URL under `public/`. */
-export const PUZZLE_SOUND_FILES: Readonly<Record<PuzzleCue, string>> = Object.fromEntries(
-  PUZZLE_CUE_NAMES.map((name) => [name, `/audio/puzzle/${name}.wav`]),
-) as Record<PuzzleCue, string>;
+export {
+  PUZZLE_CUE_NAMES,
+  PUZZLE_MUSIC_CUES,
+  PUZZLE_SFX_CUES,
+  PUZZLE_SOUND_FILES,
+  type PuzzleCue,
+  type PuzzleMusicCue,
+} from '@/audio/puzzleCues';
+import type { PuzzleCue, PuzzleMusicCue } from '@/audio/puzzleCues';
 
 /** The music choice on the setup screen. */
 export type MusicChoice = 'a' | 'b' | 'off';

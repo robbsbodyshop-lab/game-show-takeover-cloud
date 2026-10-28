@@ -20,7 +20,7 @@ export interface PuzzleAudio {
 }
 
 /** Cue names are a different union from `SoundName`; this is the single place that bridges them. */
-const asSound = (cue: PuzzleCue): SoundName => cue as unknown as SoundName;
+const asSound = (cue: PuzzleCue): SoundName => cue;
 
 export const createPuzzleAudio = (audio: AudioPlayer): PuzzleAudio => ({
   play: (cue) => {
