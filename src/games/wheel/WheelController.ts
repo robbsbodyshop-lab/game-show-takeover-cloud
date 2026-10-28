@@ -399,6 +399,20 @@ export class WheelController {
     this.syncLock();
   }
 
+  /**
+   * The saved "next game" rules changed elsewhere (the stage Settings, another host view): the console form
+   * shows them. The running game keeps the rules it started with, so only the next-game copy changes.
+   */
+  syncNextSettings(settings: WheelSettings): void {
+    const next = parseWheelSettings(settings);
+    if (JSON.stringify(next) === JSON.stringify(this.nextSettings)) return;
+    this.batch(() => {
+      this.nextSettings = next;
+      this.hostDirty = true;
+      this.dirty = true;
+    });
+  }
+
   /** The Wheel's own pause menu is a dialog too: it holds everything while open. */
   setMenuOpen(open: boolean): void {
     if (this.menuOpen === open) return;

@@ -1,4 +1,7 @@
 import type { EventAction, EventSession } from '@/engines/event';
+import type { FeudSettings } from '@/games/feud/settings';
+import type { WheelSettings } from '@/games/wheel/settings';
+import type { GameSettingsGroupName } from '@/host/gameSettings';
 import { CreditsDialog } from './CreditsDialog';
 import { EditTeamsDialog } from './EditTeamsDialog';
 import { SettingsDialog } from './SettingsDialog';
@@ -12,6 +15,9 @@ export interface StageDialogsProps {
   settings: StageSettings;
   version: string;
   onSettings: (patch: Partial<StageSettings>) => void;
+  gameSettings?: { feud: FeudSettings; wheel: WheelSettings } | undefined;
+  onSaveGameSettings?:
+    ((group: GameSettingsGroupName, value: FeudSettings | WheelSettings) => void) | undefined;
   onClose: () => void;
   onResetScores: () => void;
   onNewEvent: () => void;
@@ -27,6 +33,8 @@ export const StageDialogs = ({
   settings,
   version,
   onSettings,
+  gameSettings,
+  onSaveGameSettings,
   onClose,
   onResetScores,
   onNewEvent,
@@ -41,6 +49,8 @@ export const StageDialogs = ({
           phase={session.phase}
           settings={settings}
           onChange={onSettings}
+          gameSettings={gameSettings}
+          onSaveGameSettings={onSaveGameSettings}
           onClose={onClose}
           onResetScores={onResetScores}
           onNewEvent={onNewEvent}

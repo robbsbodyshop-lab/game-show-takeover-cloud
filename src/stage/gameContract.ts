@@ -7,6 +7,9 @@
 import type { Team } from '@/engines/event';
 import type { ActionMessage, ControlsMessage, FeudAnswerMessage, PressMessage } from '@/realtime';
 import type { AudioPlayer } from '@/audio/player';
+import type { FeudSettings } from '@/games/feud/settings';
+import type { WheelSettings } from '@/engines/wheel/types';
+import type { AppSettings } from '@/host/appSettings';
 import type { HostBridge } from '@/host/hostProtocol';
 
 /** What a finished game reports (eventReducer GAME_WON credits exactly this). */
@@ -42,6 +45,22 @@ export interface PhoneBridge {
   ack(team: number, pressId: string, accepted: boolean): void;
 }
 
+/**
+ * The host's saved settings as the stage hands them to a game (the `feud`, `wheel` and `app` groups of
+ * `host_settings`). Every group is already parsed with its schema, so a game never validates again.
+ */
+export interface GameSettingsBundle {
+  /** Feud rules for the next game. `voice` and `answersFrom` come from the `app` group below. */
+  feud: FeudSettings;
+  /** Wheel rules for the next game. */
+  wheel: WheelSettings;
+  /** The app-level answer settings the Feud game applies live. */
+  app: Pick<AppSettings, 'voice' | 'answersFrom'>;
+}
+
+/** The two groups a game may save ("next game" forms); the stage parses and stores the value. */
+export type GameSettingsGroup = 'feud' | 'wheel';
+
 export interface GameProps {
   teams: Team[];
   /** Team ids in play order (Wheel turn order); null when the doors were never drawn. */
@@ -63,4 +82,11 @@ export interface GameProps {
   host: HostBridge;
   /** Bumped per game start so a game component remounts clean. */
   gameInstance: number;
+  /**
+   * The host's saved settings. Named `gameSettings` because Feud and Wheel already take a `settings`
+   * override of their own (tests and previews); a game uses that override first, then this bundle.
+   */
+  gameSettings?: GameSettingsBundle;
+  /** A game's "next game" form was saved; the stage validates and persists it (account + local cache). */
+  onSaveSettings?(group: GameSettingsGroup, value: unknown): void;
 }

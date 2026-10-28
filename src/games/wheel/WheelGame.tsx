@@ -29,9 +29,12 @@ import { useWheelSpin } from './useWheelSpin';
 import styles from './WheelGame.module.css';
 
 export interface WheelGameProps extends GameProps {
-  /** Host settings for this game (opening, Speed-Up start, length, Bonus Round, turn timer). */
+  /**
+   * Host settings for this game (opening, Speed-Up start, length, Bonus Round, turn timer). An explicit
+   * override (previews, tests); without it the game uses the stage's saved `gameSettings.wheel`.
+   */
   settings?: Partial<WheelSettings>;
-  /** The "next game" form was saved. */
+  /** The "next game" form was saved. Also reported to the stage through `onSaveSettings('wheel', ...)`. */
   onSettingsSave?: (settings: WheelSettings) => void;
   /** OPTIONS in the pause menu opens the app Settings. */
   onOpenOptions?: () => void;
@@ -67,11 +70,12 @@ const HEADING: Record<string, string> = {
  */
 export const WheelGame = (props: WheelGameProps) => {
   const { showMode, inputLocked } = props;
+  const startSettings: Partial<WheelSettings> | undefined = props.settings ?? props.gameSettings?.wheel;
   const [controller] = useState(
     () =>
       new WheelController({
         teams: orderTeams(props),
-        ...(props.settings ? { settings: props.settings } : {}),
+        ...(startSettings ? { settings: startSettings } : {}),
         ...(props.initialState === undefined ? {} : { initialState: props.initialState }),
         ...(props.rng ? { rng: props.rng } : {}),
         ...(props.puzzles ? { puzzles: props.puzzles } : {}),
@@ -99,9 +103,15 @@ export const WheelGame = (props: WheelGameProps) => {
       },
       onSettingsSave: (settings) => {
         props.onSettingsSave?.(settings);
+        props.onSaveSettings?.('wheel', settings);
       },
     });
   });
+  // The stage's Settings can change the saved next-game rules while this game runs: the console form follows.
+  const savedWheel = props.settings === undefined ? props.gameSettings?.wheel : undefined;
+  useEffect(() => {
+    if (savedWheel) controller.syncNextSettings(savedWheel);
+  }, [controller, savedWheel]);
 
   const reducedMotion = useReducedMotion();
   useEffect(() => {
@@ -304,7 +314,9 @@ export const WheelGame = (props: WheelGameProps) => {
               </>
             ) : null}
             {roundLike ? (
-              <GameWheel wedges={view.wheel} angleDeg={spin.angleDeg} spinning={spin.spinning} />
+              <div className={styles.wheelSlot}>
+                <GameWheel wedges={view.wheel} angleDeg={spin.angleDeg} spinning={spin.spinning} />
+              </div>
             ) : null}
           </div>
         </main>

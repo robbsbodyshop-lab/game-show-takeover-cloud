@@ -11,6 +11,20 @@ export {
   saveAppSettings,
   type AppSettings,
 } from './appSettings';
-export { useAppSettings, type UseAppSettings } from './useAppSettings';
+export { useAppSettings, type UseAppSettings, type UseAppSettingsOptions } from './useAppSettings';
+export {
+  loadGameSettings,
+  parseGameGroup,
+  readCachedGameSettings,
+  saveGameGroup,
+  type GameSettingGroups,
+  type GameSettingsGroupName,
+} from './gameSettings';
+export {
+  useGameSettingGroups,
+  type UseGameSettingGroups,
+  type UseGameSettingGroupsOptions,
+} from './useGameSettingGroups';
+export { GameSettingsFields, type GameSettingsFieldsProps } from './GameSettingsFields';
 export { readHubData, type HubSnapshotData } from './hubSnapshot';
 export * from './hostProtocol';

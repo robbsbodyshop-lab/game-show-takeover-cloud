@@ -69,6 +69,15 @@ describe('handleHubCommand', () => {
     });
   });
 
+  it('tells the stage to read the settings again, even while locked', () => {
+    const settingsChanged = vi.fn();
+    expect(handleHubCommand(cmd('settings-changed'), ctx({ locked: true, settingsChanged }))).toEqual({
+      applied: true,
+    });
+    expect(settingsChanged).toHaveBeenCalledTimes(1);
+    expect(handleHubCommand(cmd('settings-changed'), ctx())).toEqual({ applied: true });
+  });
+
   it('resets scores when allowed and rejects unknown commands', () => {
     expect(handleHubCommand(cmd('reset-scores'), ctx())).toEqual({ applied: true });
     expect(handleHubCommand(cmd('reset-scores'), ctx({ resetScores: () => false }))).toMatchObject({

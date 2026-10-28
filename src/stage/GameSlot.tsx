@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { AudioPlayer } from '@/audio/player';
 import type { EventSession, MainGameKind } from '@/engines/event';
 import type { HostBridge } from '@/host/hostProtocol';
-import type { GameEndReport, PhoneBridge } from './gameContract';
+import type { GameEndReport, GameProps, GameSettingsBundle, PhoneBridge } from './gameContract';
 import { PhaseStub } from './PhaseStub';
 import type { StageRegistry } from './screenContract';
 
@@ -24,6 +24,9 @@ export interface GameSlotProps {
   phones: PhoneBridge;
   host: HostBridge;
   registry: StageRegistry;
+  /** The host's saved settings (Feud and Wheel rules, voice and answer source). */
+  gameSettings?: GameSettingsBundle | undefined;
+  onSaveSettings?: GameProps['onSaveSettings'];
 }
 
 /**
@@ -41,6 +44,8 @@ export const GameSlot = ({
   phones,
   host,
   registry,
+  gameSettings,
+  onSaveSettings,
 }: GameSlotProps) => {
   // Captured once: later snapshots come from the game itself and must not feed back into it.
   const [initialState] = useState<unknown>(() => session.game?.state ?? undefined);
@@ -66,6 +71,8 @@ export const GameSlot = ({
       phones={phones}
       host={host}
       gameInstance={session.gameInstance}
+      {...(gameSettings === undefined ? {} : { gameSettings })}
+      {...(onSaveSettings === undefined ? {} : { onSaveSettings })}
     />
   );
 };

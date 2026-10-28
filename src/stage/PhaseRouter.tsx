@@ -5,7 +5,7 @@ import type { ConnectionStatus, PresenceEntry } from '@/realtime';
 import { BracketScreen } from './BracketScreen';
 import { DoorSelection } from './DoorSelection';
 import { GameSlot, type GameCallbacks } from './GameSlot';
-import type { PhoneBridge } from './gameContract';
+import type { GameProps, GameSettingsBundle, PhoneBridge } from './gameContract';
 import { HubScreen } from './HubScreen';
 import { PhaseStub } from './PhaseStub';
 import type { EventScreenKind, StageRegistry } from './screenContract';
@@ -28,6 +28,8 @@ export interface PhaseRouterProps {
   phones: PhoneBridge | null;
   host: HostBridge | null;
   callbacks: GameCallbacks;
+  gameSettings?: GameSettingsBundle | undefined;
+  onSaveSettings?: GameProps['onSaveSettings'];
   draw: () => number;
   now: () => number;
   onBackToHub: () => void;
@@ -106,6 +108,8 @@ export const PhaseRouter = (props: PhaseRouterProps) => {
           phones={props.phones}
           host={props.host}
           registry={registry}
+          gameSettings={props.gameSettings}
+          onSaveSettings={props.onSaveSettings}
         />
       );
     }

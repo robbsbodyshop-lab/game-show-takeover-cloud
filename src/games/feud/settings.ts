@@ -53,3 +53,12 @@ export const toEngineSettings = (settings: FeudSettings): Partial<EngineFeudSett
   answerTimerSec: settings.answerTimerSec,
   stealTimerSec: settings.stealTimerSec,
 });
+
+/**
+ * What a Feud game runs with: the host's saved settings the stage hands over (`gameSettings`, already
+ * carrying the `app` voice and answer source), with an explicit `settings` override on top.
+ */
+export const resolveFeudSettings = (
+  override: Partial<FeudSettings> | undefined,
+  bundle: { feud: FeudSettings } | undefined,
+): Partial<FeudSettings> | undefined => (bundle === undefined ? override : { ...bundle.feud, ...override });

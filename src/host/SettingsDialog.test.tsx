@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { DEFAULT_FEUD_SETTINGS } from '@/games/feud/settings';
+import { DEFAULT_WHEEL_SETTINGS } from '@/games/wheel/settings';
 import { DEFAULT_APP_SETTINGS, type AppSettings } from './appSettings';
 import { SettingsDialog, type SettingsDialogProps } from './SettingsDialog';
 
@@ -127,5 +129,24 @@ describe('SettingsDialog', () => {
     expect(onSignOut).toHaveBeenCalled();
     await user.click(screen.getByRole('button', { name: 'Close' }));
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('shows the Feud and Wheel next-game sections only when it is given the settings and a saver', async () => {
+    const user = userEvent.setup();
+    renderDialog();
+    expect(screen.queryByText('Family Feud (next game)')).toBeNull();
+    cleanup();
+    const onSaveGameSettings = vi.fn();
+    renderDialog({
+      gameSettings: { feud: DEFAULT_FEUD_SETTINGS, wheel: DEFAULT_WHEEL_SETTINGS },
+      onSaveGameSettings,
+    });
+    expect(screen.getByText('Family Feud (next game)')).toBeInTheDocument();
+    expect(screen.getByText('Wheel of Fortune (next game)')).toBeInTheDocument();
+    await user.selectOptions(screen.getByLabelText('Winning score'), '500');
+    expect(onSaveGameSettings).toHaveBeenLastCalledWith('feud', {
+      ...DEFAULT_FEUD_SETTINGS,
+      targetScore: 500,
+    });
   });
 });

@@ -2,7 +2,10 @@ import { act, fireEvent, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { drawForIndex } from '@/engines/wheel/wheels';
 import { toRound, wheelOf } from '@/engines/wheel/testKit';
-import type { WheelState } from '@/engines/wheel/types';
+import type { WheelSettings, WheelState } from '@/engines/wheel/types';
+import type { GameSettingsBundle } from '@/stage/gameContract';
+import { DEFAULT_FEUD_SETTINGS } from '@/games/feud/settings';
+import { DEFAULT_WHEEL_SETTINGS } from './settings';
 import { renderWheel } from './wheelTestUtils';
 import { readWheelHostData } from './hostData';
 
@@ -263,3 +266,50 @@ function bonusState(): WheelState {
 }
 
 const escape = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+describe('WheelGame: the host settings from the stage', () => {
+  const saved = (over: Partial<WheelSettings> = {}): GameSettingsBundle => ({
+    feud: { ...DEFAULT_FEUD_SETTINGS },
+    wheel: { ...DEFAULT_WHEEL_SETTINGS, ...over },
+    app: { voice: 'off', answersFrom: 'host' },
+  });
+
+  it('starts with the saved Wheel rules and shows them in the console form', () => {
+    const r = renderWheel({ gameSettings: saved({ opening: 'frenzy', length: 'short' }) });
+    expect(r.host.data.nextSettings).toMatchObject({ opening: 'frenzy', length: 'short' });
+  });
+
+  it('lets an explicit settings override win over the saved rules', () => {
+    const r = renderWheel({
+      settings: { opening: 'classic' },
+      gameSettings: saved({ opening: 'frenzy', length: 'short' }),
+    });
+    expect(r.host.data.nextSettings).toMatchObject({ opening: 'classic' });
+  });
+
+  it('reports the console next-game form to the stage as the wheel group', () => {
+    const onSaveSettings = vi.fn();
+    const onSettingsSave = vi.fn();
+    const r = renderWheel({ gameSettings: saved(), onSaveSettings, onSettingsSave });
+    act(() => {
+      r.host.send('save-settings', { opening: 'frenzy', speedUpStart: 'round4', bonusRound: false });
+    });
+    const expected = {
+      opening: 'frenzy',
+      speedUpStart: 'round4',
+      length: 'full',
+      bonusRound: false,
+      turnTimerSec: 0,
+    };
+    expect(onSaveSettings).toHaveBeenLastCalledWith('wheel', expected);
+    expect(onSettingsSave).toHaveBeenLastCalledWith(expected);
+  });
+
+  it('shows rules saved from the stage Settings in the console form without touching the game in play', () => {
+    const r = renderWheel({ gameSettings: saved() });
+    const before = r.host.data.settings;
+    r.rerender({ gameSettings: saved({ length: 'short', bonusRound: false }) });
+    expect(r.host.data.nextSettings).toMatchObject({ length: 'short', bonusRound: false });
+    expect(r.host.data.settings).toEqual(before);
+  });
+});

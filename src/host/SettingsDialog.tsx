@@ -8,6 +8,10 @@ import {
   type AnswerSource,
   type AppSettings,
 } from './appSettings';
+import type { FeudSettings } from '@/games/feud/settings';
+import type { WheelSettings } from '@/games/wheel/settings';
+import { GameSettingsFields } from './GameSettingsFields';
+import type { GameSettingsGroupName } from './gameSettings';
 import { useTwoTap } from './useTwoTap';
 import styles from './SettingsDialog.module.css';
 
@@ -23,6 +27,9 @@ export interface SettingsDialogProps {
   onSignOut?: () => void;
   /** Overrides detection of `SpeechRecognition` (tests). */
   voiceAvailable?: boolean;
+  /** The Feud and Wheel "next game" settings; the two sections are hidden unless all three are given. */
+  gameSettings?: { feud: FeudSettings; wheel: WheelSettings };
+  onSaveGameSettings?: (group: GameSettingsGroupName, value: FeudSettings | WheelSettings) => void;
   /** Extra settings (game options) rendered under the app settings. */
   children?: ReactNode;
 }
@@ -43,6 +50,8 @@ export const SettingsDialog = ({
   onResetScores,
   onSignOut,
   voiceAvailable,
+  gameSettings,
+  onSaveGameSettings,
   children,
 }: SettingsDialogProps) => {
   const ids = { volume: useId(), answers: useId() };
@@ -169,6 +178,14 @@ export const SettingsDialog = ({
             Verbose logging
           </label>
         </div>
+
+        {gameSettings !== undefined && onSaveGameSettings !== undefined ? (
+          <GameSettingsFields
+            feud={gameSettings.feud}
+            wheel={gameSettings.wheel}
+            onSave={onSaveGameSettings}
+          />
+        ) : null}
 
         {children}
 

@@ -4,7 +4,13 @@ import type { AuthUser, EventRecord } from '@/data';
 import { eventReducer, isGamePlaying, type EventAction, type EventSession } from '@/engines/event';
 import { AuthScreen } from './AuthScreen';
 import type { GameCallbacks } from './GameSlot';
-import { IDLE_PHONE_CONTROLS, type GameEndReport } from './gameContract';
+import { useGameSettingGroups } from '@/host/useGameSettingGroups';
+import {
+  IDLE_PHONE_CONTROLS,
+  type GameEndReport,
+  type GameSettingsBundle,
+  type GameSettingsGroup,
+} from './gameContract';
 import { SettingsForm } from './SettingsForm';
 import { LockFlag, lockHostBridge } from './lockedHostBridge';
 import type { StageRegistry } from './screenContract';
@@ -70,7 +76,9 @@ export const StageSession = ({
   const [paused, setPaused] = useState(false);
   const [dialog, setDialog] = useState<StageDialog | null>(null);
   const [hostDrawerOpen, setHostDrawerOpen] = useState(false);
-  const { settings, update } = useStageSettings(audio);
+  const { settings, update, reload: reloadAppSettings } = useStageSettings(audio, data);
+  const gameGroups = useGameSettingGroups(data);
+  const { feud, wheel, save: saveGameGroup, reload: reloadGameGroups } = gameGroups;
 
   const dispatch = useCallback((action: EventAction): void => {
     if (!readOnlyRef.current) rawDispatch(action);
@@ -116,6 +124,24 @@ export const StageSession = ({
   });
 
   const inputLocked = paused || dialog !== null || readOnly;
+
+  // What the running game gets: the saved rules, with Feud's voice and answer source taken from `app`.
+  const { voice, answersFrom } = settings;
+  const gameSettings = useMemo<GameSettingsBundle>(
+    () => ({ feud: { ...feud, voice, answersFrom }, wheel, app: { voice, answersFrom } }),
+    [feud, wheel, voice, answersFrom],
+  );
+  const nextGameSettings = useMemo(() => ({ feud, wheel }), [feud, wheel]);
+  const onSaveSettings = useCallback(
+    (group: GameSettingsGroup, value: unknown): void => {
+      saveGameGroup(group, value);
+    },
+    [saveGameGroup],
+  );
+  const settingsChanged = useCallback((): void => {
+    reloadAppSettings();
+    reloadGameGroups();
+  }, [reloadAppSettings, reloadGameGroups]);
 
   // Phone presses and host commands are refused while locked (FR-015).
   const [lock] = useState(() => new LockFlag());
@@ -197,6 +223,7 @@ export const StageSession = ({
       },
       resetScores,
       buzz: (team) => phones?.injectPress(team) ?? 'unknown-team',
+      settingsChanged,
     },
   });
 
@@ -268,6 +295,8 @@ export const StageSession = ({
         phones={phones}
         host={host}
         callbacks={callbacks}
+        gameSettings={gameSettings}
+        onSaveSettings={onSaveSettings}
         paused={paused}
         inputLocked={inputLocked}
         showMode={settings.showMode}
@@ -279,6 +308,8 @@ export const StageSession = ({
             phase={session.phase}
             settings={settings}
             onChange={update}
+            gameSettings={nextGameSettings}
+            onSaveGameSettings={saveGameGroup}
             onResetScores={resetScores}
             onNewEvent={newEvent}
             onBackToEvents={exit}
@@ -312,6 +343,8 @@ export const StageSession = ({
         settings={settings}
         version={version}
         onSettings={update}
+        gameSettings={nextGameSettings}
+        onSaveGameSettings={saveGameGroup}
         onClose={closeDialog}
         onResetScores={() => {
           resetScores();

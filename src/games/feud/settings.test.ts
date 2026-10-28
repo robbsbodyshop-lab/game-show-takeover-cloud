@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_FEUD_SETTINGS, feudSettingsSchema, parseFeudSettings, toEngineSettings } from './settings';
+import {
+  DEFAULT_FEUD_SETTINGS,
+  feudSettingsSchema,
+  parseFeudSettings,
+  resolveFeudSettings,
+  toEngineSettings,
+} from './settings';
 
 describe('FeudSettings', () => {
   it('has the documented defaults', () => {
@@ -43,5 +49,18 @@ describe('FeudSettings', () => {
       answerTimerSec: 5,
       stealTimerSec: 0,
     });
+  });
+});
+
+describe('resolveFeudSettings', () => {
+  it('uses the override alone without a saved bundle, and nothing when both are missing', () => {
+    expect(resolveFeudSettings({ targetScore: 200 }, undefined)).toEqual({ targetScore: 200 });
+    expect(resolveFeudSettings(undefined, undefined)).toBeUndefined();
+  });
+
+  it('puts the override over the saved settings', () => {
+    const feud = { ...DEFAULT_FEUD_SETTINGS, targetScore: 400 as const, voice: 'on' as const };
+    expect(resolveFeudSettings(undefined, { feud })).toEqual(feud);
+    expect(resolveFeudSettings({ targetScore: 200 }, { feud })).toEqual({ ...feud, targetScore: 200 });
   });
 });

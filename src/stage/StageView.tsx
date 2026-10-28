@@ -7,7 +7,7 @@ import type { ConnectionStatus, PresenceEntry } from '@/realtime';
 import { ErrorBoundary } from './ErrorBoundary';
 import type { GameCallbacks } from './GameSlot';
 import type { StageHostChannel } from './hostChannelAdapter';
-import type { PhoneBridge } from './gameContract';
+import type { GameProps, GameSettingsBundle, PhoneBridge } from './gameContract';
 import { PauseCard } from './PauseCard';
 import { PhaseRouter } from './PhaseRouter';
 import { Scoreboard } from './Scoreboard';
@@ -32,6 +32,9 @@ export interface StageViewProps {
   phones: PhoneBridge | null;
   host: HostBridge | null;
   callbacks: GameCallbacks;
+  /** The host's saved settings, handed to the running game. */
+  gameSettings?: GameSettingsBundle | undefined;
+  onSaveSettings?: GameProps['onSaveSettings'];
   paused: boolean;
   inputLocked: boolean;
   showMode: boolean;
@@ -94,6 +97,8 @@ export const StageView = (props: StageViewProps) => {
               phones={props.phones}
               host={props.host}
               callbacks={props.callbacks}
+              gameSettings={props.gameSettings}
+              onSaveSettings={props.onSaveSettings}
               draw={props.draw}
               now={props.now}
               onBackToHub={props.onBackToHub}

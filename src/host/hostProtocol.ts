@@ -33,7 +33,16 @@ export interface HostBridge {
 }
 
 /** Hub-level commands handled by the stage itself, not by a game. */
-export const HUB_COMMANDS = ['pause', 'resume', 'buzz', 'show-mode', 'quit-game', 'reset-scores'] as const;
+export const HUB_COMMANDS = [
+  'pause',
+  'resume',
+  'buzz',
+  'show-mode',
+  'quit-game',
+  'reset-scores',
+  /** Sent by the host view after it saved settings: the stage re-reads them from the account. */
+  'settings-changed',
+] as const;
 export type HubCommandName = (typeof HUB_COMMANDS)[number];
 
 export const HOST_HELLO_INTERVAL_MS = 2000;

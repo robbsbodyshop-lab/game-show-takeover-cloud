@@ -2,12 +2,14 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { FeudController } from './FeudController';
 import type { FeudGameProps } from './FeudGame.types';
 import { resolveMatch } from './match';
+import { resolveFeudSettings } from './settings';
 import type { FeudViewModel } from './types';
 
 /** Builds the controller once per mounted game, wires its lifecycle to the component and reads it. */
 export const useFeudController = (
   props: FeudGameProps,
 ): { controller: FeudController; view: FeudViewModel } => {
+  const settings = resolveFeudSettings(props.settings, props.gameSettings);
   const [controller] = useState(
     () =>
       new FeudController({
@@ -28,7 +30,7 @@ export const useFeudController = (
         host: props.host,
         initialState: props.initialState,
         inputLocked: props.inputLocked,
-        ...(props.settings === undefined ? {} : { settings: props.settings }),
+        ...(settings === undefined ? {} : { settings }),
         ...(props.runtime === undefined ? {} : { runtime: props.runtime }),
       }),
   );
@@ -55,7 +57,7 @@ export const useFeudController = (
       onGameEnd: (report) => {
         props.onGameEnd(report);
       },
-      ...(props.settings === undefined ? {} : { settings: props.settings }),
+      ...(settings === undefined ? {} : { settings }),
     });
   });
   const { inputLocked } = props;

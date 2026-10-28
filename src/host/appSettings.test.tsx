@@ -161,4 +161,58 @@ describe('useAppSettings', () => {
     });
     expect(localStorage.getItem('gst:debug')).toBeNull();
   });
+
+  it('uses the seed when nothing is cached or saved, and a cached copy over it', async () => {
+    const data = await signedInData();
+    const seed = { ...DEFAULT_APP_SETTINGS, showMode: true, volume: 0.2 };
+    const first = renderHook(() => useAppSettings(data, { seed }));
+    expect(first.result.current.settings).toEqual(seed);
+    first.unmount();
+    localStorage.setItem(APP_SETTINGS_CACHE_KEY, JSON.stringify({ ...DEFAULT_APP_SETTINGS, volume: 0.9 }));
+    const second = renderHook(() => useAppSettings(data, { seed }));
+    expect(second.result.current.settings.volume).toBe(0.9);
+  });
+
+  it('reads the cloud copy again on reload, unless a change is still waiting to be saved', async () => {
+    const data = await signedInData();
+    const { result } = renderHook(() => useAppSettings(data));
+    await waitFor(() => {
+      expect(result.current.settings).toEqual(DEFAULT_APP_SETTINGS);
+    });
+    await saveAppSettings(data, { ...DEFAULT_APP_SETTINGS, crtCurve: true, voice: 'on' });
+    act(() => {
+      result.current.reload();
+    });
+    await waitFor(() => {
+      expect(result.current.settings).toMatchObject({ crtCurve: true, voice: 'on' });
+    });
+
+    act(() => {
+      result.current.update({ volume: 0.1 });
+    });
+    await data.settings.save({ app: { ...DEFAULT_APP_SETTINGS, volume: 0.9 } });
+    act(() => {
+      result.current.reload();
+    });
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(result.current.settings.volume).toBe(0.1);
+  });
+
+  it('calls onSaved after a change reached the cloud', async () => {
+    const data = await signedInData();
+    const onSaved = vi.fn();
+    const { result } = renderHook(() => useAppSettings(data, { onSaved }));
+    act(() => {
+      result.current.update({ musicOn: false });
+    });
+    await waitFor(
+      () => {
+        expect(onSaved).toHaveBeenCalledTimes(1);
+      },
+      { timeout: 2000 },
+    );
+    expect((await data.settings.load()).app).toMatchObject({ musicOn: false });
+  });
 });

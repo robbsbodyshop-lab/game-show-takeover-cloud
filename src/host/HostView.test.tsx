@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppServicesProvider, type AppServices } from '@/app/AppContext';
@@ -195,5 +195,38 @@ describe('HostView', () => {
     renderHost();
     expect(await screen.findByText('Feud console rev 4')).toBeInTheDocument();
     off();
+  });
+
+  it('tells the stage to read the settings again after a save: app settings, then game settings', async () => {
+    await setup();
+    const user = userEvent.setup();
+    renderHost();
+    await screen.findByRole('table');
+    await user.click(screen.getByRole('button', { name: 'Settings' }));
+    const dialog = await screen.findByRole('dialog', { name: 'Settings' });
+    const settingsChanged = () => hubHandler.mock.calls.filter(([c]) => c.name === 'settings-changed');
+
+    fireEvent.change(within(dialog).getByRole('slider', { name: 'Volume' }), { target: { value: '30' } });
+    await user.click(within(dialog).getByRole('checkbox', { name: 'CRT curve' }));
+    expect(settingsChanged()).toHaveLength(0); // sent once the account copy is saved, not on every tick
+    await waitFor(
+      () => {
+        expect(settingsChanged()).toHaveLength(1);
+      },
+      { timeout: 3000 },
+    );
+    expect(settingsChanged()[0]?.[0]).toMatchObject({ target: 'hub', name: 'settings-changed' });
+    expect(settingsChanged()[0]?.[0].args).toEqual({ rev: 1 });
+    expect((await services.data.settings.load()).app).toMatchObject({ volume: 0.3, crtCurve: true });
+
+    await user.selectOptions(within(dialog).getByLabelText('Winning score'), '400');
+    await user.selectOptions(within(dialog).getByLabelText('Opening'), 'frenzy');
+    await waitFor(() => {
+      expect(settingsChanged()).toHaveLength(2);
+    });
+    expect(settingsChanged()[1]?.[0].args).toEqual({ rev: 2 });
+    const record = await services.data.settings.load();
+    expect(record.feud).toMatchObject({ targetScore: 400 });
+    expect(record.wheel).toMatchObject({ opening: 'frenzy' });
   });
 });

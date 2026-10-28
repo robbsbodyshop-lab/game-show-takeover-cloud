@@ -2,6 +2,12 @@
 export { FeudGame } from './FeudGame';
 export type { FeudGameProps } from './FeudGame.types';
 export { FeudConsole, registerFeudConsole } from './FeudConsole';
-export { DEFAULT_FEUD_SETTINGS, feudSettingsSchema, parseFeudSettings, type FeudSettings } from './settings';
+export {
+  DEFAULT_FEUD_SETTINGS,
+  feudSettingsSchema,
+  parseFeudSettings,
+  resolveFeudSettings,
+  type FeudSettings,
+} from './settings';
 export type { FeudHostData, FeudSavedState } from './types';
 export { FeudController } from './FeudController';

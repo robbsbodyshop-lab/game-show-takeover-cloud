@@ -7,7 +7,8 @@ import { StrikeOverlay } from './StrikeOverlay';
 import { TournamentBracket } from './TournamentBracket';
 import { createBracket } from '@/engines/event/tournament';
 import type { AudienceFastMoney } from '@/engines/feud/selectors';
-import { makeGameProps, makeTeams, type GameFixture } from './testKit';
+import { DEFAULT_FEUD_SETTINGS } from './settings';
+import { FakeRecognizer, makeGameProps, makeTeams, type GameFixture } from './testKit';
 import { FEUD_TIMING } from './timing';
 
 beforeEach(() => {
@@ -394,5 +395,65 @@ describe('FeudGame: lifecycle', () => {
     expect(() => fixture.host.send('advance')).not.toThrow();
     view.unmount();
     expect(() => fixture.host.send('advance')).toThrow();
+  });
+});
+
+describe('FeudGame: the host settings from the stage', () => {
+  const bundle = (feud: Partial<typeof DEFAULT_FEUD_SETTINGS>) => {
+    const settings = { ...DEFAULT_FEUD_SETTINGS, ...feud };
+    return {
+      feud: settings,
+      wheel: { opening: 'classic', speedUpStart: 'bell', length: 'full', bonusRound: true, turnTimerSec: 0 },
+      app: { voice: settings.voice, answersFrom: settings.answersFrom },
+    } as const;
+  };
+
+  it('starts the next game with the saved winning score', () => {
+    const fixture = makeGameProps({ settings: undefined, gameSettings: bundle({ targetScore: 400 }) });
+    render(<FeudGame {...fixture.props} />);
+    expect(screen.getByText('First family to 400 points wins')).toBeInTheDocument();
+  });
+
+  it('lets an explicit settings override win over the saved bundle', () => {
+    const fixture = makeGameProps({
+      settings: { targetScore: 200 },
+      gameSettings: bundle({ targetScore: 400 }),
+    });
+    render(<FeudGame {...fixture.props} />);
+    expect(screen.getByText('First family to 200 points wins')).toBeInTheDocument();
+  });
+
+  it('applies the Voice answers toggle live: the microphone starts and stops without a restart', () => {
+    const recognizer = new FakeRecognizer();
+    const fixture = makeGameProps({
+      gameSettings: bundle({ voice: 'off' }),
+      runtime: { ...makeGameProps().props.runtime, recognizer },
+    });
+    const view = render(<FeudGame {...fixture.props} />);
+    send(fixture, 'advance');
+    send(fixture, 'advance');
+    press(fixture, 1);
+    expect(recognizer.live).toHaveLength(0);
+
+    view.rerender(<FeudGame {...fixture.props} gameSettings={bundle({ voice: 'on' })} />);
+    expect(recognizer.live).toHaveLength(1);
+
+    view.rerender(<FeudGame {...fixture.props} gameSettings={bundle({ voice: 'off' })} />);
+    expect(recognizer.live).toHaveLength(0);
+  });
+
+  it('applies Answers from live: the answering phone is offered a text box once phones are allowed', () => {
+    const fixture = makeGameProps({ gameSettings: bundle({ answersFrom: 'host' }) });
+    const view = render(<FeudGame {...fixture.props} />);
+    send(fixture, 'advance');
+    send(fixture, 'advance');
+    press(fixture, 1);
+    expect(fixture.phones.last?.activeTeam).toBeNull();
+
+    view.rerender(<FeudGame {...fixture.props} gameSettings={bundle({ answersFrom: 'phones' })} />);
+    expect(fixture.phones.last).toMatchObject({ activeTeam: 1, offLabel: 'TYPE YOUR ANSWER' });
+
+    view.rerender(<FeudGame {...fixture.props} gameSettings={bundle({ answersFrom: 'host' })} />);
+    expect(fixture.phones.last?.activeTeam).toBeNull();
   });
 });

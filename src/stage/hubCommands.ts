@@ -22,6 +22,8 @@ export interface HubCommandContext {
   /** Confirmed reset of scores and chips; false when the phase does not allow it. */
   resetScores(): boolean;
   buzz(team: number): InjectResult;
+  /** The host view saved settings: read them again from the account. */
+  settingsChanged?(): void;
 }
 
 const OK: CommandResult = { applied: true };
@@ -62,6 +64,9 @@ export function handleHubCommand(command: HostCommand, ctx: HubCommandContext): 
       }
       return no('Not delivered');
     }
+    case 'settings-changed':
+      ctx.settingsChanged?.();
+      return OK;
     case 'quit-game':
       return ctx.quitGame() ? OK : no('No game is running');
     case 'reset-scores':

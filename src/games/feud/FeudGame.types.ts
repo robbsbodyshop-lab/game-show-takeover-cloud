@@ -4,7 +4,11 @@ import type { FeudMatch } from './FeudController';
 import type { FeudRuntime } from './runtime';
 import type { FeudSettings } from './settings';
 
-/** What the stage hands the Feud game: the shared contract plus the match, bracket and settings. */
+/**
+ * What the stage hands the Feud game: the shared contract plus the match, bracket and settings. The
+ * host's saved settings arrive as `gameSettings` (voice and answer source already taken from the app
+ * group); `settings` is an explicit override on top of them (previews, tests).
+ */
 export interface FeudGameProps extends GameProps {
   settings?: Partial<FeudSettings>;
   /** The two teams of this match; defaults to the bracket's current match, then the play order. */

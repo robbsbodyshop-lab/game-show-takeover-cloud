@@ -1,5 +1,9 @@
 import { Button, Inset, Label } from '@/design';
 import type { GamePhase } from '@/engines/event';
+import type { FeudSettings } from '@/games/feud/settings';
+import type { WheelSettings } from '@/games/wheel/settings';
+import { GameSettingsFields } from '@/host/GameSettingsFields';
+import type { GameSettingsGroupName } from '@/host/gameSettings';
 import { SettingToggle } from './SettingToggle';
 import type { StageSettings } from './stageSettings';
 import { useConfirmTwice } from './useConfirmTwice';
@@ -9,6 +13,10 @@ export interface SettingsFormProps {
   phase: GamePhase;
   settings: StageSettings;
   onChange: (patch: Partial<StageSettings>) => void;
+  /** The Feud and Wheel "next game" settings; the two sections are hidden unless both props are given. */
+  gameSettings?: { feud: FeudSettings; wheel: WheelSettings } | undefined;
+  onSaveGameSettings?:
+    ((group: GameSettingsGroupName, value: FeudSettings | WheelSettings) => void) | undefined;
   onResetScores: () => void;
   onNewEvent: () => void;
   onBackToEvents: () => void;
@@ -27,6 +35,8 @@ export const SettingsForm = ({
   phase,
   settings,
   onChange,
+  gameSettings,
+  onSaveGameSettings,
   onResetScores,
   onNewEvent,
   onBackToEvents,
@@ -86,6 +96,9 @@ export const SettingsForm = ({
           }}
         />
       </Inset>
+      {gameSettings !== undefined && onSaveGameSettings !== undefined ? (
+        <GameSettingsFields feud={gameSettings.feud} wheel={gameSettings.wheel} onSave={onSaveGameSettings} />
+      ) : null}
       <Inset className={styles.group}>
         <Label>Hotkeys</Label>
         <dl className={styles.keys}>
