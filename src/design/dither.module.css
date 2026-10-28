@@ -1,0 +1,40 @@
+/*
+ * Ordered-dither helpers. Each class paints a tiny inline SVG tile (Bayer 4x4) with
+ * image-rendering: pixelated, so there is no gradient anywhere: depth is pixels on a grid.
+ * Colours are repeated from tokens.css because custom properties do not reach data: URIs.
+ */
+
+/* Panel texture: 2px checker of faint white on whatever fill sits underneath. */
+.dither {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h2v2H0zM2 2h2v2H2z' fill='%23fff' fill-opacity='.05'/%3E%3C/svg%3E");
+  background-size: 4px 4px;
+  image-rendering: pixelated;
+}
+
+/* 50% ink checker, used as the leading edge of the boot sweep. */
+.checker {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h2v2H0zM2 2h2v2H2z' fill='%230B0620'/%3E%3C/svg%3E");
+  background-size: 4px 4px;
+  image-rendering: pixelated;
+}
+
+/* Ink fade, transparent at the top to solid ink at the bottom in 17 ordered-dither bands (17 x 16px). */
+.fade {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='68' shape-rendering='crispEdges'%3E%3Cpath d='M0 4h1v1h-1zM0 8h1v1h-1zM2 10h1v1h-1zM0 12h1v1h-1zM2 12h1v1h-1zM2 14h1v1h-1zM0 16h1v1h-1zM2 16h1v1h-1zM0 18h1v1h-1zM2 18h1v1h-1zM0 20h1v1h-1zM2 20h1v1h-1zM1 21h1v1h-1zM0 22h1v1h-1zM2 22h1v1h-1zM0 24h1v1h-1zM2 24h1v1h-1zM1 25h1v1h-1zM0 26h1v1h-1zM2 26h1v1h-1zM3 27h1v1h-1zM0 28h1v1h-1zM2 28h1v1h-1zM1 29h1v1h-1zM3 29h1v1h-1zM0 30h1v1h-1zM2 30h1v1h-1zM3 31h1v1h-1zM0 32h1v1h-1zM2 32h1v1h-1zM1 33h1v1h-1zM3 33h1v1h-1zM0 34h1v1h-1zM2 34h1v1h-1zM1 35h1v1h-1zM3 35h1v1h-1zM0 36h3v1h-3zM1 37h1v1h-1zM3 37h1v1h-1zM0 38h1v1h-1zM2 38h1v1h-1zM1 39h1v1h-1zM3 39h1v1h-1zM0 40h3v1h-3zM1 41h1v1h-1zM3 41h1v1h-1zM0 42h1v1h-1zM2 42h2v1h-2zM1 43h1v1h-1zM3 43h1v1h-1zM0 44h4v1h-4zM1 45h1v1h-1zM3 45h1v1h-1zM0 46h1v1h-1zM2 46h2v1h-2zM1 47h1v1h-1zM3 47h1v1h-1zM0 48h4v1h-4zM1 49h1v1h-1zM3 49h1v1h-1zM0 50h4v1h-4zM1 51h1v1h-1zM3 51h1v1h-1zM0 52h4v1h-4zM0 53h2v1h-2zM3 53h1v1h-1zM0 54h4v1h-4zM1 55h1v1h-1zM3 55h1v1h-1zM0 56h4v1h-4zM0 57h2v1h-2zM3 57h1v1h-1zM0 58h4v1h-4zM1 59h3v1h-3zM0 60h4v1h-4zM0 61h4v1h-4zM0 62h4v1h-4zM1 63h3v1h-3zM0 64h4v1h-4zM0 65h4v1h-4zM0 66h4v1h-4zM0 67h4v1h-4z' fill='%230B0620'/%3E%3C/svg%3E");
+  background-size: 16px 272px;
+  background-repeat: repeat-x;
+  background-position: 0 100%;
+  image-rendering: pixelated;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.overlay.fade {
+  top: auto;
+  height: 272px;
+  max-height: 100%;
+}

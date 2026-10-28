@@ -1,0 +1,37 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-groovy);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: var(--c-ink);
+  background-color: var(--c-cream);
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.cream {
+  background-color: var(--c-cream);
+}
+
+.gold {
+  background-color: var(--c-gold);
+}
+
+.orange {
+  background-color: var(--c-orange);
+}
+
+.confirm {
+  background-color: var(--c-avocado);
+}
+
+.info {
+  background-color: var(--c-aqua);
+}
+
+.host {
+  background-color: var(--c-mauve);
+}

@@ -1,0 +1,40 @@
+/* Bundled from @fontsource (SIL OFL); nothing loads from a CDN. Latin subset only. */
+@import '@fontsource/press-start-2p/latin-400.css';
+@import '@fontsource/pixelify-sans/latin-400.css';
+@import '@fontsource/pixelify-sans/latin-500.css';
+@import '@fontsource/pixelify-sans/latin-700.css';
+@import '@fontsource/silkscreen/latin-400.css';
+@import '@fontsource/silkscreen/latin-700.css';
+
+/*
+ * Pixelify Sans draws '2' as a closed loop that reads as '8' from the back of a room, so its
+ * digits (U+0030-0039) are re-pointed at Silkscreen for every weight. Letters are untouched.
+ * Press Start 2P is not overridden: its digits are already open. These faces must come after
+ * the imports above to win the per-codepoint match; size-adjust matches cap heights.
+ */
+@font-face {
+  font-family: 'Pixelify Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('@fontsource/silkscreen/files/silkscreen-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+0030-0039;
+  size-adjust: 103%;
+}
+
+@font-face {
+  font-family: 'Pixelify Sans';
+  font-style: normal;
+  font-weight: 500;
+  src: url('@fontsource/silkscreen/files/silkscreen-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+0030-0039;
+  size-adjust: 103%;
+}
+
+@font-face {
+  font-family: 'Pixelify Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url('@fontsource/silkscreen/files/silkscreen-latin-700-normal.woff2') format('woff2');
+  unicode-range: U+0030-0039;
+  size-adjust: 103%;
+}

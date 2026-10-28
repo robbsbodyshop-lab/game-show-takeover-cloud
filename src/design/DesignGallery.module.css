@@ -1,0 +1,71 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-4) var(--space-8);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.heading {
+  font-size: 20px;
+  color: var(--c-gold);
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.display {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--c-gold);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+}
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.chip {
+  display: block;
+  height: 40px;
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.role {
+  font-size: var(--fs-small);
+  color: var(--c-cream);
+}
+
+.dithers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4);
+}
+
+.dither {
+  position: relative;
+  min-height: 160px;
+  padding: var(--space-3);
+  background-color: var(--c-teal);
+  border: var(--bw-3) solid var(--c-ink);
+}

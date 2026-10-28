@@ -1,0 +1,108 @@
+/*
+ * Timeline (as a share of --boot-ms): 0-20% ink, 20-70% spectrum wipes in left to right while the
+ * checker mask thins out, 70-100% wordmark. Every step is steps(n); reduced motion skips the screen.
+ */
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-dialog);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  background-color: var(--c-ink);
+}
+
+.sweep {
+  position: relative;
+  display: flex;
+  width: min(720px, 80vw);
+  height: 160px;
+  border: var(--bw-4) solid var(--c-ink);
+  clip-path: inset(0 100% 0 0);
+  animation: wipe var(--boot-ms) steps(24, end) forwards;
+}
+
+.sweep span {
+  flex: 1;
+}
+
+.rust {
+  background-color: var(--c-rust);
+}
+
+.orange {
+  background-color: var(--c-orange);
+}
+
+.gold {
+  background-color: var(--c-gold);
+}
+
+.olive {
+  background-color: var(--c-olive);
+}
+
+.aqua {
+  background-color: var(--c-aqua);
+}
+
+.teal {
+  background-color: var(--c-teal);
+}
+
+.plum {
+  background-color: var(--c-plum);
+}
+
+.mask {
+  animation: thin var(--boot-ms) steps(4, end) forwards;
+}
+
+.wordmark {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-title);
+  text-transform: uppercase;
+  color: var(--c-gold);
+  text-shadow: 4px 4px 0 var(--c-ink);
+  opacity: 0;
+  animation: appear var(--boot-ms) steps(1, end) forwards;
+}
+
+@keyframes wipe {
+  0%,
+  20% {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  70%,
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes thin {
+  0%,
+  20% {
+    opacity: 1;
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes appear {
+  0%,
+  69% {
+    opacity: 0;
+  }
+
+  70%,
+  100% {
+    opacity: 1;
+  }
+}

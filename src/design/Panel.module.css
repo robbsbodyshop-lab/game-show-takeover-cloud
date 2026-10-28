@@ -1,0 +1,8 @@
+.panel {
+  composes: dither from './dither.module.css';
+  padding: var(--space-6);
+  background-color: var(--c-lagoon);
+  border: var(--bw-4) solid var(--c-ink);
+  box-shadow: var(--bevel-panel), var(--shadow-hard-md);
+  color: var(--c-cream);
+}

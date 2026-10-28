@@ -1,0 +1,19 @@
+.number {
+  font-family: var(--font-numeral);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--c-gold);
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.md {
+  font-size: 24px;
+}
+
+.lg {
+  font-size: 40px;
+}
+
+.xl {
+  font-size: var(--fs-hero);
+}

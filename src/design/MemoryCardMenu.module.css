@@ -1,0 +1,71 @@
+.menu {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/* A memory-card block: ink-outlined slab with a notch of bevel and a hard shadow. */
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--space-2);
+  min-height: 120px;
+  padding: var(--space-4);
+  text-align: left;
+  color: var(--c-cream);
+  cursor: pointer;
+  background-color: var(--c-lagoon);
+  border: var(--bw-4) solid var(--c-ink);
+  box-shadow: var(--bevel-panel), var(--shadow-hard-sm);
+}
+
+.tile[data-cursor='true'] {
+  background-color: var(--c-deep);
+  border-color: var(--c-gold);
+  box-shadow:
+    inset 4px 4px 0 var(--c-mustard),
+    inset -4px -4px 0 var(--c-shade),
+    0 0 0 3px var(--c-ink),
+    var(--shadow-hard-sm);
+}
+
+.tile[aria-selected='true'] .title::before {
+  content: '> ';
+  color: var(--c-gold);
+}
+
+.tile:active:not(:disabled) {
+  transform: translate(var(--shadow-4), var(--shadow-4));
+  box-shadow: var(--bevel-panel);
+}
+
+.tile:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: var(--c-night);
+  border: var(--bw-3) solid var(--c-ink);
+  image-rendering: pixelated;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.35;
+  color: var(--c-gold);
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-mist);
+}

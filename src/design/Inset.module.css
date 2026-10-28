@@ -1,0 +1,6 @@
+.inset {
+  padding: var(--space-4);
+  background-color: var(--c-night);
+  border: var(--bw-3) solid var(--c-ink);
+  box-shadow: inset 3px 3px 0 var(--c-ink);
+}

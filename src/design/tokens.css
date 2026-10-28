@@ -1,0 +1,85 @@
+/*
+ * Design tokens. Role names match the old palette so the reused audio and fonts still fit.
+ * Rules in docs/DESIGN.md: flat fills, ink outlines, square corners, stepped motion, no gradients.
+ * Note: CSS custom properties cannot be read inside data: URIs, so the few SVG tiles
+ * (checkerboard floor, scanlines, bulbs, dither) repeat hex values from this file.
+ */
+:root {
+  color-scheme: dark;
+
+  /* palette (names are roles; see docs/DESIGN.md) */
+  --c-gold: #ffd23f;
+  --c-mustard: #fff07a;
+  --c-bulb: #ffffb0;
+  --c-orange: #ff7a1f;
+  --c-rust: #e23b4a;
+  --c-avocado: #3dc24f;
+  --c-olive: #9bea5c;
+  --c-teal: #2f6fe8;
+  --c-aqua: #5fe0ff;
+  --c-cream: #fff6dc;
+  --c-mist: #b7bdff;
+  --c-deep: #4b39b8;
+  --c-lagoon: #2b1f72;
+  --c-night: #12093a;
+  --c-ink: #0b0620;
+  --c-walnut: #8a5a2b;
+  --c-plum: #a845d8;
+  --c-mauve: #eba6ff;
+  --c-coral: #ff7c7c;
+  /* one derived tone: the dark half of every bevel and the checkerboard's dark square */
+  --c-shade: #1a0f52;
+
+  /* bevel tints for coloured fills (translucent so they work on every variant) */
+  --bevel-light: rgb(255 255 255 / 45%);
+  --bevel-dark: rgb(11 6 32 / 35%);
+
+  /* spacing scale (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* outlines and hard shadows */
+  --bw-3: 3px;
+  --bw-4: 4px;
+  --shadow-4: 4px;
+  --shadow-6: 6px;
+  --shadow-hard-sm: 4px 4px 0 var(--c-ink);
+  --shadow-hard-md: 6px 6px 0 var(--c-ink);
+  --bevel-panel: inset 4px 4px 0 var(--c-deep), inset -4px -4px 0 var(--c-shade);
+
+  /* type */
+  --font-display: 'Press Start 2P', 'Courier New', monospace;
+  --font-groovy: 'Pixelify Sans', 'Press Start 2P', monospace;
+  --font-body: 'Pixelify Sans', 'Courier New', monospace;
+  --font-numeral: 'Silkscreen', 'Courier New', monospace;
+  --fs-audience: 18px;
+  --fs-small: 16px;
+  --fs-title: 32px;
+  --fs-hero: 56px;
+
+  /* focus and touch */
+  --focus-ring: 3px solid var(--c-bulb);
+  --focus-offset: 2px;
+  --tap: 44px;
+
+  /* the one picture */
+  --stage-w: 1920px;
+  --stage-h: 1080px;
+
+  /* motion: stepped, never eased. Components use steps(n) with these durations. */
+  --motion-tick: 125ms;
+  --motion-wipe: 400ms;
+  --motion-chase: 1000ms;
+  --motion-boot: 2000ms;
+
+  /* layers */
+  --z-dialog: 50;
+  --z-crt: 99;
+  --z-scanline: 100;
+}

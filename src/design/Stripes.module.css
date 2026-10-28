@@ -1,0 +1,27 @@
+.stripes {
+  display: flex;
+  flex-direction: column;
+  height: 16px;
+  border: var(--bw-3) solid var(--c-ink);
+  background-color: var(--c-ink);
+}
+
+.stripes span {
+  flex: 1;
+}
+
+.orange {
+  background-color: var(--c-orange);
+}
+
+.gold {
+  background-color: var(--c-gold);
+}
+
+.green {
+  background-color: var(--c-avocado);
+}
+
+.blue {
+  background-color: var(--c-teal);
+}

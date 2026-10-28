@@ -1,0 +1,8 @@
+.label {
+  display: inline-block;
+  font-family: var(--font-groovy);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  text-transform: uppercase;
+  color: var(--c-mist);
+}

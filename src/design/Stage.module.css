@@ -1,0 +1,13 @@
+.outer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.frame {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  transform-origin: 0 0;
+}
