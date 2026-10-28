@@ -20,3 +20,7 @@ Collected during implementation. Each has the interim choice the code uses now; 
 - Q-005 Added scoring/level progression/versus garbage the pygame source never had (proposed rules in design.md §8.4). Approve?
 - Q-030 2P versus: both players draw capsules from one shared random stream, so sequences differ. Give each player the identical sequence (fairer, like the classic games)?
 - Q-031 Garbage is sent per cascade step (each chained clear can send more). Alternative: count one lock's clears together. Which?
+
+## Family Feud (from the engine)
+- Q-040 Sudden Death: the winner currently also banks the #1 answer x3 on their game score (so it counts toward event points). Or should Sudden Death decide the game without adding points?
+- Q-041 Fast Money survey groups ("same survey group" duplicates) are not in the content file; duplicates are detected by matching the same answer only. Add groups to the content later?
