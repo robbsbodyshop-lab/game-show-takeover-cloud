@@ -1,0 +1,111 @@
+.wheel {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  flex: none;
+}
+
+.rotor,
+.overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.svg,
+.overlay {
+  width: 100%;
+  height: 100%;
+}
+
+.overlay {
+  pointer-events: none;
+}
+
+.rim {
+  fill: var(--c-ink);
+}
+
+.slice {
+  stroke: var(--c-ink);
+  stroke-width: 3px;
+}
+
+.slice[data-tone='0'] {
+  fill: var(--c-teal);
+}
+
+.slice[data-tone='1'] {
+  fill: var(--c-deep);
+}
+
+.slice[data-tone='2'] {
+  fill: var(--c-plum);
+}
+
+.paper {
+  fill: var(--c-cream);
+  stroke: var(--c-ink);
+  stroke-width: 3px;
+}
+
+.flap {
+  fill: none;
+  stroke: var(--c-ink);
+  stroke-width: 3px;
+}
+
+.number {
+  font-family: var(--font-numeral);
+  font-weight: 700;
+  font-size: 22px;
+  fill: var(--c-cream);
+}
+
+.bulb {
+  fill: var(--c-bulb);
+  stroke: var(--c-ink);
+  stroke-width: 2px;
+  animation: chase var(--motion-chase) steps(1) infinite;
+}
+
+.bulb[data-alt='true'] {
+  animation-name: chase-alt;
+}
+
+.hub {
+  fill: var(--c-shade);
+  stroke: var(--c-ink);
+  stroke-width: 4px;
+}
+
+.hubLight {
+  fill: var(--c-mist);
+  stroke: var(--c-ink);
+  stroke-width: 3px;
+}
+
+.pointer {
+  fill: var(--c-gold);
+  stroke: var(--c-ink);
+  stroke-width: 4px;
+}
+
+@keyframes chase {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes chase-alt {
+  0% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}

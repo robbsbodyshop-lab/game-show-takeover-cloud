@@ -1,0 +1,51 @@
+.dialog {
+  min-width: 720px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.input {
+  min-height: 64px;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--fs-title);
+  color: var(--c-ink);
+  text-transform: uppercase;
+  background-color: var(--c-cream);
+  border: var(--bw-4) solid var(--c-ink);
+}
+
+.heard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.judging {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.close {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-audience);
+  color: var(--c-mustard);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-5);
+}

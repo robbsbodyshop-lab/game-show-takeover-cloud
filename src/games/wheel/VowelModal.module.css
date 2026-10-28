@@ -1,0 +1,23 @@
+.price {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--fs-audience);
+  color: var(--c-cream);
+}
+
+.row {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.vowel {
+  min-width: 72px;
+  font-family: var(--font-display);
+  font-size: 32px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-5);
+}

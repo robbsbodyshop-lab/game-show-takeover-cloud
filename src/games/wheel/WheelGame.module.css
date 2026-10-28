@@ -1,0 +1,65 @@
+.screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: var(--stage-w);
+  height: var(--stage-h);
+  padding: var(--space-5) var(--space-7);
+  overflow: hidden;
+  color: var(--c-cream);
+}
+
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.main {
+  display: grid;
+  flex: 1;
+  grid-template-columns: 1200px 1fr;
+  gap: var(--space-5);
+  min-height: 0;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+.right > * {
+  max-width: 100%;
+}
+
+.prompt {
+  min-height: 36px;
+  font-family: var(--font-display);
+  font-size: var(--fs-audience);
+  color: var(--c-gold);
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.bottom {
+  flex: none;
+}
+
+.wild {
+  position: absolute;
+  right: var(--space-7);
+  bottom: 250px;
+  left: var(--space-7);
+  z-index: 10;
+}

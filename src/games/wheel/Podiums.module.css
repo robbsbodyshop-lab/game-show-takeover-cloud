@@ -1,0 +1,81 @@
+.row {
+  display: flex;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.podium {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: var(--space-3) var(--space-3) var(--space-3);
+  color: var(--c-cream);
+  background-color: var(--c-lagoon);
+  border: var(--bw-4) solid var(--c-ink);
+  border-top: 14px solid var(--team);
+  box-shadow: var(--bevel-panel), var(--shadow-hard-sm);
+}
+
+.podium[data-active='true'] {
+  outline: 6px solid var(--c-bulb);
+  outline-offset: 2px;
+  animation: glow var(--motion-chase) steps(1) infinite;
+}
+
+.podium[data-locked='true'] {
+  opacity: 0.7;
+}
+
+.name {
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: var(--fs-audience);
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--c-gold);
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.cash {
+  color: var(--c-mustard);
+}
+
+.bank {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  color: var(--c-mist);
+}
+
+.bankValue {
+  font-family: var(--font-numeral);
+  color: var(--c-cream);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  min-height: 30px;
+}
+
+.clock {
+  margin-top: auto;
+}
+
+@keyframes glow {
+  0% {
+    outline-color: var(--c-bulb);
+  }
+
+  50% {
+    outline-color: var(--c-gold);
+  }
+}

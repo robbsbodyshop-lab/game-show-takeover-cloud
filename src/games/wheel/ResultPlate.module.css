@@ -1,0 +1,56 @@
+.plate {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+  min-width: 720px;
+  text-align: center;
+  background-color: var(--c-ink);
+  border-color: var(--c-gold);
+  transform: translate(-50%, -50%);
+  animation: drop var(--motion-wipe) steps(4) 1;
+}
+
+.plate[data-kind='lose-turn'] {
+  background-color: var(--c-cream);
+}
+
+.plate[data-kind='lose-turn'] .title,
+.plate[data-kind='lose-turn'] .line {
+  color: var(--c-ink);
+  text-shadow: none;
+}
+
+.plate[data-kind='bankrupt'] .title {
+  color: var(--c-rust);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 64px;
+  line-height: 1.2;
+  color: var(--c-gold);
+  text-shadow: 4px 4px 0 var(--c-ink);
+}
+
+.line {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 24px;
+  color: var(--c-cream);
+}
+
+@keyframes drop {
+  0% {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  100% {
+    clip-path: inset(0);
+  }
+}

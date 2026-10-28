@@ -1,0 +1,9 @@
+.menu {
+  min-width: 560px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}

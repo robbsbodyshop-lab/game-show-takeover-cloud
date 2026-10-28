@@ -1,0 +1,44 @@
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+  min-width: 820px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  color: var(--c-gold);
+  text-shadow: 4px 4px 0 var(--c-ink);
+}
+
+.winner {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-title);
+  color: var(--c-cream);
+}
+
+.amount {
+  margin: 0;
+  font-family: var(--font-numeral);
+  font-size: 48px;
+  color: var(--c-mustard);
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.prizes,
+.next {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 24px;
+  color: var(--c-cream);
+}

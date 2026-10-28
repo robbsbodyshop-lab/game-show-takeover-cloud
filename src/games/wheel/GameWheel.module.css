@@ -1,0 +1,198 @@
+.wheel {
+  position: relative;
+  width: 600px;
+  height: 600px;
+  flex: none;
+}
+
+.rotor,
+.overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.svg,
+.overlay {
+  width: 100%;
+  height: 100%;
+}
+
+.overlay {
+  pointer-events: none;
+}
+
+.rim {
+  fill: var(--c-ink);
+}
+
+.wedge {
+  stroke: var(--c-ink);
+  stroke-width: 3px;
+  fill: var(--c-mist);
+}
+
+.wedge[data-kind='empty'] {
+  fill: var(--c-deep);
+}
+
+.wedge[data-kind='cash'][data-value='500'] {
+  fill: var(--c-mist);
+}
+
+.wedge[data-kind='cash'][data-value='550'] {
+  fill: var(--c-aqua);
+}
+
+.wedge[data-kind='cash'][data-value='600'] {
+  fill: var(--c-gold);
+}
+
+.wedge[data-kind='cash'][data-value='650'] {
+  fill: var(--c-olive);
+}
+
+.wedge[data-kind='cash'][data-value='700'] {
+  fill: var(--c-orange);
+}
+
+.wedge[data-kind='cash'][data-value='800'] {
+  fill: var(--c-mauve);
+}
+
+.wedge[data-kind='cash'][data-value='900'] {
+  fill: var(--c-coral);
+}
+
+.wedge[data-kind='cash'][data-value='1000'] {
+  fill: var(--c-mustard);
+}
+
+.wedge[data-top='true'] {
+  fill: var(--c-avocado);
+}
+
+.wedge[data-kind='bankrupt'] {
+  fill: var(--c-ink);
+  stroke: var(--c-mist);
+}
+
+.wedge[data-kind='lose-turn'] {
+  fill: var(--c-cream);
+}
+
+.wedge[data-kind='wild-card'] {
+  fill: var(--c-plum);
+}
+
+.wedge[data-kind='million'] {
+  fill: var(--c-ink);
+}
+
+.wedge[data-kind='trip'] {
+  fill: var(--c-walnut);
+}
+
+.wedge[data-kind='mystery'] {
+  fill: var(--c-deep);
+}
+
+.wedge[data-kind='express'] {
+  fill: var(--c-teal);
+}
+
+.thirdBankrupt {
+  fill: var(--c-ink);
+  stroke: var(--c-ink);
+  stroke-width: 2px;
+}
+
+.thirdMillion {
+  fill: var(--c-gold);
+  stroke: var(--c-ink);
+  stroke-width: 2px;
+}
+
+.label {
+  font-family: var(--font-groovy);
+  font-weight: 700;
+  font-size: 22px;
+  fill: var(--c-ink);
+  pointer-events: none;
+}
+
+.label[data-kind='bankrupt'],
+.label[data-kind='mystery'],
+.label[data-kind='trip'] {
+  fill: var(--c-cream);
+  font-size: 20px;
+}
+
+.label[data-kind='lose-turn'] {
+  font-size: 19px;
+}
+
+.label[data-kind='wild-card'],
+.label[data-kind='express'] {
+  font-size: 20px;
+}
+
+.label[data-kind='million'] {
+  font-family: var(--font-display);
+  font-size: 18px;
+}
+
+.bulb {
+  fill: var(--c-bulb);
+  stroke: var(--c-ink);
+  stroke-width: 2px;
+  animation: chase var(--motion-chase) steps(1) infinite;
+}
+
+.bulb[data-alt='true'] {
+  animation-name: chase-alt;
+}
+
+.hubShade {
+  fill: var(--c-shade);
+  stroke: var(--c-ink);
+  stroke-width: 4px;
+}
+
+.hubBase {
+  fill: var(--c-deep);
+  stroke: var(--c-ink);
+  stroke-width: 3px;
+}
+
+.hubLight {
+  fill: var(--c-mist);
+  stroke: var(--c-ink);
+  stroke-width: 3px;
+}
+
+.pointer {
+  fill: var(--c-gold);
+  stroke: var(--c-ink);
+  stroke-width: 4px;
+  stroke-linejoin: miter;
+}
+
+@keyframes chase {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes chase-alt {
+  0% {
+    opacity: 0.25;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
