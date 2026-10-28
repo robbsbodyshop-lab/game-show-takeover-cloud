@@ -1,0 +1,77 @@
+.bracket {
+  display: flex;
+  gap: var(--space-6);
+  justify-content: center;
+}
+
+.round {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 260px;
+}
+
+.roundName {
+  font-size: var(--fs-small);
+  text-align: center;
+  color: var(--c-mist);
+}
+
+.matches {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: var(--space-4);
+}
+
+.match {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background-color: var(--c-night);
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.match[aria-current='true'] {
+  outline: var(--bw-4) solid var(--c-bulb);
+  outline-offset: 2px;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+  color: var(--c-cream);
+}
+
+.team + .team {
+  border-top: var(--bw-3) solid var(--c-ink);
+}
+
+.team[data-winner='true'] {
+  color: var(--c-gold);
+}
+
+.team[data-out='true'] {
+  color: var(--c-mist);
+  text-decoration: line-through;
+}
+
+.chip {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  background-color: var(--team);
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,68 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.head,
+.players {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.totals {
+  color: var(--c-gold);
+}
+
+.pick {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.select {
+  min-height: 36px;
+  max-width: 100%;
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-body);
+  color: var(--c-ink);
+  background-color: var(--c-cream);
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  text-align: left;
+  font-size: var(--fs-small);
+  color: var(--c-mist);
+}
+
+.table td {
+  padding: var(--space-2);
+  vertical-align: top;
+  border-top: var(--bw-3) solid var(--c-ink);
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.said {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 700;
+}
+
+.none {
+  color: var(--c-mist);
+}

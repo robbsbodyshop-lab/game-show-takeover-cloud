@@ -1,0 +1,16 @@
+.hostOnly {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* Show mode keeps the space (so hovering still finds it) but draws nothing until hover or focus. */
+.hostOnly[data-show-mode='true'] {
+  opacity: 0;
+}
+
+.hostOnly[data-show-mode='true']:hover,
+.hostOnly[data-show-mode='true']:focus-within {
+  opacity: 1;
+}

@@ -1,0 +1,58 @@
+.header {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) 260px;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.round {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.roundLabel {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--c-gold);
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.multiplier,
+.match {
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+  color: var(--c-mist);
+}
+
+.question {
+  padding: var(--space-4) var(--space-5);
+  font-family: var(--font-groovy);
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  color: var(--c-ink);
+  background-color: var(--c-cream);
+  border: var(--bw-4) solid var(--c-ink);
+  box-shadow:
+    inset 4px 4px 0 var(--c-mustard),
+    var(--shadow-hard-md);
+}
+
+.bank {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-3);
+  background-color: var(--c-ink);
+  border: var(--bw-4) solid var(--c-gold);
+}
+
+.bankLabel {
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+  color: var(--c-mist);
+}

@@ -1,0 +1,73 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  height: 100%;
+}
+
+.versus {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  width: 100%;
+  max-width: 1200px;
+}
+
+.family {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  align-items: center;
+  padding: 0 var(--space-5) var(--space-5);
+  background-color: var(--c-night);
+  border: var(--bw-4) solid var(--c-ink);
+  box-shadow: var(--shadow-hard-md);
+}
+
+.band {
+  align-self: stretch;
+  height: 36px;
+  margin: 0 calc(var(--space-5) * -1);
+  background-color: var(--team);
+  border-bottom: var(--bw-4) solid var(--c-ink);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: 36px;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--c-cream);
+  text-shadow: 4px 4px 0 var(--c-ink);
+}
+
+.vs {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--c-ink);
+  background-color: var(--c-gold);
+  border: var(--bw-4) solid var(--c-ink);
+  transform: translate(-50%, -50%);
+}
+
+.rule {
+  margin: 0;
+  font-family: var(--font-groovy);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--c-gold);
+}
+
+.note {
+  margin: 0;
+  font-size: 24px;
+  color: var(--c-mist);
+}

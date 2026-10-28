@@ -1,0 +1,95 @@
+.slot {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  align-items: stretch;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.empty {
+  background-color: var(--c-shade);
+  border: var(--bw-3) solid var(--c-ink);
+  opacity: 0.5;
+}
+
+.plate {
+  display: grid;
+  place-items: center;
+  font-family: var(--font-numeral);
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--c-ink);
+  background-color: var(--c-gold);
+  border: var(--bw-4) solid var(--c-ink);
+  box-shadow:
+    inset 3px 3px 0 var(--bevel-light),
+    inset -3px -3px 0 var(--bevel-dark);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: 0 var(--space-4);
+  background-color: var(--c-teal);
+  border: var(--bw-4) solid var(--c-ink);
+  border-left: 0;
+  box-shadow:
+    inset 4px 4px 0 var(--bevel-light),
+    inset -4px -4px 0 var(--bevel-dark);
+}
+
+.revealed .bar {
+  background-color: var(--c-cream);
+  color: var(--c-ink);
+  animation: flip 400ms steps(4) 1;
+  transform-origin: center;
+}
+
+.leftover .bar {
+  background-color: var(--c-mist);
+}
+
+.answer {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-groovy);
+  /* Scales with the board's width (container query) so 22-letter answers fit; never below 22px. */
+  font-size: clamp(22px, 2.7cqw, 32px);
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.points {
+  flex: none;
+  min-width: 84px;
+  padding: var(--space-1) var(--space-3);
+  font-family: var(--font-numeral);
+  font-size: 36px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--c-ink);
+  background-color: var(--c-gold);
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+@keyframes flip {
+  0% {
+    transform: scaleY(0.05);
+  }
+
+  50% {
+    transform: scaleY(0.5);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}

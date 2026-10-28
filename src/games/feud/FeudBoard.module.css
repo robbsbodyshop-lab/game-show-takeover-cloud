@@ -1,0 +1,101 @@
+/*
+ * Two bulb rings share one square-bulb tile and blink in opposition with steps(1), as in Marquee.
+ * Bulb colour is --c-bulb (#FFFFB0) repeated inside the data: URIs (custom properties cannot reach them).
+ */
+.frame {
+  position: relative;
+  isolation: isolate;
+  min-height: 0;
+  padding: var(--space-6);
+  background-color: var(--c-ink);
+  border: var(--bw-4) solid var(--c-gold);
+  box-shadow:
+    0 0 0 3px var(--c-ink),
+    var(--shadow-hard-md);
+}
+
+.frame::before,
+.frame::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Crect x='9' y='3' width='6' height='6' fill='%23FFFFB0'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Crect x='9' y='3' width='6' height='6' fill='%23FFFFB0'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='24'%3E%3Crect x='3' y='9' width='6' height='6' fill='%23FFFFB0'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='24'%3E%3Crect x='3' y='9' width='6' height='6' fill='%23FFFFB0'/%3E%3C/svg%3E");
+  background-size:
+    24px 12px,
+    24px 12px,
+    12px 24px,
+    12px 24px;
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  background-position:
+    0 0,
+    0 100%,
+    0 0,
+    100% 0;
+  animation: chase var(--motion-chase) steps(1) infinite;
+  image-rendering: pixelated;
+}
+
+.frame::after {
+  background-position:
+    12px 0,
+    12px 100%,
+    0 12px,
+    100% 12px;
+  animation-name: chase-alt;
+}
+
+.board {
+  container-type: inline-size;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-5);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Four answers or fewer sit in one centred column. */
+.board[data-count='4'],
+.board[data-count='3'],
+.board[data-count='2'],
+.board[data-count='1'] {
+  grid-template-columns: minmax(0, 1fr);
+  width: 62%;
+  margin-inline: auto;
+}
+
+.board[data-count='4'] > :nth-child(n + 5),
+.board[data-count='3'] > :nth-child(n + 5),
+.board[data-count='2'] > :nth-child(n + 5),
+.board[data-count='1'] > :nth-child(n + 5) {
+  display: none;
+}
+
+@keyframes chase {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@keyframes chase-alt {
+  0% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
