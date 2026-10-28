@@ -15,8 +15,9 @@ const root = process.cwd();
 const audioDir = join(root, 'public', 'audio');
 
 describe('cue registry', () => {
-  it('maps every cue to /audio/<file>.mp3', () => {
-    for (const name of SOUND_NAMES) expect(SOUND_FILES[name]).toMatch(/^\/audio\/[a-z0-9_]+\.mp3$/);
+  it('maps every cue to /audio/<file>.mp3 or /audio/puzzle/<file>.wav', () => {
+    for (const name of SOUND_NAMES)
+      expect(SOUND_FILES[name]).toMatch(/^\/audio\/(?:[a-z0-9_]+\.mp3|puzzle\/[a-z0-9-]+\.wav)$/);
   });
 
   it('points only at files that exist under public/audio', () => {
