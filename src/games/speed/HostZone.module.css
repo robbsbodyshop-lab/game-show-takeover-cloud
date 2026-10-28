@@ -1,0 +1,12 @@
+/* Fixed height so the hover target exists even when show mode has emptied the strip. */
+.zone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 120px;
+}
+
+.zone[data-show-mode='true'] {
+  cursor: default;
+}

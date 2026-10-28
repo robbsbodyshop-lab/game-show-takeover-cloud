@@ -1,0 +1,122 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: var(--stage-w);
+  height: var(--stage-h);
+  padding: var(--space-5) var(--space-7);
+  overflow: hidden;
+  color: var(--c-cream);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  color: var(--c-gold);
+  text-shadow: 4px 4px 0 var(--c-ink);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 640px 1fr;
+  gap: var(--space-5);
+  flex: 1;
+  min-height: 0;
+}
+
+.clockPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+/* [data-size] raises specificity over NumberDisplay's own size class. */
+.clock[data-size] {
+  font-size: 280px;
+  line-height: 1;
+}
+
+.clock[data-low='true'] {
+  color: var(--c-rust);
+  animation: blink var(--motion-chase) steps(1) infinite;
+}
+
+.flag {
+  font-size: var(--fs-title);
+  padding: var(--space-2) var(--space-5);
+}
+
+.challengePanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.challengeText {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-hero);
+  line-height: 1.25;
+  color: var(--c-mustard);
+  overflow-wrap: anywhere;
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.host {
+  min-height: 200px;
+}
+
+/* With the award sheet open the host strip needs the room: the clock shrinks, the challenge steps aside. */
+.screen[data-awards='true'] .main {
+  flex: 0 0 auto;
+  grid-template-columns: 1fr;
+}
+
+.screen[data-awards='true'] .challengePanel {
+  display: none;
+}
+
+.screen[data-awards='true'] .clockPanel {
+  flex-direction: row;
+  padding: var(--space-3) var(--space-5);
+}
+
+.screen[data-awards='true'] .clock[data-size] {
+  font-size: 120px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--fs-audience);
+  color: var(--c-ink);
+  background-color: var(--c-cream);
+  border: var(--bw-3) solid var(--c-ink);
+  resize: none;
+}
+
+.input:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+@keyframes blink {
+  50% {
+    color: var(--c-gold);
+  }
+}

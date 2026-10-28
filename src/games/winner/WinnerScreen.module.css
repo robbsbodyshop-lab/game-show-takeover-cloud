@@ -1,0 +1,124 @@
+.screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: var(--stage-w);
+  height: var(--stage-h);
+  padding: var(--space-5) var(--space-7);
+  overflow: hidden;
+  color: var(--c-cream);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  color: var(--c-gold);
+  text-shadow: 4px 4px 0 var(--c-ink);
+}
+
+.champions {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Team colour is inline; the hard ink shadow keeps any colour readable on the night blue. */
+.champion {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 120px;
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: anywhere;
+  text-shadow:
+    6px 6px 0 var(--c-ink),
+    -3px -3px 0 var(--c-ink),
+    3px -3px 0 var(--c-ink),
+    -3px 3px 0 var(--c-ink);
+}
+
+.champions[data-count='2'] .champion {
+  font-size: 72px;
+}
+
+.champions[data-count='3'] .champion,
+.champions[data-count='4'] .champion,
+.champions[data-count='5'] .champion,
+.champions[data-count='6'] .champion,
+.champions[data-count='7'] .champion,
+.champions[data-count='8'] .champion {
+  font-size: 40px;
+}
+
+.championScore {
+  font-size: 72px;
+}
+
+.noTeams {
+  margin: 0;
+  font-size: var(--fs-title);
+  color: var(--c-mist);
+}
+
+.standings {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-4) var(--space-6);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-groovy);
+  font-size: var(--fs-title);
+}
+
+.table th {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--fs-small);
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--c-mist);
+}
+
+.table td {
+  padding: var(--space-1) var(--space-3);
+  border-top: var(--bw-3) solid var(--c-ink);
+}
+
+.rank {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-numeral);
+  color: var(--c-gold);
+}
+
+.score {
+  font-family: var(--font-numeral);
+  text-align: right;
+  color: var(--c-mustard);
+}
+
+.swatch {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  margin-right: var(--space-3);
+  vertical-align: middle;
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.host {
+  position: relative;
+  min-height: 100px;
+}
+
+.buttons {
+  display: flex;
+  gap: var(--space-4);
+}

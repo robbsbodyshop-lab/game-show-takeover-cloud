@@ -1,0 +1,120 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: var(--stage-w);
+  height: var(--stage-h);
+  padding: var(--space-4) var(--space-6);
+  overflow: hidden;
+  color: var(--c-cream);
+}
+
+.title {
+  padding-block: var(--space-3);
+  font-family: var(--font-display);
+  font-size: var(--fs-title);
+  color: var(--c-gold);
+  text-shadow: 4px 4px 0 var(--c-ink);
+}
+
+.empty {
+  font-size: var(--fs-title);
+  color: var(--c-mist);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 1fr 760px;
+  gap: var(--space-5);
+  flex: 1;
+  min-height: 0;
+}
+
+.boardPanel {
+  min-height: 0;
+  padding: var(--space-3);
+}
+
+.sidePanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-height: 0;
+  padding: var(--space-4);
+}
+
+.teams {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.team {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--c-night);
+  border: var(--bw-3) solid var(--c-ink);
+  border-left-width: 14px;
+}
+
+.team[data-active='true'] {
+  background-color: var(--c-deep);
+  outline: var(--bw-3) solid var(--c-bulb);
+}
+
+.teamName {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recent {
+  min-height: 90px;
+}
+
+.logLine {
+  margin: 0;
+  font-size: var(--fs-audience);
+  color: var(--c-mustard);
+}
+
+.remaining {
+  margin: 0;
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  color: var(--c-mist);
+}
+
+.host {
+  min-height: 170px;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
