@@ -22,3 +22,12 @@ Hard rules:
   <your dirs>` and `npx vitest run <your dirs>`. Quote the commands and results.
 - Report: files created, test count, anything in the spec you could not implement or found
   ambiguous (do not guess product rules; list them as open questions).
+
+## Integration contracts (wave 2 onward)
+- Services: `useAppServices()` from `src/app/AppContext.ts` gives `{ mode, data, createTransport, audio, version }`.
+- Games implement `GameProps` from `src/stage/gameContract.ts` and talk to phones/host only through
+  `PhoneBridge` and `HostBridge` (`src/host/hostProtocol.ts`). Never import `src/realtime` or
+  `src/data` from `src/games/**`.
+- Engines are done: `@/engines/event`, `@/engines/feud`, `@/engines/puzzle` (Wheel in progress).
+  Content: `@/content`. Audio: `@/audio/cues`, `@/audio/player`. Design primitives: `@/design`.
+- Team ids are integers 1..8 everywhere (event engine, realtime schemas, SQL).
