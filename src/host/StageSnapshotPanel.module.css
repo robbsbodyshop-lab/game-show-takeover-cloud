@@ -1,0 +1,71 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.warning {
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  font-weight: 700;
+  color: var(--c-cream);
+  background-color: var(--c-rust);
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.phase {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--c-gold);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--space-1) var(--space-2);
+  text-align: left;
+}
+
+.table th {
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--c-mist);
+}
+
+.num {
+  font-family: var(--font-numeral);
+  text-align: right !important;
+}
+
+.swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: var(--space-2);
+  border: var(--bw-3) solid var(--c-ink);
+  vertical-align: middle;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clock {
+  font-family: var(--font-numeral);
+}

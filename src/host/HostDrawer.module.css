@@ -1,0 +1,59 @@
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-dialog);
+  width: min(560px, 100%);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--c-lagoon);
+  border-left: var(--bw-4) solid var(--c-ink);
+  box-shadow: var(--shadow-hard-md);
+  color: var(--c-cream);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--bw-4) solid var(--c-ink);
+}
+
+.title {
+  font-size: 16px;
+  color: var(--c-gold);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4) 0;
+}
+
+.tab {
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-groovy);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--c-mist);
+  background-color: var(--c-night);
+  border: var(--bw-3) solid var(--c-ink);
+  cursor: pointer;
+}
+
+.tab[aria-selected='true'] {
+  color: var(--c-ink);
+  background-color: var(--c-gold);
+}
+
+/* The one scroll area: long consoles scroll in here, never the stage behind. */
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
+}
