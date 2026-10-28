@@ -22,9 +22,9 @@
 
 ## Specs
 
-| ID  | Feature                             | Status                     | Requirements                              | Design                              | Tasks                              | Review                                                                 |
-| --- | ----------------------------------- | -------------------------- | ----------------------------------------- | ----------------------------------- | ---------------------------------- | ---------------------------------------------------------------------- |
-| 001 | Cloud rewrite of Game Show Takeover | implementation:in-progress | `specs/001-cloud-rewrite/requirements.md` | `specs/001-cloud-rewrite/design.md` | `specs/001-cloud-rewrite/tasks.md` | `specs/001-cloud-rewrite/review.md` (not ready: 3 blocking gaps F1-F3) |
+| ID  | Feature                             | Status              | Requirements                              | Design                              | Tasks                              | Review                                                                 |
+| --- | ----------------------------------- | ------------------- | ----------------------------------------- | ----------------------------------- | ---------------------------------- | ---------------------------------------------------------------------- |
+| 001 | Cloud rewrite of Game Show Takeover | implementation:done | `specs/001-cloud-rewrite/requirements.md` | `specs/001-cloud-rewrite/design.md` | `specs/001-cloud-rewrite/tasks.md` | `specs/001-cloud-rewrite/review.md` (not ready: 3 blocking gaps F1-F3) |
 
 ## Handoff
 
