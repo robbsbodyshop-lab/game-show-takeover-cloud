@@ -1,0 +1,29 @@
+.root {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: var(--c-cream);
+  background-color: var(--c-night);
+}
+
+.match {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.hints {
+  margin: 0;
+  padding: 0 var(--space-6);
+  font-size: var(--fs-small);
+  color: var(--c-mist);
+  text-align: center;
+}

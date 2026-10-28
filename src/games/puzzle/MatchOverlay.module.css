@@ -1,0 +1,45 @@
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-dialog);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(11 6 32 / 70%);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  min-width: 640px;
+  text-align: center;
+}
+
+.crown {
+  image-rendering: pixelated;
+}
+
+.title {
+  font-size: var(--fs-title);
+  color: var(--c-gold);
+  text-shadow: var(--shadow-hard-sm);
+}
+
+.detail {
+  margin: 0;
+  font-size: var(--fs-audience);
+  color: var(--c-cream);
+}
+
+.buttons {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--c-mist);
+}

@@ -1,0 +1,83 @@
+/* Memory-card block, same slab as the design system's MemoryCardMenu tile. */
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: 0;
+  min-height: 96px;
+  padding: var(--space-3);
+  color: var(--c-cream);
+  text-align: center;
+  cursor: pointer;
+  background-color: var(--c-lagoon);
+  border: var(--bw-4) solid var(--c-ink);
+  box-shadow: var(--bevel-panel), var(--shadow-hard-sm);
+}
+
+.tile[data-compact='true'] {
+  min-height: 64px;
+  padding: var(--space-2);
+}
+
+.tile[aria-selected='true'] {
+  background-color: var(--c-deep);
+  box-shadow:
+    inset 4px 4px 0 var(--c-mustard),
+    inset -4px -4px 0 var(--c-shade),
+    var(--shadow-hard-sm);
+}
+
+.tile[data-p1='true'] {
+  border-color: var(--c-gold);
+}
+
+.tile[data-p2='true'] {
+  border-color: var(--c-aqua);
+}
+
+.tile[data-p1='true'][data-p2='true'] {
+  outline: var(--bw-3) solid var(--c-aqua);
+  outline-offset: -8px;
+}
+
+.tile:active {
+  transform: translate(var(--shadow-4), var(--shadow-4));
+  box-shadow: var(--bevel-panel);
+}
+
+.icon {
+  image-rendering: pixelated;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-small);
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: var(--fs-small);
+  color: var(--c-mist);
+}
+
+.tile[aria-selected='true'] .subtitle {
+  color: var(--c-cream);
+}
+
+.markerTop {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.markerBottom {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}

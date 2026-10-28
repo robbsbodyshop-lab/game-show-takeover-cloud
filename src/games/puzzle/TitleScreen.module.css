@@ -1,0 +1,53 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  padding: var(--space-7) var(--space-6);
+}
+
+.marquee {
+  min-width: 720px;
+  font-size: var(--fs-hero);
+  color: var(--c-gold);
+}
+
+.stripes {
+  width: 720px;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 720px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.cursorSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  flex: none;
+}
+
+.row .tile {
+  flex: 1;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: var(--space-4);
+  min-height: 112px;
+  text-align: left;
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--fs-audience);
+  color: var(--c-mist);
+}
