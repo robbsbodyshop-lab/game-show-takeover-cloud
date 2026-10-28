@@ -68,3 +68,76 @@ describe('memory room rules that need a clock', () => {
     expect((await rooms.joinRoom(code, 1, 'x')).ok).toBe(true);
   });
 });
+
+describe('memory director lease rules that need a clock', () => {
+  async function setup() {
+    const clock = { t: Date.UTC(2026, 9, 28, 12, 0, 0) };
+    const backend = createMemoryBackend({ now: () => clock.t, newId: counter() });
+    const auth = createMemoryAuthService(backend);
+    const events = createMemoryEventRepo(backend);
+    await auth.signUp('a@example.com', 'correct horse');
+    const event = await events.createEvent('Lease');
+    return { clock, events, id: event.id };
+  }
+
+  function counter(): () => string {
+    let n = 0;
+    return () => `id-${String(++n)}`;
+  }
+
+  it('renews on every heartbeat, so a steady holder is never taken over', async () => {
+    const { clock, events, id } = await setup();
+    await events.claimDirector(id, 'tab-1');
+    for (let i = 0; i < 20; i += 1) {
+      clock.t += 10_000;
+      expect(await events.claimDirector(id, 'tab-1')).toEqual({ ok: true });
+      expect((await events.claimDirector(id, 'tab-2')).ok).toBe(false);
+    }
+  });
+
+  it('reports when the holder was last seen', async () => {
+    const { clock, events, id } = await setup();
+    const claimedAt = clock.t;
+    await events.claimDirector(id, 'tab-1');
+    clock.t += 12_000;
+    expect(await events.claimDirector(id, 'tab-2')).toEqual({
+      ok: false,
+      holderSeenAt: new Date(claimedAt).toISOString(),
+    });
+  });
+
+  it('lets another session take over once the holder is silent for more than the ttl', async () => {
+    const { clock, events, id } = await setup();
+    await events.claimDirector(id, 'tab-1');
+
+    clock.t += 30_000; // exactly the ttl: the holder is still live (expiry is strictly older)
+    expect((await events.claimDirector(id, 'tab-2')).ok).toBe(false);
+    clock.t += 1;
+    expect(await events.claimDirector(id, 'tab-2')).toEqual({ ok: true });
+
+    // The old holder wakes up and finds itself replaced.
+    expect((await events.claimDirector(id, 'tab-1')).ok).toBe(false);
+  });
+
+  it('honours a custom ttl', async () => {
+    const { clock, events, id } = await setup();
+    await events.claimDirector(id, 'tab-1');
+    clock.t += 10_000;
+    expect((await events.claimDirector(id, 'tab-2', 60)).ok).toBe(false);
+    expect((await events.claimDirector(id, 'tab-2', 5)).ok).toBe(true);
+  });
+
+  it('rejects a blank session and a ttl outside 1..3600 like the SQL does', async () => {
+    const { events, id } = await setup();
+    await expect(events.claimDirector(id, '  ')).rejects.toThrow('invalid_session');
+    await expect(events.claimDirector(id, 'tab-1', 0)).rejects.toThrow('invalid_ttl');
+    await expect(events.claimDirector(id, 'tab-1', 3601)).rejects.toThrow('invalid_ttl');
+  });
+
+  it('forgets the lease when the event is deleted', async () => {
+    const { events, id } = await setup();
+    await events.claimDirector(id, 'tab-1');
+    await events.deleteEvent(id);
+    await expect(events.claimDirector(id, 'tab-1')).rejects.toMatchObject({ code: 'forbidden' });
+  });
+});

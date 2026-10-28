@@ -8,6 +8,9 @@ const fakeChannel = (): StageHostChannel => ({
   bridge: { publishSnapshot: vi.fn(), onCommand: () => () => undefined },
   publishHub: vi.fn(),
   onHubCommand: () => () => undefined,
+  getSnapshot: () => null,
+  subscribe: () => () => undefined,
+  dispatchLocal: () => ({ applied: false, reason: 'no-handler' }),
   dispose: vi.fn(),
 });
 

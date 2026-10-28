@@ -7,11 +7,16 @@
  *    even when the network is down, P-001) and asynchronous for the room: open, connect, retry.
  *  - `teams` are re-published on every `connected` status and whenever they change (design.md §5).
  *  - `touchRoom` keeps the room alive every 5 minutes (FR-028).
+ *  - The director lease (design.md TD-002, `directorLease.ts`) gates the room: `start()` builds the local
+ *    bridges at once but opens the room and connects the transport only after this tab holds the lease.
+ *    A refused or lost lease tears the bridges and transport down (`lease: 'readonly'`); the stage
+ *    never connects as `stage` while another stage is the director.
  *  - `stop()` is idempotent and `start()` can run again (React StrictMode mounts effects twice).
  */
 import type { DataLayer, TeamSummary } from '@/data';
 import { logger } from '@/lib/logger';
 import type { AudienceMessage, ConnectionStatus, PresenceEntry, Role, RoomTransport } from '@/realtime';
+import { DirectorLease, getTabSessionId, type LeaseStatus } from './directorLease';
 import type { StageHostChannel } from './hostChannelAdapter';
 import { createPhoneBridge, type StagePhoneBridge } from './phoneBridge';
 
@@ -28,6 +33,8 @@ export interface RuntimeSnapshot {
   /** Every presence entry; phones are `role: 'phone'`, host views `role: 'host'`. */
   roster: PresenceEntry[];
   error: string | null;
+  /** `readonly`: another stage is the director (design.md TD-002); nothing is connected. */
+  lease: LeaseStatus;
   phones: StagePhoneBridge | null;
   channel: StageHostChannel | null;
 }
@@ -40,6 +47,11 @@ export interface StageRuntimeDeps {
   createHostChannel: (opts: { transport: RoomTransport }) => StageHostChannel;
   /** The teams as phones see them at the start; `setTeams` keeps them current. */
   teams: readonly TeamSummary[];
+  /** This tab's lease identity; defaults to the per-tab id in sessionStorage. */
+  sessionId?: string;
+  /** Lease renewal period (default 10 s) and lifetime (default 30 s, server side). */
+  heartbeatMs?: number;
+  leaseTtlSeconds?: number;
   touchIntervalMs?: number;
   retryMs?: number;
 }
@@ -50,6 +62,7 @@ const EMPTY: RuntimeSnapshot = {
   status: 'offline',
   roster: [],
   error: null,
+  lease: 'claiming',
   phones: null,
   channel: null,
 };
@@ -59,6 +72,7 @@ export class StageRuntime {
   private readonly listeners = new Set<() => void>();
   private generation = 0;
   private transport: RoomTransport | null = null;
+  private lease: DirectorLease | null = null;
   private cleanups: (() => void)[] = [];
   private touchTimer: ReturnType<typeof setInterval> | null = null;
   private retryTimer: ReturnType<typeof setTimeout> | null = null;
@@ -82,7 +96,7 @@ export class StageRuntime {
   readonly getSnapshot = (): RuntimeSnapshot => this.snap;
 
   start(): void {
-    if (this.transport !== null) return;
+    if (this.lease !== null) return;
     const generation = ++this.generation;
     const transport = this.deps.createTransport('stage');
     this.transport = transport;
@@ -107,12 +121,36 @@ export class StageRuntime {
         this.welcomeNewPhones(roster, phones);
       }),
     );
-    this.set({ ready: true, phones, channel, status: transport.status, error: null });
-    void this.connect(generation, transport);
+    this.set({ ready: true, phones, channel, status: transport.status, error: null, lease: 'claiming' });
+    const lease = new DirectorLease({
+      events: this.deps.data.events,
+      eventId: this.deps.eventId,
+      sessionId: this.deps.sessionId ?? getTabSessionId(),
+      ...(this.deps.heartbeatMs === undefined ? {} : { heartbeatMs: this.deps.heartbeatMs }),
+      ...(this.deps.leaseTtlSeconds === undefined ? {} : { ttlSeconds: this.deps.leaseTtlSeconds }),
+      onChange: (status) => {
+        this.onLease(generation, transport, status);
+      },
+    });
+    this.lease = lease;
+    lease.start();
   }
 
   stop(): void {
-    if (this.transport === null) return;
+    if (this.lease === null) return;
+    this.lease.stop();
+    this.lease = null;
+    this.teardown();
+    this.snap = EMPTY;
+    this.emit();
+  }
+
+  /** A save conflict proved another stage is the director: go read-only and give the lease back. */
+  demote(): void {
+    this.lease?.demote();
+  }
+
+  private teardown(): void {
     this.generation += 1;
     const transport = this.transport;
     this.transport = null;
@@ -124,11 +162,9 @@ export class StageRuntime {
     this.teamsSignature = null;
     this.audienceSignature = null;
     this.knownPhones = new Set();
-    transport.disconnect().catch((error: unknown) => {
+    transport?.disconnect().catch((error: unknown) => {
       logger.warn('[stage] disconnect failed', error);
     });
-    this.snap = EMPTY;
-    this.emit();
   }
 
   /** Stores the current teams and publishes them to the phones if they changed since the last publish. */
@@ -144,6 +180,18 @@ export class StageRuntime {
   }
 
   // --- internals -----------------------------------------------------------------------------
+
+  private onLease(generation: number, transport: RoomTransport, status: LeaseStatus): void {
+    if (generation !== this.generation) return;
+    if (status === 'director') {
+      this.set({ lease: 'director' });
+      void this.connect(generation, transport);
+    } else if (status === 'readonly') {
+      this.teardown();
+      this.snap = { ...EMPTY, lease: 'readonly' };
+      this.emit();
+    }
+  }
 
   private async connect(generation: number, transport: RoomTransport): Promise<void> {
     try {

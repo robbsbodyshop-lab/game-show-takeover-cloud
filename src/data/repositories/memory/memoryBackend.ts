@@ -4,7 +4,7 @@ import type { AuthSession, AuthUser, EventRecord, EventStateRecord, HostSettings
 
 /**
  * Shared in-memory "database" for demo mode and tests. It mirrors the rules of 0001_init.sql
- * (ownership, rev compare-and-set, room codes, 12 h expiry, 5 failures / 10 min join limit) so a
+ * (ownership, rev compare-and-set, director lease, room codes, 12 h expiry, 5 failures / 10 min join limit) so a
  * contract test run against it means the same thing as one run against Supabase.
  * State lives in one JS context: another browser tab gets its own, empty backend.
  */
@@ -35,6 +35,13 @@ export interface MemoryMember {
   nickname: string | null;
 }
 
+/** The stage director lease of one event (events.director_session / director_seen_at). */
+export interface MemoryDirector {
+  session: string;
+  /** Milliseconds since the epoch, from the backend clock. */
+  seenAt: number;
+}
+
 export interface MemoryUser extends AuthUser {
   password: string | null;
 }
@@ -48,6 +55,7 @@ export interface MemoryBackend {
   listeners: Set<(session: AuthSession | null) => void>;
   events: Map<string, EventRecord>;
   states: Map<string, EventStateRecord>;
+  directors: Map<string, MemoryDirector>;
   settings: Map<string, HostSettingsRecord>;
   rooms: Map<string, MemoryRoom>;
   members: Map<string, MemoryMember>;
@@ -64,6 +72,7 @@ export function createMemoryBackend(options: MemoryBackendOptions = {}): MemoryB
     listeners: new Set(),
     events: new Map(),
     states: new Map(),
+    directors: new Map(),
     settings: new Map(),
     rooms: new Map(),
     members: new Map(),

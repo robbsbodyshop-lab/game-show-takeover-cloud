@@ -81,7 +81,11 @@ export {
 export { createSupabaseClient, getConfiguredClient } from './supabaseClient';
 export { ROOM_CODE_ALPHABET, generateRoomCode, isValidRoomCode, normalizeRoomCode } from './roomCode';
 export type { AuthService } from './repositories/AuthService';
-export type { EventRepo } from './repositories/EventRepo';
+export {
+  DEFAULT_DIRECTOR_TTL_SECONDS,
+  type ClaimDirectorResult,
+  type EventRepo,
+} from './repositories/EventRepo';
 export type { RoomRepo } from './repositories/RoomRepo';
 export type { SettingsRepo } from './repositories/SettingsRepo';
 export type * from './types';

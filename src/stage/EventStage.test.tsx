@@ -942,6 +942,48 @@ describe('EventStage', () => {
       expect(screen.getByRole('button', { name: 'Reload this event' })).toBeInTheDocument();
     }, 10_000);
 
+    it('is read-only within seconds when another stage already holds the lease, without a save', async () => {
+      const r = await rig(hubState());
+      await r.services.data.events.claimDirector(r.event.id, 'other-stage-tab');
+      r.mount();
+      const u = userEvent.setup();
+      await resume(u);
+
+      expect(await screen.findByText(/Another stage is running this event/)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Reload this event' })).toBeInTheDocument();
+
+      // The room is not opened and nothing connects as the stage.
+      expect(screen.getByLabelText('Room code')).toHaveTextContent('----');
+      expect(r.services.transports.every((t) => t.status === 'offline')).toBe(true);
+
+      // Changes are ignored and never written over the director's copy.
+      const row = within(screen.getByTestId('scoreboard')).getByRole('listitem', { name: 'Team 1' });
+      await u.click(within(row).getByRole('button', { name: 'Team 1 score plus 10' }));
+      expect(scoreOf(row)).toBe('0');
+      await new Promise((resolve) => setTimeout(resolve, 800)); // past the 500 ms save debounce
+      expect((await r.services.data.events.loadState(r.event.id))?.rev).toBe(1);
+    });
+
+    it('claims the lease again on "Reload this event" once the other stage has left', async () => {
+      const r = await rig(hubState());
+      await r.services.data.events.claimDirector(r.event.id, 'other-stage-tab');
+      r.mount();
+      const u = userEvent.setup();
+      await resume(u);
+      await u.click(await screen.findByRole('button', { name: 'Reload this event' })); // still held: read-only again
+      await resume(u);
+      await screen.findByText(/Another stage is running this event/);
+
+      await r.services.data.events.releaseDirector(r.event.id, 'other-stage-tab');
+      await u.click(screen.getByRole('button', { name: 'Reload this event' }));
+      await resume(u);
+      await waitForRoom();
+      expect(screen.queryByText(/Another stage is running this event/)).toBeNull();
+      await waitFor(() => {
+        expect(r.services.transports.some((t) => t.status === 'connected')).toBe(true);
+      });
+    });
+
     it('reloads the event from the cloud copy when asked', async () => {
       const r = await rig(hubState());
       r.mount();

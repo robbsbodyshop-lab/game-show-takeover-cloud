@@ -1,4 +1,4 @@
-import { useEffect, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import type { DataLayer, TeamSummary } from '@/data';
 import type { Role, RoomTransport } from '@/realtime';
 import { createStageHostChannel } from './hostChannelAdapter';
@@ -11,13 +11,20 @@ export interface UseStageRuntimeOptions {
   createTransport: (role: Role) => RoomTransport;
   teams: TeamSummary[];
   audience: AudiencePayload;
-  /** False while this stage is read-only (another stage holds the event): no room, no transport. */
-  enabled: boolean;
 }
 
-/** Owns one `StageRuntime` for the mounted event stage. */
-export function useStageRuntime(options: UseStageRuntimeOptions): RuntimeSnapshot {
-  const { eventId, userId, data, createTransport, teams, audience, enabled } = options;
+export interface StageRuntimeHandle {
+  snapshot: RuntimeSnapshot;
+  /** Another stage proved to be the director (save conflict): go read-only and release the lease. */
+  demote: () => void;
+}
+
+/**
+ * Owns one `StageRuntime` for the mounted event stage. The runtime claims the director lease first and
+ * only then opens the room (`snapshot.lease` is `readonly` when another stage is running this event).
+ */
+export function useStageRuntime(options: UseStageRuntimeOptions): StageRuntimeHandle {
+  const { eventId, userId, data, createTransport, teams, audience } = options;
   const [runtime] = useState(
     () =>
       new StageRuntime({
@@ -35,16 +42,19 @@ export function useStageRuntime(options: UseStageRuntimeOptions): RuntimeSnapsho
   }, [runtime, teams]);
 
   useEffect(() => {
-    if (!enabled) return;
     runtime.start();
     return () => {
       runtime.stop();
     };
-  }, [runtime, enabled]);
+  }, [runtime]);
 
   useEffect(() => {
     runtime.publishAudience(audience);
   }, [runtime, audience]);
 
-  return useSyncExternalStore(runtime.subscribe, runtime.getSnapshot);
+  const snapshot = useSyncExternalStore(runtime.subscribe, runtime.getSnapshot);
+  const demote = useCallback(() => {
+    runtime.demote();
+  }, [runtime]);
+  return { snapshot, demote };
 }

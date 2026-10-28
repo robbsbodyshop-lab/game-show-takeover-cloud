@@ -155,6 +155,63 @@ export function describeDataLayerContract(label: string, createLayer: () => Data
       expect((await layer.events.loadState(id))?.state).toEqual({ a: [1, 2, { b: null }], text: 'é' });
     });
 
+    it('lets one stage session hold the director lease and refuses a second', async () => {
+      const layer = createLayer();
+      await signUpAs(layer, 'lease@example.com');
+      const { id } = await layer.events.createEvent('Lease');
+
+      expect(await layer.events.claimDirector(id, 'tab-1')).toEqual({ ok: true });
+      // The same session renews (the heartbeat) any number of times.
+      expect(await layer.events.claimDirector(id, 'tab-1')).toEqual({ ok: true });
+      expect(await layer.events.claimDirector(id, 'tab-1', 30)).toEqual({ ok: true });
+
+      const refused = await layer.events.claimDirector(id, 'tab-2');
+      expect(refused.ok).toBe(false);
+      if (!refused.ok) expect(typeof refused.holderSeenAt).toBe('string');
+      // A refused claim does not disturb the holder.
+      expect(await layer.events.claimDirector(id, 'tab-1')).toEqual({ ok: true });
+    });
+
+    it('releases the lease only for the session that holds it', async () => {
+      const layer = createLayer();
+      await signUpAs(layer, 'release@example.com');
+      const { id } = await layer.events.createEvent('Release');
+      await layer.events.claimDirector(id, 'tab-1');
+
+      await layer.events.releaseDirector(id, 'tab-2'); // not the holder: nothing happens
+      expect((await layer.events.claimDirector(id, 'tab-2')).ok).toBe(false);
+
+      await layer.events.releaseDirector(id, 'tab-1');
+      expect(await layer.events.claimDirector(id, 'tab-2')).toEqual({ ok: true });
+      expect((await layer.events.claimDirector(id, 'tab-1')).ok).toBe(false);
+
+      await layer.events.releaseDirector(id, 'tab-1'); // a stale release must not evict tab-2
+      expect((await layer.events.claimDirector(id, 'tab-1')).ok).toBe(false);
+      await layer.events.releaseDirector(id, 'tab-3'); // never held: no-op
+    });
+
+    it("refuses the director lease of another host's event", async () => {
+      const layer = createLayer();
+      await signUpAs(layer, 'lease-owner@example.com');
+      const { id } = await layer.events.createEvent('Mine');
+      await layer.events.claimDirector(id, 'tab-1');
+      await signUpAs(layer, 'lease-other@example.com');
+
+      expect(((await rejectionOf(layer.events.claimDirector(id, 'intruder'))) as DataError).code).toBe(
+        'forbidden',
+      );
+      await layer.events.releaseDirector(id, 'tab-1'); // silently ignored for a non-owner
+
+      await layer.auth.signInWithPassword('lease-owner@example.com', 'correct horse');
+      expect((await layer.events.claimDirector(id, 'tab-2')).ok).toBe(false); // tab-1 still holds it
+    });
+
+    it('rejects the director lease without a session', async () => {
+      const layer = createLayer();
+      const error = await rejectionOf(layer.events.claimDirector('e1', 'tab-1'));
+      expect((error as DataError).code).toBe('not_authenticated');
+    });
+
     it('finishes and deletes events', async () => {
       const layer = createLayer();
       await signUpAs(layer, 'end@example.com');

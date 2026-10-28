@@ -123,6 +123,54 @@ describe('SupabaseEventRepo', () => {
     ]);
   });
 
+  it('claimDirector calls the RPC with the SQL parameter names and parses both outcomes', async () => {
+    const granted = createFakeSupabase(() => ok({ ok: true }));
+    expect(await createSupabaseEventRepo(granted.client).claimDirector('e1', 'tab-1')).toEqual({ ok: true });
+    expect(granted.calls).toEqual([
+      { target: 'rpc:claim_director', steps: [], rpcArgs: { p_event_id: 'e1', p_session: 'tab-1' } },
+    ]);
+
+    const withTtl = createFakeSupabase(() => ok({ ok: true }));
+    await createSupabaseEventRepo(withTtl.client).claimDirector('e1', 'tab-1', 45);
+    expect(withTtl.calls[0]?.rpcArgs).toEqual({ p_event_id: 'e1', p_session: 'tab-1', p_ttl_seconds: 45 });
+
+    const busy = createFakeSupabase(() => ok({ ok: false, holder_seen_at: '2026-10-28T12:00:00.5+00:00' }));
+    expect(await createSupabaseEventRepo(busy.client).claimDirector('e1', 'tab-2')).toEqual({
+      ok: false,
+      holderSeenAt: '2026-10-28T12:00:00.5+00:00',
+    });
+    const noStamp = createFakeSupabase(() => ok({ ok: false, holder_seen_at: null }));
+    expect(await createSupabaseEventRepo(noStamp.client).claimDirector('e1', 'tab-2')).toEqual({
+      ok: false,
+      holderSeenAt: null,
+    });
+  });
+
+  it('claimDirector maps a foreign event to forbidden and rejects odd responses', async () => {
+    const foreign = createFakeSupabase(() => fail('event_not_found', '42501'));
+    await expect(createSupabaseEventRepo(foreign.client).claimDirector('e1', 'tab-1')).rejects.toMatchObject({
+      code: 'forbidden',
+    });
+    const odd = createFakeSupabase(() => ok('nonsense'));
+    await expect(createSupabaseEventRepo(odd.client).claimDirector('e1', 'tab-1')).rejects.toMatchObject({
+      code: 'invalid_response',
+    });
+  });
+
+  it('releaseDirector calls release_director with the event and the session', async () => {
+    const fake = createFakeSupabase(() => ok(null));
+    await createSupabaseEventRepo(fake.client).releaseDirector('e1', 'tab-1');
+    expect(fake.calls).toEqual([
+      { target: 'rpc:release_director', steps: [], rpcArgs: { p_event_id: 'e1', p_session: 'tab-1' } },
+    ]);
+    const denied = createFakeSupabase(() => fail('permission denied', '42501'));
+    await expect(createSupabaseEventRepo(denied.client).releaseDirector('e1', 'tab-1')).rejects.toMatchObject(
+      {
+        code: 'forbidden',
+      },
+    );
+  });
+
   it('maps database errors to DataError codes', async () => {
     const denied = createFakeSupabase(() => fail('permission denied', '42501'));
     const error: unknown = await createSupabaseEventRepo(denied.client)

@@ -12,11 +12,16 @@ export interface UseSessionPersistenceOptions {
   saveOnMount: boolean;
   /** Another stage saved first: this one is no longer the director (design.md TD-002). */
   onConflict: () => void;
+  /**
+   * False until this stage holds the director lease and again once it is read-only: nothing is saved
+   * (not even `saveOnMount`) while it is false, and the newest session is saved when it turns true.
+   */
+  enabled: boolean;
 }
 
 /** Debounced, revision-guarded saving of every session change (FR-004, design.md §7). */
 export function useSessionPersistence(options: UseSessionPersistenceOptions): { saveFailing: boolean } {
-  const { data, eventId, session, initialRev, saveOnMount, onConflict } = options;
+  const { data, eventId, session, initialRev, saveOnMount, onConflict, enabled } = options;
   const [saveFailing, setSaveFailing] = useState(false);
   const persistence = useRef<Persistence | null>(null);
   const lastSaved = useRef<EventSession | null>(saveOnMount ? null : session);
@@ -47,10 +52,10 @@ export function useSessionPersistence(options: UseSessionPersistenceOptions): { 
   }, [data, eventId, initialRev]);
 
   useEffect(() => {
-    if (lastSaved.current === session) return;
+    if (!enabled || lastSaved.current === session) return;
     lastSaved.current = session;
     persistence.current?.save(session);
-  }, [session]);
+  }, [session, enabled]);
 
   return { saveFailing };
 }
