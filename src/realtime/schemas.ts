@@ -6,7 +6,8 @@
  * its body is well formed. Unknown events, invalid bodies and oversized payloads make `parseMessage`
  * return `null`; it never throws (conventions: unknown messages are dropped and logged).
  */
-import { z } from 'zod';
+// zod/mini: the tree-shakable build. The phone bundles this file, and full zod would cost ~25 KB gzipped (NFR-004).
+import * as z from 'zod/mini';
 import { logger } from '../lib/logger';
 import type { TopicKind } from './roomCodes';
 
@@ -27,13 +28,15 @@ const envelope = <F extends Role>(from: F) =>
   ({
     v: z.literal(PROTOCOL_VERSION),
     from: z.literal(from),
-    sent: z.number().int().nonnegative(),
+    sent: z.int().check(z.nonnegative()),
   }) as const;
 
 /** Team numbers are 1..MAX_TEAMS everywhere (rooms.room_members.team CHECK 1..8). */
-const teamId = z.int().min(1).max(MAX_TEAMS);
-const shortText = (max: number) => z.string().max(max);
-const idText = z.string().min(1).max(64);
+const teamId = z.int().check(z.minimum(1), z.maximum(MAX_TEAMS));
+const shortText = (max: number) => z.string().check(z.maxLength(max));
+const boundedText = (min: number, max: number) => z.string().check(z.minLength(min), z.maxLength(max));
+const idText = boundedText(1, 64);
+const nonNegativeInt = z.int().check(z.nonnegative());
 
 export const PHONE_ACTIONS = ['buy', 'spin', 'solve', 'solve-start', 'solve-cancel'] as const;
 export type PhoneAction = (typeof PHONE_ACTIONS)[number];
@@ -44,19 +47,19 @@ export type PhoneAction = (typeof PHONE_ACTIONS)[number];
 export const teamsMessageSchema = z.object({
   ...envelope('stage'),
   teams: z
-    .array(z.object({ id: teamId, name: z.string().min(1).max(40), color: z.string().min(1).max(32) }))
-    .max(MAX_TEAMS),
+    .array(z.object({ id: teamId, name: boundedText(1, 40), color: boundedText(1, 32) }))
+    .check(z.maxLength(MAX_TEAMS)),
 });
 
 export const controlsMessageSchema = z.object({
   ...envelope('stage'),
-  activeTeam: teamId.nullable(),
+  activeTeam: z.nullable(teamId),
   canBuy: z.boolean(),
   canSpin: z.boolean(),
   canSolve: z.boolean(),
   turnName: shortText(80),
-  buzzTeams: z.array(teamId).max(MAX_TEAMS).optional(),
-  offLabel: shortText(80).optional(),
+  buzzTeams: z.optional(z.array(teamId).check(z.maxLength(MAX_TEAMS))),
+  offLabel: z.optional(shortText(80)),
 });
 
 export const ackMessageSchema = z.object({
@@ -70,8 +73,8 @@ export const audienceMessageSchema = z.object({
   ...envelope('stage'),
   phase: shortText(40),
   paused: z.boolean(),
-  scores: z.array(z.object({ team: teamId, score: z.int() })).max(MAX_TEAMS),
-  clock: z.object({ endsAt: z.number().int().nonnegative(), label: shortText(40) }).optional(),
+  scores: z.array(z.object({ team: teamId, score: z.int() })).check(z.maxLength(MAX_TEAMS)),
+  clock: z.optional(z.object({ endsAt: nonNegativeInt, label: shortText(40) })),
 });
 
 // ---------------------------------------------------------------------------------------------
@@ -81,7 +84,7 @@ export const pressMessageSchema = z.object({
   ...envelope('phone'),
   pressId: idText,
   team: teamId,
-  at: z.number().int().nonnegative(),
+  at: nonNegativeInt,
 });
 
 export const actionMessageSchema = z.object({
@@ -89,7 +92,7 @@ export const actionMessageSchema = z.object({
   pressId: idText,
   team: teamId,
   action: z.enum(PHONE_ACTIONS),
-  answer: shortText(200).optional(),
+  answer: z.optional(shortText(200)),
 });
 
 export const feudAnswerMessageSchema = z.object({
@@ -110,8 +113,8 @@ export const helloMessageSchema = z.object({
 export const snapshotMessageSchema = z.object({
   ...envelope('stage'),
   /** 'hub' | 'feud' | 'wheel' | 'puzzle' | ... (open set, owned by the game modules). */
-  kind: z.string().min(1).max(32),
-  gameRev: z.int().nonnegative(),
+  kind: boundedText(1, 32),
+  gameRev: nonNegativeInt,
   inputLocked: z.boolean(),
   /** Host-view snapshot of the running engine; its shape belongs to each game, not the transport. */
   data: z.unknown(),
@@ -120,24 +123,24 @@ export const snapshotMessageSchema = z.object({
 export const commandMessageSchema = z.object({
   ...envelope('host'),
   cmdId: idText,
-  target: z.string().min(1).max(32),
-  gameRev: z.int().nonnegative(),
-  teamId: teamId.optional(),
-  name: z.string().min(1).max(64),
-  args: z.record(z.string(), z.unknown()).optional(),
+  target: boundedText(1, 32),
+  gameRev: nonNegativeInt,
+  teamId: z.optional(teamId),
+  name: boundedText(1, 64),
+  args: z.optional(z.record(z.string(), z.unknown())),
 });
 
 export const resultMessageSchema = z.object({
   ...envelope('stage'),
   cmdId: idText,
   applied: z.boolean(),
-  reason: shortText(200).optional(),
+  reason: z.optional(shortText(200)),
 });
 
 /** Presence payload tracked on the phones topic (phones) and the host topic (host views). */
 export const presencePayloadSchema = z.object({
   /** 1..8 for a phone; 0 for a host view, which belongs to no team. */
-  team: z.int().min(0).max(MAX_TEAMS),
+  team: z.int().check(z.minimum(0), z.maximum(MAX_TEAMS)),
   nickname: shortText(MAX_NICKNAME_LENGTH),
   ua: shortText(200),
 });
@@ -255,7 +258,7 @@ export function parseMessage<K extends TopicKind>(
   raw: unknown,
 ): ParsedMessage<K> | null {
   try {
-    const table: Readonly<Record<string, z.ZodType>> = SCHEMAS[topic];
+    const table: Readonly<Record<string, z.ZodMiniType>> = SCHEMAS[topic];
     if (!Object.hasOwn(table, event)) {
       logger.warn(`[realtime] dropped unknown event "${event.slice(0, 40)}" on topic ${topic}`);
       return null;

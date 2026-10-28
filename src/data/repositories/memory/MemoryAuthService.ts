@@ -1,6 +1,6 @@
 import type { AuthResult, AuthSession, AuthUser } from '../../types';
 import type { AuthService } from '../AuthService';
-import type { MemoryBackend, MemoryUser } from './memoryBackend';
+import { withPersistence, type MemoryBackend, type MemoryUser } from './memoryBackend';
 
 const SESSION_SECONDS = 60 * 60;
 
@@ -37,7 +37,7 @@ export function createMemoryAuthService(backend: MemoryBackend): AuthService {
     return user;
   };
 
-  return {
+  return withPersistence<AuthService>(backend, {
     signUp(email, password) {
       if (findByEmail(email))
         return Promise.resolve<AuthResult>({ ok: false, message: 'User already registered' });
@@ -89,5 +89,5 @@ export function createMemoryAuthService(backend: MemoryBackend): AuthService {
     currentUser() {
       return Promise.resolve(backend.session?.user ?? null);
     },
-  };
+  });
 }

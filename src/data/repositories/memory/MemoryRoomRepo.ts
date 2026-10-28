@@ -12,11 +12,12 @@ import {
   newRoomCode,
   purgeExpiredRooms,
   requireUserId,
+  withPersistence,
   type MemoryBackend,
 } from './memoryBackend';
 
 export function createMemoryRoomRepo(backend: MemoryBackend): RoomRepo {
-  return {
+  return withPersistence<RoomRepo>(backend, {
     openRoom(eventId) {
       return attempt(() => {
         const userId = requireUserId(backend);
@@ -123,5 +124,5 @@ export function createMemoryRoomRepo(backend: MemoryBackend): RoomRepo {
         room.lastSeenAt = backend.now();
       });
     },
-  };
+  });
 }

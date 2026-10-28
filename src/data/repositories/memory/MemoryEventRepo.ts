@@ -1,7 +1,7 @@
 import { DataError } from '../../errors';
 import type { EventRecord, EventStateRecord, SaveStateResult } from '../../types';
 import { DEFAULT_DIRECTOR_TTL_SECONDS, type ClaimDirectorResult, type EventRepo } from '../EventRepo';
-import { attempt, isoNow, requireUserId, toJson, type MemoryBackend } from './memoryBackend';
+import { attempt, isoNow, requireUserId, toJson, type MemoryBackend, withPersistence } from './memoryBackend';
 
 function clone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
@@ -13,7 +13,7 @@ export function createMemoryEventRepo(backend: MemoryBackend): EventRepo {
     return event?.ownerId === userId ? event : null;
   };
 
-  return {
+  return withPersistence<EventRepo>(backend, {
     listEvents() {
       return attempt(() => {
         const userId = requireUserId(backend);
@@ -132,5 +132,5 @@ export function createMemoryEventRepo(backend: MemoryBackend): EventRepo {
         }
       });
     },
-  };
+  });
 }

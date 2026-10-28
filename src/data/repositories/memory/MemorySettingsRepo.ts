@@ -1,14 +1,14 @@
 import type { HostSettingsRecord } from '../../types';
 import { emptySettings } from '../../schemas';
 import type { SettingsRepo } from '../SettingsRepo';
-import { attempt, requireUserId, toJson, type MemoryBackend } from './memoryBackend';
+import { attempt, requireUserId, toJson, type MemoryBackend, withPersistence } from './memoryBackend';
 
 function copy(record: HostSettingsRecord): HostSettingsRecord {
   return toJson(record) as HostSettingsRecord;
 }
 
 export function createMemorySettingsRepo(backend: MemoryBackend): SettingsRepo {
-  return {
+  return withPersistence<SettingsRepo>(backend, {
     load() {
       return attempt(() => copy(backend.settings.get(requireUserId(backend)) ?? emptySettings()));
     },
@@ -26,5 +26,5 @@ export function createMemorySettingsRepo(backend: MemoryBackend): SettingsRepo {
         return copy(stored);
       });
     },
-  };
+  });
 }

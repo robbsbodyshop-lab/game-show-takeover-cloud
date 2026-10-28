@@ -36,11 +36,9 @@ test('reopening an event mid face-off offers Resume and restores the same questi
   await expect(stage.getByText('BUZZERS OPEN')).toBeVisible();
 });
 
-// KNOWN GAP: demo mode keeps the events list in memory only (src/data/repositories/memory), so after
-// a full page reload the event is no longer listed and cannot be reopened; the per-event localStorage
-// cache (`gst:cache:<id>`) is unreachable without it. Remove `fixme` when demo data survives a reload
-// (or when this runs against a Supabase-backed build).
-test.fixme('reloading the stage page during a face-off offers Resume with the same question (FR-005)', async ({
+// Demo data persists to localStorage (`gst:demo:db`, src/data/repositories/memory), so a full page
+// reload keeps the signed-in user, the events list and each event's saved state.
+test('reloading the stage page during a face-off offers Resume with the same question (FR-005)', async ({
   context,
 }) => {
   const stage = await openStage(context);

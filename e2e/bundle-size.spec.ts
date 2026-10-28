@@ -40,11 +40,12 @@ async function gzippedScripts(page: Page, url: string, ready: () => Promise<void
 const describe = (loaded: Loaded): string =>
   loaded.files.map((file) => `${file.kb.toFixed(1)} KB ${file.url}`).join('\n');
 
-// KNOWN BUDGET MISS (NFR-004): measured on the demo build, `/play` pulls about 265 KB gzipped
-// (index ~100, react ~66, supabase ~54, content ~39 KB, PhoneApp ~7 KB). The phone route should not
-// need the content bundle (survey and puzzle data) or, in demo mode, the Supabase client, and the
-// shared entry chunk is far larger than the phone needs. Remove `fixme` once the phone entry is split.
-test.fixme('the phone route loads under 150 KB of gzipped JavaScript (NFR-004)', async ({ browser }) => {
+// `/play` is its own Vite entry (play.html -> src/app/playMain.tsx): React, the phone UI, the room
+// transport and the room RPCs, with no content, engines, stage or audio. Demo mode loads no Supabase
+// client; supabase mode (the stricter case) is measured at about 147 KB with `npm run build` and the
+// VITE_SUPABASE_* variables set. The request path is mapped by the `gst-page-routes` plugin in
+// vite.config.ts (vercel.json does the same in production).
+test('the phone route loads under 150 KB of gzipped JavaScript (NFR-004)', async ({ browser }) => {
   const page = await (await browser.newContext()).newPage();
   const loaded = await gzippedScripts(page, '/play?demo=1', async () => {
     await expect(page.getByRole('heading', { name: 'Join the game' })).toBeVisible();
