@@ -33,3 +33,7 @@ Collected during implementation. Each has the interim choice the code uses now; 
 - Q-054 Ringing the bell mid-round takes effect at the next choice point and also skips the Triple Toss-Up when rung before it. OK?
 - Q-055 Buying an already-called vowel still costs $250 and passes the turn. OK?
 - Q-056 Bonus Wheel cash envelope mix and wheel layouts are reconstructions (documented in bonus.ts / wheels.ts). Any values you want changed?
+
+## Follow-ups I will do unless you object (engineering, not product)
+- F-001 Add SPEED_RESET and SPEED_ADJUST(+/-5 s) actions to the event engine so the Speed Round host controls stop routing through the hub.
+- F-002 Put the Speed Round challenge text into the session so it survives reload and reaches the host view.
