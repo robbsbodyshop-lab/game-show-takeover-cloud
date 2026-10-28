@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { routeFromPath } from './routes';
+import { stageRegistry } from './stageRegistry';
 
 // Each entry point is its own chunk so a phone never downloads the stage (NFR-004).
 const StageApp = lazy(() => import('@/stage/StageApp').then((m) => ({ default: m.StageApp })));
@@ -19,9 +20,9 @@ export const App = () => {
       case 'play':
         return <PhoneApp />;
       case 'design':
-        return import.meta.env.DEV ? <DesignGallery /> : <StageApp />;
+        return import.meta.env.DEV ? <DesignGallery /> : <StageApp {...stageRegistry} />;
       default:
-        return <StageApp />;
+        return <StageApp {...stageRegistry} />;
     }
   })();
   return <Suspense fallback={null}>{screen}</Suspense>;
