@@ -1,0 +1,31 @@
+# Minimal Supabase CLI config for local development (`supabase start`, `supabase test db`).
+# The hosted project is configured in the dashboard; keep these values in sync with
+# design.md section 12 (anonymous sign-ins on, email confirmations on).
+project_id = "game-show-takeover"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+
+[db]
+port = 54322
+major_version = 17
+
+[realtime]
+enabled = true
+
+[auth]
+enabled = true
+site_url = "http://127.0.0.1:5173"
+additional_redirect_urls = ["http://127.0.0.1:5173"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+enable_signup = true
+# Phones join with an anonymous session (design.md section 4, FR-029).
+enable_anonymous_sign_ins = true
+
+[auth.email]
+enable_signup = true
+enable_confirmations = true
+double_confirm_changes = true
