@@ -21,6 +21,8 @@ import type { StageHostChannel } from './hostChannelAdapter';
 import { createPhoneBridge, type StagePhoneBridge } from './phoneBridge';
 
 export const TOUCH_ROOM_INTERVAL_MS = 5 * 60 * 1000;
+/** Phones treat 8 s of silence as a lost stage; the audience message doubles as the heartbeat. */
+export const AUDIENCE_HEARTBEAT_MS = 3000;
 export const OPEN_ROOM_RETRY_MS = 10_000;
 
 export type AudiencePayload = Omit<AudienceMessage, 'v' | 'from' | 'sent'>;
@@ -53,6 +55,8 @@ export interface StageRuntimeDeps {
   heartbeatMs?: number;
   leaseTtlSeconds?: number;
   touchIntervalMs?: number;
+  /** Audience heartbeat period (tests shorten it). */
+  audienceHeartbeatMs?: number;
   retryMs?: number;
 }
 
@@ -75,6 +79,7 @@ export class StageRuntime {
   private lease: DirectorLease | null = null;
   private cleanups: (() => void)[] = [];
   private touchTimer: ReturnType<typeof setInterval> | null = null;
+  private audienceTimer: ReturnType<typeof setInterval> | null = null;
   private retryTimer: ReturnType<typeof setTimeout> | null = null;
   private teamsSignature: string | null = null;
   private teams: readonly TeamSummary[];
@@ -155,8 +160,10 @@ export class StageRuntime {
     const transport = this.transport;
     this.transport = null;
     if (this.touchTimer !== null) clearInterval(this.touchTimer);
+    if (this.audienceTimer !== null) clearInterval(this.audienceTimer);
     if (this.retryTimer !== null) clearTimeout(this.retryTimer);
     this.touchTimer = null;
+    this.audienceTimer = null;
     this.retryTimer = null;
     for (const cleanup of this.cleanups.splice(0)) cleanup();
     this.teamsSignature = null;
@@ -204,6 +211,10 @@ export class StageRuntime {
         });
       }, this.deps.touchIntervalMs ?? TOUCH_ROOM_INTERVAL_MS);
       await transport.connect({ code, role: 'stage', key: this.deps.userId });
+      if (generation !== this.generation) return;
+      this.audienceTimer ??= setInterval(() => {
+        this.sendAudience(true);
+      }, this.deps.audienceHeartbeatMs ?? AUDIENCE_HEARTBEAT_MS);
     } catch (error) {
       if (generation !== this.generation) return;
       const message = error instanceof Error ? error.message : 'Phones are unavailable';

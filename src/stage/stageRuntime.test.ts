@@ -200,4 +200,31 @@ describe('StageRuntime', () => {
     expect(services.hub.clientCount(rt.getSnapshot().code ?? '')).toBe(1);
     rt.stop();
   });
+
+  it('re-sends the audience message on a timer so phones can tell the stage is alive', async () => {
+    const rt = new StageRuntime({
+      eventId,
+      userId,
+      data: services.data,
+      createTransport: services.createTransport,
+      createHostChannel: fakeChannel,
+      teams: TEAMS,
+      audienceHeartbeatMs: 20,
+    });
+    rt.start();
+    await settle(rt);
+    const code = rt.getSnapshot().code ?? '';
+    const phone = new MemoryRoomTransport({ hub: services.hub });
+    let audienceCount = 0;
+    phone.subscribe('stage', (m) => {
+      if (m.event === 'audience') audienceCount += 1;
+    });
+    await phone.connect({ code, role: 'phone', team: 1 });
+    rt.publishAudience({ phase: 'hub', paused: false, scores: [] });
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    await flushPromises();
+    expect(audienceCount).toBeGreaterThanOrEqual(3);
+    rt.stop();
+    await phone.disconnect();
+  });
 });
