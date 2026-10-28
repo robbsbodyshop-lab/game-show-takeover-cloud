@@ -17,6 +17,7 @@ import {
   type CommandResult,
   type HostBridge,
   type HostCommand,
+  type HostCommandInput,
   type HostSnapshot,
   type SnapshotKind,
 } from './hostProtocol';
@@ -28,6 +29,20 @@ export interface StageHostChannel {
   publishHub(snapshot: HostSnapshot): void;
   /** Handles `target: 'hub'` commands (pause, resume, buzz, show-mode, quit-game, ...). */
   onHubCommand(handler: (cmd: HostCommand) => CommandResult): () => void;
+  /**
+   * The latest snapshot published for `kind`. Without a kind: the latest non-hub snapshot, or the hub
+   * one when no game has published. The same object is returned until a newer one is published, so it
+   * is safe to hand to `useSyncExternalStore`.
+   */
+  getSnapshot(kind?: SnapshotKind): HostSnapshot | null;
+  /** Calls `listener` after any snapshot is published or the active kind changes; returns unsubscribe. */
+  subscribe(listener: () => void): () => void;
+  /**
+   * The F2 drawer's way in: the same de-duplication, staleness and handler routing as a received
+   * command, run synchronously in this process. Nothing is sent back on any path. A missing `gameRev`
+   * is stamped from the latest snapshot for the target, a missing `cmdId` is generated.
+   */
+  dispatchLocal: (cmd: HostCommandInput | HostCommand) => CommandResult;
   dispose(): void;
 }
 
@@ -55,6 +70,12 @@ function stableStringify(value: unknown): string {
   return JSON.stringify(value);
 }
 
+let localCounter = 0;
+const newLocalCmdId = (): string => {
+  localCounter += 1;
+  return `local-${String(Date.now())}-${String(localCounter)}`;
+};
+
 const signatureOf = (c: HostCommand): string =>
   stableStringify([c.target, c.name, c.args ?? null, c.teamId ?? null]);
 
@@ -69,7 +90,20 @@ export function createStageHostChannel(opts: {
   const handlers = new Map<SnapshotKind, Set<CommandHandler>>();
   const seenCmdIds = new Map<string, { at: number; result: CommandResult }>();
   const recentSignatures = new Map<string, number>();
+  const listeners = new Set<() => void>();
+  /** Kind of the most recent non-hub snapshot; what `getSnapshot()` without a kind prefers. */
+  let activeKind: SnapshotKind | null = null;
   let disposed = false;
+
+  const notify = (): void => {
+    for (const listener of [...listeners]) {
+      try {
+        listener();
+      } catch (error) {
+        logger.error('[host] snapshot listener threw', error);
+      }
+    }
+  };
 
   // --- outbound -------------------------------------------------------------------------------
 
@@ -133,8 +167,16 @@ export function createStageHostChannel(opts: {
   const publishSnapshot = (snapshot: HostSnapshot): void => {
     if (disposed) return;
     latest.set(snapshot.kind, snapshot);
+    if (snapshot.kind !== 'hub') activeKind = snapshot.kind;
     sendRealtime(snapshot);
     sendBroadcast(snapshot);
+    notify();
+  };
+
+  const getSnapshot = (kind?: SnapshotKind): HostSnapshot | null => {
+    if (kind !== undefined) return latest.get(kind) ?? null;
+    const active = activeKind === null ? undefined : latest.get(activeKind);
+    return active ?? latest.get('hub') ?? null;
   };
 
   // --- inbound commands -----------------------------------------------------------------------
@@ -191,19 +233,31 @@ export function createStageHostChannel(opts: {
     return route(command);
   };
 
-  const handleCommand = (command: HostCommand, path: Path): void => {
-    if (disposed) return;
+  /** De-duplicates by cmdId, then decides. Shared by the network paths and `dispatchLocal`. */
+  const processCommand = (command: HostCommand): CommandResult => {
     const now = Date.now();
     prune(now);
     const known = seenCmdIds.get(command.cmdId);
-    if (known !== undefined) {
-      // Same command via the second path (or a retry): answer again, never apply twice.
-      reply(path, command.cmdId, known.result);
-      return;
-    }
+    // Same command via the second path (or a retry): answer again, never apply twice.
+    if (known !== undefined) return known.result;
     const result = decide(command);
     seenCmdIds.set(command.cmdId, { at: now, result });
-    reply(path, command.cmdId, result);
+    return result;
+  };
+
+  const handleCommand = (command: HostCommand, path: Path): void => {
+    if (disposed) return;
+    reply(path, command.cmdId, processCommand(command));
+  };
+
+  const dispatchLocal = (input: HostCommandInput | HostCommand): CommandResult => {
+    if (disposed) return { applied: false, reason: 'disposed' };
+    const { cmdId, gameRev, ...rest } = input;
+    return processCommand({
+      ...rest,
+      cmdId: cmdId ?? newLocalCmdId(),
+      gameRev: gameRev ?? latest.get(input.target)?.gameRev ?? 0,
+    });
   };
 
   // --- wiring ---------------------------------------------------------------------------------
@@ -269,12 +323,22 @@ export function createStageHostChannel(opts: {
       publishSnapshot({ ...snapshot, kind: 'hub' });
     },
     onHubCommand: (handler) => onCommand('hub', handler),
+    getSnapshot,
+    subscribe: (listener) => {
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
+    },
+    dispatchLocal,
     dispose: () => {
       if (disposed) return;
       disposed = true;
       for (const unsubscribe of unsubscribers) unsubscribe();
       link?.close();
       latest.clear();
+      activeKind = null;
+      listeners.clear();
       handlers.clear();
       seenCmdIds.clear();
       recentSignatures.clear();

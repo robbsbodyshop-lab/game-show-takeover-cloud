@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppServicesProvider } from '@/app/AppContext';
 import { loadCached, type AuthUser, type EventRecord } from '@/data';
@@ -12,6 +12,7 @@ import {
   type EventAction,
   type EventSession,
 } from '@/engines/event';
+import { registerHostConsole, type HostConsoleProps } from '@/host/consoleRegistry';
 import { MemoryRoomTransport, type ParsedMessage, type TeamsMessage } from '@/realtime';
 import { EventStage } from './EventStage';
 import type { GameProps } from './gameContract';
@@ -983,6 +984,175 @@ describe('EventStage', () => {
       await resume(userEvent.setup());
       const overlay = await screen.findByTestId('reauth');
       expect(within(overlay).getByRole('heading', { name: 'Host sign in' })).toBeInTheDocument();
+    });
+  });
+  describe('the host drawer (F2)', () => {
+    /** A game console with one button per command and a text field. */
+    const FeudConsoleStub = ({ snapshot, send }: HostConsoleProps) => {
+      const [outcome, setOutcome] = useState('none');
+      const run = (name: string, gameRev?: number) => {
+        void Promise.resolve(
+          send({ target: 'feud', name, ...(gameRev === undefined ? {} : { gameRev }) }),
+        ).then((r) => {
+          setOutcome(r.applied ? 'applied' : r.reason);
+        });
+      };
+      return (
+        <div>
+          <p>Feud console rev {snapshot.gameRev}</p>
+          <button
+            type="button"
+            onClick={() => {
+              run('reveal');
+            }}
+          >
+            Reveal
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              run('reveal-old', 1);
+            }}
+          >
+            Reveal old
+          </button>
+          <input aria-label="Note" />
+          <p data-testid="outcome">{outcome}</p>
+        </div>
+      );
+    };
+
+    let unregister: (() => void) | null = null;
+
+    afterEach(() => {
+      unregister?.();
+      unregister = null;
+    });
+
+    const atHub = async () => {
+      const r = await rig(hubState());
+      r.mount();
+      const u = userEvent.setup();
+      await resume(u);
+      await screen.findByRole('listbox', { name: 'Hub' });
+      return { r, u };
+    };
+
+    const atFeud = async () => {
+      const { r, u } = await atHub();
+      await u.click(await screen.findByRole('option', { name: /Family Feud/ }));
+      await screen.findByTestId('fake-game');
+      const handler = vi.fn(() => ({ applied: true as const }));
+      act(() => {
+        captured?.host.onCommand('feud', handler);
+        captured?.host.publishSnapshot({ kind: 'feud', gameRev: 5, inputLocked: false, data: {} });
+      });
+      return { r, u, handler };
+    };
+
+    it('shows the hub console at the hub and closes with its button', async () => {
+      const { u } = await atHub();
+      const root = screen.getByTestId('stage-root');
+      expect(screen.queryByRole('complementary', { name: 'Host tools' })).toBeNull();
+      fireEvent.keyDown(window, { key: 'F2' });
+      const drawer = await screen.findByRole('complementary', { name: 'Host tools' });
+      expect(root).toHaveAttribute('data-host-drawer', 'true');
+      expect(await within(drawer).findByRole('button', { name: /Stand by/ })).toBeInTheDocument();
+      await u.click(within(drawer).getByRole('button', { name: 'Close' }));
+      expect(root).toHaveAttribute('data-host-drawer', 'false');
+      expect(screen.queryByRole('complementary', { name: 'Host tools' })).toBeNull();
+      // F2 opens it again after a button close.
+      fireEvent.keyDown(window, { key: 'F2' });
+      expect(await screen.findByRole('complementary', { name: 'Host tools' })).toBeInTheDocument();
+    });
+
+    it('drives the stage from the hub console without a round trip, and does not lock input', async () => {
+      const { u } = await atHub();
+      fireEvent.keyDown(window, { key: 'F2' });
+      const drawer = await screen.findByRole('complementary', { name: 'Host tools' });
+      await u.click(await within(drawer).findByRole('button', { name: 'Show mode: off' }));
+      expect(await screen.findByRole('button', { name: 'Show mode: on' })).toBeInTheDocument();
+      expect(screen.getByTestId('stage-root')).toHaveAttribute('data-show-mode', 'true');
+    });
+
+    it('follows the active game: its console gets commands that reach the game handler', async () => {
+      unregister = registerHostConsole('feud', FeudConsoleStub);
+      const { u, handler } = await atFeud();
+      fireEvent.keyDown(window, { key: 'F2' });
+      const drawer = await screen.findByRole('complementary', { name: 'Host tools' });
+      expect(await within(drawer).findByText('Feud console rev 5')).toBeInTheDocument();
+      // The drawer must not lock the game while the host rules.
+      expect(captured?.inputLocked).toBe(false);
+
+      await u.click(within(drawer).getByRole('button', { name: 'Reveal' }));
+      expect(handler).toHaveBeenCalledTimes(1);
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({ target: 'feud', name: 'reveal', gameRev: 5 }),
+      );
+      await waitFor(() => {
+        expect(within(drawer).getByTestId('outcome')).toHaveTextContent('applied');
+      });
+      expect(captured?.inputLocked).toBe(false);
+    });
+
+    it('refuses a stale command from the drawer', async () => {
+      unregister = registerHostConsole('feud', FeudConsoleStub);
+      const { u, handler } = await atFeud();
+      fireEvent.keyDown(window, { key: 'F2' });
+      const drawer = await screen.findByRole('complementary', { name: 'Host tools' });
+      await u.click(await within(drawer).findByRole('button', { name: 'Reveal old' }));
+      await waitFor(() => {
+        expect(within(drawer).getByTestId('outcome')).toHaveTextContent('stale');
+      });
+      expect(handler).not.toHaveBeenCalled();
+    });
+
+    it('goes back to the hub console when the game ends', async () => {
+      unregister = registerHostConsole('feud', FeudConsoleStub);
+      const { u } = await atFeud();
+      fireEvent.keyDown(window, { key: 'F2' });
+      const drawer = await screen.findByRole('complementary', { name: 'Host tools' });
+      await within(drawer).findByText('Feud console rev 5');
+      act(() => {
+        captured?.onQuitToHub();
+      });
+      expect(await within(drawer).findByRole('button', { name: /Stand by/ })).toBeInTheDocument();
+      expect(within(drawer).queryByText('Feud console rev 5')).toBeNull();
+      await u.click(within(drawer).getByRole('button', { name: 'Close' }));
+      expect(screen.getByTestId('stage-root')).toHaveAttribute('data-host-drawer', 'false');
+    });
+
+    it('does not steal hotkeys typed into a drawer text field, but keeps them elsewhere', async () => {
+      unregister = registerHostConsole('feud', FeudConsoleStub);
+      const { u } = await atFeud();
+      const presses: number[] = [];
+      act(() => {
+        captured?.phones.onPress((p) => presses.push(p.team));
+      });
+      fireEvent.keyDown(window, { key: 'F2' });
+      const drawer = await screen.findByRole('complementary', { name: 'Host tools' });
+      const note = await within(drawer).findByRole('textbox', { name: 'Note' });
+      await u.click(note);
+      await u.keyboard('12');
+      expect(note).toHaveValue('12');
+      expect(presses).toEqual([]);
+      expect(screen.getByTestId('stage-root')).toHaveAttribute('data-host-drawer', 'true');
+      // Focus back on the page: the digits buzz again.
+      note.blur();
+      fireEvent.keyDown(document.body, { key: '2' });
+      await waitFor(() => {
+        expect(presses).toEqual([2]);
+      });
+    });
+
+    it('shows the same settings form as the Settings dialog on its Settings tab', async () => {
+      const { u } = await atHub();
+      fireEvent.keyDown(window, { key: 'F2' });
+      const drawer = await screen.findByRole('complementary', { name: 'Host tools' });
+      await u.click(within(drawer).getByRole('tab', { name: 'Settings' }));
+      expect(within(drawer).getByRole('slider', { name: 'Volume' })).toBeInTheDocument();
+      expect(within(drawer).getByRole('button', { name: 'Reset scores & chips' })).toBeInTheDocument();
+      await u.click(within(drawer).getByRole('button', { name: 'Back to my events' }));
     });
   });
 });

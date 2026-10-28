@@ -1,0 +1,55 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.volume {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+}
+
+.volume input {
+  flex: 1;
+  max-width: 320px;
+  accent-color: var(--c-gold);
+}
+
+.keys {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+}
+
+.key {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.key dt {
+  min-width: 80px;
+  font-weight: 700;
+  color: var(--c-gold);
+}
+
+.key dd {
+  margin: 0;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}

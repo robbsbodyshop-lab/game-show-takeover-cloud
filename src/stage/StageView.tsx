@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { AudioPlayer } from '@/audio/player';
 import { Stage } from '@/design';
 import type { EventAction, EventSession } from '@/engines/event';
@@ -6,12 +6,14 @@ import type { HostBridge } from '@/host/hostProtocol';
 import type { ConnectionStatus, PresenceEntry } from '@/realtime';
 import { ErrorBoundary } from './ErrorBoundary';
 import type { GameCallbacks } from './GameSlot';
+import type { StageHostChannel } from './hostChannelAdapter';
 import type { PhoneBridge } from './gameContract';
 import { PauseCard } from './PauseCard';
 import { PhaseRouter } from './PhaseRouter';
 import { Scoreboard } from './Scoreboard';
 import type { StageRegistry } from './screenContract';
 import type { StageDialog } from './stageDialog';
+import { StageHostDrawer } from './StageHostDrawer';
 import { StatusBanners } from './StatusBanners';
 import { useIdleCursor } from './useIdleCursor';
 import styles from './StageView.module.css';
@@ -36,6 +38,11 @@ export interface StageViewProps {
   musicOn: boolean;
   /** F2 flag for the host drawer (T11). */
   hostDrawerOpen: boolean;
+  /** The stage's own host channel; the drawer reads snapshots from it and sends commands into it. */
+  hostChannel: StageHostChannel | null;
+  /** The drawer's Settings tab (the same form as the Settings dialog). */
+  hostDrawerSettings: ReactNode;
+  onCloseHostDrawer: () => void;
   readOnly: boolean;
   signedOut: boolean;
   saveFailing: boolean;
@@ -118,7 +125,12 @@ export const StageView = (props: StageViewProps) => {
             onBackToHub={props.onBackToHub}
           />
         ) : null}
-        {/* TODO(wire): render the host drawer here (src/host HostDrawer, T11) when `data-host-drawer` is true. */}
+        <StageHostDrawer
+          channel={props.hostChannel}
+          open={props.hostDrawerOpen}
+          onClose={props.onCloseHostDrawer}
+          settings={props.hostDrawerSettings}
+        />
         <StatusBanners
           readOnly={props.readOnly}
           onReload={props.onReload}

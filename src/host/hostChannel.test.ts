@@ -247,6 +247,156 @@ describe('commands', () => {
   });
 });
 
+describe('getSnapshot and subscribe', () => {
+  it('returns the latest snapshot per kind, preferring the latest game snapshot without a kind', () => {
+    expect(channel.getSnapshot()).toBeNull();
+    expect(channel.getSnapshot('feud')).toBeNull();
+    const hub1 = snap('hub', 1);
+    channel.publishHub(hub1);
+    expect(channel.getSnapshot()).toEqual(hub1);
+    // Stable between publishes (useSyncExternalStore relies on it).
+    expect(channel.getSnapshot()).toBe(channel.getSnapshot('hub'));
+    const feud = snap('feud', 2);
+    channel.bridge.publishSnapshot(feud);
+    expect(channel.getSnapshot()).toBe(feud);
+    expect(channel.getSnapshot('feud')).toBe(feud);
+    expect(channel.getSnapshot('hub')).toEqual(hub1);
+    const hub2 = snap('hub', 2);
+    channel.publishHub(hub2);
+    expect(channel.getSnapshot('hub')).toEqual(hub2);
+    expect(channel.getSnapshot()).toBe(feud);
+    const wheel = snap('wheel', 1);
+    channel.bridge.publishSnapshot(wheel);
+    expect(channel.getSnapshot()).toBe(wheel);
+    expect(channel.getSnapshot('feud')).toBe(feud);
+  });
+
+  it('notifies after every published snapshot until unsubscribed', () => {
+    const listener = vi.fn(() => {
+      expect(channel.getSnapshot('feud')).not.toBeNull();
+    });
+    const off = channel.subscribe(listener);
+    channel.bridge.publishSnapshot(snap('feud', 1));
+    channel.bridge.publishSnapshot(snap('feud', 2));
+    expect(listener).toHaveBeenCalledTimes(2);
+    off();
+    channel.publishHub(snap('hub', 1));
+    expect(listener).toHaveBeenCalledTimes(2);
+  });
+
+  it('keeps notifying the others when a listener throws', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const second = vi.fn();
+    channel.subscribe(() => {
+      throw new Error('boom');
+    });
+    channel.subscribe(second);
+    channel.publishHub(snap('hub', 1));
+    expect(second).toHaveBeenCalledTimes(1);
+  });
+
+  it('clears everything on dispose', () => {
+    const listener = vi.fn();
+    channel.subscribe(listener);
+    channel.publishHub(snap('hub', 1));
+    channel.dispose();
+    expect(channel.getSnapshot()).toBeNull();
+    channel.publishHub(snap('hub', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('dispatchLocal', () => {
+  it('runs the handler synchronously, stamps gameRev and cmdId, and sends no result anywhere', async () => {
+    const handler = vi.fn<(c: HostCommand) => CommandResult>(() => ({ applied: true }));
+    channel.bridge.onCommand('feud', handler);
+    channel.bridge.publishSnapshot(snap('feud', 7));
+    await flush();
+    mirrorMessages.length = 0;
+    hostMessages.length = 0;
+
+    expect(channel.dispatchLocal({ target: 'feud', name: 'reveal', args: { slot: 1 } })).toEqual({
+      applied: true,
+    });
+    expect(handler).toHaveBeenCalledTimes(1);
+    const seen = handler.mock.calls[0]?.[0];
+    expect(seen).toMatchObject({ target: 'feud', name: 'reveal', gameRev: 7, args: { slot: 1 } });
+    expect(typeof seen?.cmdId).toBe('string');
+    expect(seen?.cmdId.length).toBeGreaterThan(0);
+    await flush();
+    expect(results()).toHaveLength(0);
+    expect(bcResults()).toHaveLength(0);
+  });
+
+  it('stamps gameRev 0 when the target has no snapshot, and keeps a given cmdId and gameRev', () => {
+    const handler = vi.fn<(c: HostCommand) => CommandResult>(() => ({ applied: true }));
+    channel.onHubCommand(handler);
+    channel.dispatchLocal({ target: 'hub', name: 'pause' });
+    expect(handler.mock.calls[0]?.[0]).toMatchObject({ gameRev: 0 });
+    channel.dispatchLocal({ cmdId: 'mine', target: 'hub', gameRev: 3, name: 'resume' });
+    expect(handler.mock.calls[1]?.[0]).toMatchObject({ cmdId: 'mine', gameRev: 3 });
+  });
+
+  it('refuses a stale game command but not undo or a hub command, without replying', async () => {
+    const game = vi.fn<(c: HostCommand) => CommandResult>(() => ({ applied: true }));
+    const hub = vi.fn<(c: HostCommand) => CommandResult>(() => ({ applied: true }));
+    channel.bridge.onCommand('feud', game);
+    channel.onHubCommand(hub);
+    channel.bridge.publishSnapshot(snap('feud', 5));
+    channel.publishHub(snap('hub', 9));
+    await flush();
+    hostMessages.length = 0;
+
+    expect(channel.dispatchLocal({ target: 'feud', gameRev: 4, name: 'reveal' })).toEqual({
+      applied: false,
+      reason: 'stale',
+    });
+    expect(game).not.toHaveBeenCalled();
+    expect(channel.dispatchLocal({ target: 'feud', gameRev: 1, name: 'undo' })).toEqual({ applied: true });
+    expect(channel.dispatchLocal({ target: 'hub', gameRev: 0, name: 'pause' })).toEqual({ applied: true });
+    await flush();
+    expect(results()).toHaveLength(0);
+  });
+
+  it('shares dedupe with received commands: by cmdId and by signature within 500 ms', async () => {
+    const handler = vi.fn<(c: HostCommand) => CommandResult>(() => ({ applied: true }));
+    channel.bridge.onCommand('feud', handler);
+    await sendRealtime(cmd({ cmdId: 'net', name: 'strike' }));
+    expect(handler).toHaveBeenCalledTimes(1);
+    // Same cmdId on the local path: the remembered result, applied once.
+    expect(channel.dispatchLocal(cmd({ cmdId: 'net', name: 'strike' }))).toEqual({ applied: true });
+    expect(handler).toHaveBeenCalledTimes(1);
+    // New cmdId, same signature, inside the window.
+    expect(channel.dispatchLocal({ target: 'feud', name: 'strike' })).toEqual({
+      applied: false,
+      reason: 'duplicate',
+    });
+    await vi.advanceTimersByTimeAsync(600);
+    expect(channel.dispatchLocal({ target: 'feud', name: 'strike' })).toEqual({ applied: true });
+    expect(handler).toHaveBeenCalledTimes(2);
+  });
+
+  it('reports no-handler, survives a throwing handler, and refuses after dispose', () => {
+    expect(channel.dispatchLocal({ target: 'wheel', name: 'spin' })).toEqual({
+      applied: false,
+      reason: 'no-handler',
+    });
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    channel.bridge.onCommand('feud', () => {
+      throw new Error('boom');
+    });
+    expect(channel.dispatchLocal({ target: 'feud', name: 'reveal' })).toEqual({
+      applied: false,
+      reason: 'error',
+    });
+    channel.dispose();
+    expect(channel.dispatchLocal({ target: 'feud', name: 'reveal' })).toEqual({
+      applied: false,
+      reason: 'disposed',
+    });
+  });
+});
+
 describe('without a BroadcastChannel', () => {
   it('still works over the transport', async () => {
     vi.stubGlobal('BroadcastChannel', undefined);

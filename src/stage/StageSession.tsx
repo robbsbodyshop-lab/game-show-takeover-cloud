@@ -5,6 +5,7 @@ import { eventReducer, isGamePlaying, type EventAction, type EventSession } from
 import { AuthScreen } from './AuthScreen';
 import type { GameCallbacks } from './GameSlot';
 import { IDLE_PHONE_CONTROLS, type GameEndReport } from './gameContract';
+import { SettingsForm } from './SettingsForm';
 import { LockFlag, lockHostBridge } from './lockedHostBridge';
 import type { StageRegistry } from './screenContract';
 import type { StageDialog } from './stageDialog';
@@ -41,9 +42,11 @@ export interface StageSessionProps extends StageRegistry {
  * Owns the event for one open stage: `useReducer(eventReducer)`, saving, the room and its transport,
  * the phone and host bridges, pause, dialogs, hotkeys, and the settings. Rendering is `StageView`.
  *
- * Director lease (design.md TD-002): a failed compare-and-set save means another stage saved first;
- * this stage then turns read-only (dispatch ignored, transport closed) and says so. The EventRepo has
- * no `director_session` heartbeat yet, so a second stage is only noticed at its first save.
+ * Director lease (design.md TD-002): the stage runtime claims the event's lease on mount and renews it
+ * every 10 s. A refused claim (another stage is running this event) makes this tab read-only within
+ * seconds: dispatch ignored, nothing saved, no room, no transport. A failed compare-and-set save is the
+ * second line of defence: it proves another stage saved first and demotes this one the same way.
+ * "Reload this event" remounts the stage, which loads the director's latest state and claims again.
  */
 export const StageSession = ({
   event,
@@ -63,7 +66,6 @@ export const StageSession = ({
   const { data, audio, createTransport, version } = useAppServices();
   const registry = useMemo<StageRegistry>(() => ({ games, screens }), [games, screens]);
   const [session, rawDispatch] = useReducer(eventReducer, initial);
-  const [readOnly, setReadOnly] = useState(false);
   const readOnlyRef = useRef(false);
   const [paused, setPaused] = useState(false);
   const [dialog, setDialog] = useState<StageDialog | null>(null);
@@ -73,20 +75,6 @@ export const StageSession = ({
   const dispatch = useCallback((action: EventAction): void => {
     if (!readOnlyRef.current) rawDispatch(action);
   }, []);
-
-  const { saveFailing } = useSessionPersistence({
-    data,
-    eventId: event.id,
-    session,
-    initialRev,
-    saveOnMount,
-    onConflict: () => {
-      readOnlyRef.current = true;
-      setReadOnly(true);
-    },
-  });
-
-  const inputLocked = paused || dialog !== null || readOnly;
 
   const teams = useMemo(
     () => session.teams.map(({ id, name, color }) => ({ id, name, color })),
@@ -100,16 +88,34 @@ export const StageSession = ({
     }),
     [session.phase, session.teams, paused],
   );
-  const runtime = useStageRuntime({
+  const { snapshot: runtime, demote } = useStageRuntime({
     eventId: event.id,
     userId: user.id,
     data,
     createTransport,
     teams,
     audience,
-    enabled: !readOnly,
   });
   const { phones, channel } = runtime;
+  const readOnly = runtime.lease === 'readonly';
+  useEffect(() => {
+    readOnlyRef.current = readOnly;
+  }, [readOnly]);
+
+  const { saveFailing } = useSessionPersistence({
+    data,
+    eventId: event.id,
+    session,
+    initialRev,
+    saveOnMount,
+    enabled: runtime.lease === 'director',
+    onConflict: () => {
+      readOnlyRef.current = true;
+      demote();
+    },
+  });
+
+  const inputLocked = paused || dialog !== null || readOnly;
 
   // Phone presses and host commands are refused while locked (FR-015).
   const [lock] = useState(() => new LockFlag());
@@ -226,6 +232,14 @@ export const StageSession = ({
     setDialog(null);
   }, []);
 
+  const closeHostDrawer = useCallback(() => {
+    setHostDrawerOpen(false);
+  }, []);
+
+  const newEvent = useCallback((): void => {
+    dispatch({ type: 'NEW_EVENT' });
+  }, [dispatch]);
+
   const exit = useCallback((): void => {
     setDialog(null);
     onExit(session.phase === 'winner');
@@ -259,6 +273,19 @@ export const StageSession = ({
         showMode={settings.showMode}
         musicOn={settings.musicOn}
         hostDrawerOpen={hostDrawerOpen}
+        hostChannel={channel}
+        hostDrawerSettings={
+          <SettingsForm
+            phase={session.phase}
+            settings={settings}
+            onChange={update}
+            onResetScores={resetScores}
+            onNewEvent={newEvent}
+            onBackToEvents={exit}
+            onSignOut={onSignOut}
+          />
+        }
+        onCloseHostDrawer={closeHostDrawer}
         readOnly={readOnly}
         signedOut={signedOut}
         saveFailing={saveFailing}
@@ -291,7 +318,7 @@ export const StageSession = ({
           closeDialog();
         }}
         onNewEvent={() => {
-          dispatch({ type: 'NEW_EVENT' });
+          newEvent();
           closeDialog();
         }}
         onBackToEvents={exit}
