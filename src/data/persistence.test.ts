@@ -87,6 +87,19 @@ describe('createPersistence', () => {
     p.dispose();
   });
 
+  it('still saves within the maximum wait when changes never stop (FR-004)', async () => {
+    const repo = createFakeRepo();
+    const p = createPersistence(repo, 'ev1', { storage: null });
+    // An engine ticking every 250 ms keeps resetting the debounce; the 2 s ceiling must fire anyway.
+    for (let i = 0; i < 12; i += 1) {
+      p.save({ tick: i });
+      await vi.advanceTimersByTimeAsync(250);
+    }
+    expect(repo.saves.length).toBeGreaterThanOrEqual(1);
+    expect(repo.saves[0]?.state).toEqual({ tick: 7 });
+    p.dispose();
+  });
+
   it('tracks the revision between saves', async () => {
     const repo = createFakeRepo();
     const saved: number[] = [];

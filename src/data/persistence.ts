@@ -15,6 +15,8 @@ import type { EventStateRecord } from './types';
  */
 
 export const DEFAULT_DEBOUNCE_MS = 500;
+/** A change stream faster than the debounce (engine ticks) must still reach the cloud within 2 s (FR-004). */
+export const DEFAULT_MAX_WAIT_MS = 2000;
 const MAX_RETRIES = 5;
 const RETRY_BASE_MS = 1000;
 const RETRY_MAX_MS = 30_000;
@@ -25,6 +27,8 @@ export type CacheStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
 
 export interface PersistenceOptions {
   debounceMs?: number;
+  /** Upper bound between the first unsaved change and the save, whatever the debounce. */
+  maxWaitMs?: number;
   /** Revision the cloud copy had when this tab started (default 0, the rev of a fresh event). */
   initialRev?: number;
   /** Another stage saved first. Saving stops until `load()` is called again. */
@@ -127,6 +131,7 @@ export function createPersistence(
   options: PersistenceOptions = {},
 ): Persistence {
   const debounceMs = options.debounceMs ?? DEFAULT_DEBOUNCE_MS;
+  const maxWaitMs = options.maxWaitMs ?? DEFAULT_MAX_WAIT_MS;
   const maxRetries = options.maxRetries ?? MAX_RETRIES;
   const storage = options.storage === undefined ? defaultStorage() : options.storage;
 
@@ -137,6 +142,7 @@ export function createPersistence(
   let pendingState: unknown;
   let failures = 0;
   let timer: ReturnType<typeof setTimeout> | null = null;
+  let maxWaitTimer: ReturnType<typeof setTimeout> | null = null;
   let chain: Promise<void> = Promise.resolve();
 
   // A function, not the variable: control-flow analysis cannot see that save() may set it during an await.
@@ -147,6 +153,23 @@ export function createPersistence(
       clearTimeout(timer);
       timer = null;
     }
+    if (maxWaitTimer !== null) {
+      clearTimeout(maxWaitTimer);
+      maxWaitTimer = null;
+    }
+  };
+
+  /** Trailing debounce with a ceiling: the first change in a burst arms a timer the burst cannot postpone. */
+  const scheduleDebounced = (): void => {
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => {
+      timer = null;
+      void flush();
+    }, debounceMs);
+    maxWaitTimer ??= setTimeout(() => {
+      maxWaitTimer = null;
+      void flush();
+    }, maxWaitMs);
   };
 
   const schedule = (delayMs: number): void => {
@@ -226,7 +249,7 @@ export function createPersistence(
       hasPending = true;
       pendingState = state;
       writeCache(storage, eventId, { rev, state, savedAt: new Date().toISOString(), synced: false });
-      schedule(debounceMs);
+      scheduleDebounced();
     },
 
     flush,
