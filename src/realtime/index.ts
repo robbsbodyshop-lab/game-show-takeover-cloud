@@ -13,6 +13,7 @@ export type {
   StatusHandler,
 } from './RoomTransport';
 export { sortRoster } from './RoomTransport';
+export { BroadcastRoomHub } from './BroadcastRoomHub';
 export {
   MemoryRoomHub,
   MemoryRoomTransport,
