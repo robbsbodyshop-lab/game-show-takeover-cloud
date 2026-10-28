@@ -1,0 +1,32 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.countLabel {
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--c-mist);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+}
+
+.error {
+  margin: 0;
+  color: var(--c-coral);
+}

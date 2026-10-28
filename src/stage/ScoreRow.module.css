@@ -1,0 +1,70 @@
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2) var(--space-2) var(--space-2);
+  background-color: var(--c-night);
+  border: var(--bw-3) solid var(--c-ink);
+  border-left-width: 8px;
+  list-style: none;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.swatch {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--c-cream);
+}
+
+.lead {
+  flex: none;
+  font-family: var(--font-groovy);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--c-gold);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.step {
+  min-width: 44px;
+  padding: 0 var(--space-2);
+}
+
+.score {
+  min-width: 70px;
+  font-size: 24px;
+  text-align: center;
+}
+
+.chips {
+  min-width: 80px;
+  margin-left: var(--space-2);
+  font-size: 18px;
+  text-align: center;
+}

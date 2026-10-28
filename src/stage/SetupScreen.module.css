@@ -1,0 +1,53 @@
+.setup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-6) var(--space-7);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 640px;
+  gap: var(--space-5);
+  flex: 1;
+  min-height: 0;
+}
+
+.teams {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.heading {
+  font-size: 24px;
+  color: var(--c-gold);
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.start {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: auto;
+}
+
+.host {
+  display: flex;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+.hint {
+  font-size: var(--fs-audience);
+  color: var(--c-mist);
+}

@@ -1,0 +1,20 @@
+.root {
+  position: relative;
+  display: flex;
+  width: var(--stage-w);
+  height: var(--stage-h);
+  overflow: hidden;
+}
+
+.root[data-idle='true'],
+.root[data-idle='true'] * {
+  cursor: none !important;
+}
+
+.main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}

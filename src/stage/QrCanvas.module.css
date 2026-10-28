@@ -1,0 +1,6 @@
+.qr {
+  display: block;
+  image-rendering: pixelated;
+  border: var(--bw-4) solid var(--c-ink);
+  box-shadow: var(--shadow-hard-md);
+}

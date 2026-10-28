@@ -1,0 +1,31 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.address {
+  margin: 0;
+  font-size: var(--fs-audience);
+  text-align: center;
+}
+
+.code {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  line-height: 1;
+  color: var(--c-gold);
+  text-shadow: 4px 4px 0 var(--c-ink);
+}
+
+.status {
+  margin: 0;
+  font-size: var(--fs-audience);
+  color: var(--c-mist);
+}
+
+.panel section {
+  align-self: stretch;
+}

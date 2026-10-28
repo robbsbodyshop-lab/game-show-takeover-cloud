@@ -1,0 +1,13 @@
+.dialog {
+  width: min(1100px, 100%);
+}
+
+.warn {
+  margin: 0;
+  color: var(--c-coral);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+}

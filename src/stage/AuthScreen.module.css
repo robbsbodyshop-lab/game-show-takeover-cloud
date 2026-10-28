@@ -1,0 +1,42 @@
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: var(--space-4);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: min(560px, 100%);
+}
+
+.heading {
+  font-size: 20px;
+  color: var(--c-gold);
+  text-shadow: 3px 3px 0 var(--c-ink);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.error {
+  margin: 0;
+  color: var(--c-coral);
+}
+
+.notice {
+  margin: 0;
+  color: var(--c-olive);
+}

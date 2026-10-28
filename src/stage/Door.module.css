@@ -1,0 +1,98 @@
+.door {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  max-width: 200px;
+  height: 380px;
+  padding: var(--space-4) var(--space-2);
+  overflow: hidden;
+  cursor: pointer;
+  color: var(--c-cream);
+  background-color: var(--c-walnut);
+  border: var(--bw-4) solid var(--c-ink);
+  box-shadow:
+    inset 6px 6px 0 var(--bevel-light),
+    inset -6px -6px 0 var(--bevel-dark),
+    var(--shadow-hard-md);
+}
+
+.door[data-taken='true'] {
+  border-color: var(--team-color);
+  outline: var(--bw-4) solid var(--c-ink);
+}
+
+.door:disabled {
+  cursor: default;
+}
+
+.plate {
+  font-size: 24px;
+}
+
+.knob {
+  align-self: flex-end;
+  width: 20px;
+  height: 20px;
+  margin-right: var(--space-2);
+  background-color: var(--c-gold);
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.holder {
+  min-height: 28px;
+  max-width: 100%;
+  padding: var(--space-1) var(--space-2);
+  overflow: hidden;
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+  color: var(--c-ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: var(--team-color);
+}
+
+/* The revealed state is static so it also shows with reduced motion; the animation only decorates it. */
+.behind {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  color: var(--c-ink);
+  background-color: var(--c-gold);
+  border: var(--bw-4) solid var(--c-ink);
+  animation: open var(--motion-wipe) steps(5) var(--reveal-delay) backwards;
+}
+
+.position {
+  font-family: var(--font-display);
+  font-size: 32px;
+}
+
+.who {
+  max-width: 100%;
+  padding: 0 var(--space-2);
+  overflow: hidden;
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@keyframes open {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}

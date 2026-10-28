@@ -1,0 +1,37 @@
+.roster {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--fs-audience);
+  background-color: var(--c-night);
+  border: var(--bw-3) solid var(--c-ink);
+  border-left-width: 8px;
+}
+
+.team {
+  font-weight: 700;
+}
+
+.count {
+  color: var(--c-mist);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -1,0 +1,33 @@
+.stack {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-height: 48px;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-groovy);
+  font-size: var(--fs-audience);
+  font-weight: 700;
+  color: var(--c-ink);
+  pointer-events: auto;
+  border-bottom: var(--bw-4) solid var(--c-ink);
+}
+
+.banner[data-tone='danger'] {
+  background-color: var(--c-coral);
+}
+
+.banner[data-tone='warn'] {
+  background-color: var(--c-gold);
+}

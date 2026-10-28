@@ -1,0 +1,21 @@
+.stub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  min-width: 720px;
+}
+
+.note {
+  margin: 0;
+  font-size: var(--fs-audience);
+  color: var(--c-mist);
+}

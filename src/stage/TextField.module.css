@@ -1,0 +1,31 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.input {
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-body);
+  font-size: var(--fs-audience);
+  color: var(--c-ink);
+  background-color: var(--c-cream);
+  border: var(--bw-3) solid var(--c-ink);
+  box-shadow: inset 3px 3px 0 var(--bevel-dark);
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--c-rust);
+}
+
+.input:disabled {
+  opacity: 0.5;
+}
+
+.error {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--c-coral);
+}
