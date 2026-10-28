@@ -1,9 +1,10 @@
 /**
- * The minimal host-console registry the Feud console registers with. The host panel (src/host) owns the
- * real one; until its module exists this local copy keeps the console self-contained. The interface is
- * the same shape: `registerHostConsole(kind, component)` and a lookup the F2 drawer and /host use.
+ * Adapter between the Feud console's `sendCommand(name, args, options)` style and the host panel's
+ * registry (`src/host/consoleRegistry.ts`), whose consoles receive `{ snapshot, send }`. The game's
+ * console keeps the friendlier signature; registration wraps it.
  */
-import type { ComponentType } from 'react';
+import { createElement, type ComponentType } from 'react';
+import { registerHostConsole as registerWithHost } from '@/host/consoleRegistry';
 import type { HostSnapshot, SnapshotKind } from '@/host/hostProtocol';
 
 export interface CommandOptions {
@@ -21,10 +22,24 @@ export interface HostConsoleProps {
 
 export type HostConsoleComponent = ComponentType<HostConsoleProps>;
 
-const consoles = new Map<SnapshotKind, HostConsoleComponent>();
+const adapters = new Map<SnapshotKind, HostConsoleComponent>();
 
 export const registerHostConsole = (kind: SnapshotKind, component: HostConsoleComponent): void => {
-  consoles.set(kind, component);
+  adapters.set(kind, component);
+  registerWithHost(kind, ({ snapshot, send }) =>
+    createElement(component, {
+      snapshot,
+      sendCommand: (name, args, options) => {
+        void send({
+          target: kind,
+          name,
+          args,
+          teamId: options?.teamId,
+          gameRev: options?.gameRev ?? snapshot.gameRev,
+        });
+      },
+    }),
+  );
 };
 
-export const getHostConsole = (kind: SnapshotKind): HostConsoleComponent | undefined => consoles.get(kind);
+export const getHostConsole = (kind: SnapshotKind): HostConsoleComponent | undefined => adapters.get(kind);
