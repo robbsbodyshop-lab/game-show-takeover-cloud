@@ -114,7 +114,8 @@ const no = (reason: string): CommandResult => ({ applied: false, reason });
 const result = (applied: boolean, reason: string): CommandResult => (applied ? OK : no(reason));
 
 /** Commands that are not tied to one moment of the game, so a stale stamp does not matter. */
-const STAMP_EXEMPT: ReadonlySet<string> = new Set(['hold-answer', 'browse', 'mic']);
+// 'undo' is exempt so the host can take back a ruling after the game moved on (hostChannel exempts it too).
+const STAMP_EXEMPT: ReadonlySet<string> = new Set(['hold-answer', 'browse', 'mic', 'undo']);
 /** Commands the console sends in bursts (typing); never dropped as repeats. */
 const REPEAT_EXEMPT: ReadonlySet<string> = new Set(['hold-answer', 'browse']);
 
