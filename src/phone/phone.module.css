@@ -1,0 +1,124 @@
+/* Shared phone styles: single column, 16px gutters, 44px+ targets, tokens only (docs/DESIGN.md). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-5);
+  width: 100%;
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: var(--space-4);
+}
+
+/* Doubled class so these beat Panel's own padding whatever order the stylesheets load in. */
+.panel.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.title.title {
+  padding: var(--space-4) var(--space-3);
+}
+
+/* Marquee's text is 32px Press Start 2P, too wide for a phone title. */
+.title > span {
+  font-size: 20px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.input {
+  width: 100%;
+  min-height: 56px;
+  padding: var(--space-3);
+  font-family: var(--font-body);
+  font-size: 22px;
+  color: var(--c-ink);
+  background-color: var(--c-cream);
+  border: var(--bw-3) solid var(--c-ink);
+  box-shadow: inset 3px 3px 0 rgb(11 6 32 / 25%);
+}
+
+.codeInput {
+  text-align: center;
+  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: 36px;
+  letter-spacing: 0.4em;
+  /* the trailing letter-spacing would otherwise push the text off centre */
+  text-indent: 0.4em;
+}
+
+.hint {
+  margin: 0;
+  color: var(--c-mist);
+  font-size: var(--fs-small);
+}
+
+.error {
+  margin: 0;
+  color: var(--c-coral);
+  font-weight: 700;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.row > * {
+  flex: 1 1 140px;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: var(--bw-4) solid var(--c-gold);
+  border-right-color: transparent;
+  animation: spin 800ms steps(8) infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.status {
+  align-items: center;
+  text-align: center;
+}
+
+.statusTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--c-gold);
+}
+
+.statusDetail {
+  margin: 0;
+  color: var(--c-cream);
+}
+
+.swatch {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

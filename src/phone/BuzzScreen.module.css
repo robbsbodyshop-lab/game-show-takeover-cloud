@@ -1,0 +1,79 @@
+.wrap {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  padding: var(--space-3) var(--space-4);
+}
+
+/* Team-coloured ring: the colour identifies the team, the header says it in words too. */
+.ring {
+  display: flex;
+  flex: 1;
+  min-height: 60vh;
+  min-height: 60dvh;
+  padding: var(--space-2);
+  background-color: var(--c-ink);
+  border: 10px solid var(--c-mist);
+}
+
+.buzz {
+  flex: 1;
+  width: 100%;
+  padding: var(--space-4);
+  font-family: var(--font-display);
+  font-size: clamp(40px, 18vw, 96px);
+  line-height: 1.2;
+  text-transform: uppercase;
+  word-break: break-word;
+  color: var(--c-ink);
+  cursor: pointer;
+  background-color: var(--c-orange);
+  border: var(--bw-4) solid var(--c-ink);
+  box-shadow:
+    inset 6px 6px 0 var(--bevel-light),
+    inset -6px -6px 0 var(--bevel-dark);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.buzz:active:not(:disabled) {
+  transform: translate(4px, 4px);
+  box-shadow:
+    inset 6px 6px 0 var(--bevel-dark),
+    inset -6px -6px 0 var(--bevel-light);
+}
+
+.buzz[data-view='waiting'] {
+  background-color: var(--c-gold);
+  font-size: clamp(24px, 9vw, 48px);
+}
+
+.buzz[data-view='flash'] {
+  background-color: var(--c-avocado);
+  font-size: clamp(32px, 13vw, 72px);
+  animation: flash 300ms steps(2) 3;
+}
+
+/* Grey and labelled with the reason; full opacity keeps the label readable. */
+.buzz[data-view='off'] {
+  cursor: not-allowed;
+  font-size: clamp(22px, 8vw, 40px);
+  color: var(--c-mist);
+  background-color: var(--c-shade);
+  box-shadow: none;
+}
+
+@keyframes flash {
+  50% {
+    background-color: var(--c-olive);
+  }
+}
+
+.typing {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+}

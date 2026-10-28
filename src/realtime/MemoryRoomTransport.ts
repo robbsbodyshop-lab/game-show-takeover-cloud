@@ -34,7 +34,8 @@ export interface SimulateDisconnectOptions {
 }
 
 export class MemoryRoomHub {
-  private readonly rooms = new Map<string, Set<MemoryRoomTransport>>();
+  /** Protected so `BroadcastRoomHub` can read local clients when it relays across tabs. */
+  protected readonly rooms = new Map<string, Set<MemoryRoomTransport>>();
   private nextId = 1;
 
   /** Unique presence key for a transport created without one. */
@@ -65,8 +66,17 @@ export class MemoryRoomHub {
     return this.rooms.get(code)?.size ?? 0;
   }
 
-  /** @internal Delivers one wire message to every other client that can read the topic. */
-  deliver(code: string, topic: TopicKind, event: string, wire: unknown, sender: MemoryRoomTransport): void {
+  /**
+   * @internal Delivers one wire message to every other client that can read the topic. `sender` is
+   * `null` for a message that arrived from another browser tab (see `BroadcastRoomHub`).
+   */
+  deliver(
+    code: string,
+    topic: TopicKind,
+    event: string,
+    wire: unknown,
+    sender: MemoryRoomTransport | null,
+  ): void {
     // Round-trip through JSON so receivers never share object identity with the sender.
     const text = JSON.stringify(wire);
     for (const client of this.rooms.get(code) ?? []) {

@@ -1,0 +1,41 @@
+/* 100dvh column: header, flexible middle, footer. The buzz screen never scrolls. */
+.screen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 560px;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.centered {
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.banner {
+  padding: var(--space-2) var(--space-4);
+  font-weight: 700;
+  text-align: center;
+  color: var(--c-ink);
+  background-color: var(--c-gold);
+  border-bottom: var(--bw-3) solid var(--c-ink);
+}
+
+/* Landscape phones are too short for the 60% button plus chrome: let the page scroll instead. */
+@media (max-height: 420px) {
+  .screen {
+    height: auto;
+    min-height: 100dvh;
+    overflow: visible;
+  }
+}

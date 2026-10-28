@@ -1,0 +1,72 @@
+.header {
+  background-color: var(--c-lagoon);
+  border-bottom: var(--bw-4) solid var(--c-ink);
+}
+
+.band {
+  height: 12px;
+  border-bottom: var(--bw-3) solid var(--c-ink);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 56px;
+  padding: var(--space-2) var(--space-4);
+}
+
+.swatch {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: var(--bw-3) solid var(--c-ink);
+}
+
+.names {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.team {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--c-gold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.room {
+  font-size: var(--fs-small);
+  color: var(--c-mist);
+}
+
+.conn {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--c-cream);
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  background-color: var(--c-gold);
+  border: 2px solid var(--c-ink);
+}
+
+.conn[data-status='connected'] .dot {
+  background-color: var(--c-avocado);
+}
+
+.conn[data-status='error'] .dot,
+.conn[data-status='offline'] .dot {
+  background-color: var(--c-rust);
+}

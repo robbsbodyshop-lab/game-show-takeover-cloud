@@ -1,0 +1,11 @@
+.footer {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--c-lagoon);
+  border-top: var(--bw-4) solid var(--c-ink);
+}
+
+.footer > * {
+  flex: 1;
+}
