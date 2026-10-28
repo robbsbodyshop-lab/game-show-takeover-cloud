@@ -48,8 +48,8 @@ Realtime Authorization removes the impersonation hole of a shared room code.
        ▼                      ▼                          ▼
  ┌─────────────────────────────────────────────────────────────────┐
  │ Supabase: Auth · Postgres (events, snapshots, rooms, members)   │
- │ Realtime private channels  room:<code>:stage  room:<code>:phones│
- │                            room:<code>:host                      │
+ │ Realtime private channels  room:<code>:stage  room:<code>:host  │
+ │                            room:<code>:phones:<team 1..8>        │
  └─────────────────────────────────────────────────────────────────┘
        ▲ static files
  ┌─────┴─────┐
@@ -102,11 +102,19 @@ RLS (NFR-006, FR-002, FR-025):
   - **select** on `room:<code>:stage` for any member of `<code>` (phones, host, stage read).
   - **insert** on `room:<code>:stage` only for members with role in ('stage','host') and
     `user_id = rooms.owner_id` (the stage and host views are the owner's sessions).
-  - **select/insert** on `room:<code>:phones`: insert for role 'phone' members; select for
-    the owner's sessions. Presence on this topic is how the stage sees connected phones.
+  - **insert** on `room:<code>:phones:<team>` (team 1..8): only for role 'phone' members whose
+    `room_members.team` equals the topic's team (`split_part(topic, ':', 4)`, checked against
+    `^[1-8]$` before the cast, and no fifth part). **select** on any `room:<code>:phones:<n>`
+    for the owner's sessions. Presence on these topics is how the stage sees connected phones.
+    The team is in the topic name because RLS cannot read the message payload: with a single
+    shared phones topic any joined phone could publish `press`/`action`/`feud-answer` with any
+    `team` number (review F1). With one topic per team, a phone can only speak for the team
+    stored in its own membership row (FR-025, P-004). A phone that changes team calls
+    `join_room` again (which updates the row) and reconnects on the new topic.
   - **select/insert** on `room:<code>:host`: owner's sessions only (host snapshot carries
     hidden information, so phones must not be able to read it).
-  - `realtime.topic()` is parsed with `split_part(topic, ':', 2)` for the code.
+  - `realtime.topic()` is parsed with `split_part(topic, ':', 2)` for the code, `3` for the kind
+    and (phones only) `4` for the team.
 - `keepalive()` RPC: `select 1`; called daily by a GitHub Actions cron (NFR-010).
 - Expiry: a `pg_cron` job (or the same daily Action) deletes rooms with
   `last_seen_at < now() - interval '12 hours'` and their members (FR-028).
@@ -125,7 +133,10 @@ Topic `room:<code>:stage` (stage → everyone):
 | `ack`      | `{ team, pressId, accepted: boolean }`                                       | reply to a press/action                   |
 | `audience` | `{ phase, paused, scores: [...], clock?: { endsAt, label } }`                | 1 Hz and on change; small, no hidden info |
 
-Topic `room:<code>:phones` (phone → stage):
+Topics `room:<code>:phones:<team>`, one per team 1..8 (phone → stage). A phone joins `stage` and
+only its own team's phones topic (it cannot read it); the stage joins `stage`, `host` and all
+eight phones topics (10 channels, far below the 100 per connection limit); host views join
+`stage` and `host`.
 
 | event         | payload                                                      |
 | ------------- | ------------------------------------------------------------ |
@@ -133,7 +144,16 @@ Topic `room:<code>:phones` (phone → stage):
 | `action`      | `{ pressId, team, action: 'buy'                              | 'spin' | 'solve' | 'solve-start' | 'solve-cancel', answer? }` |
 | `feud-answer` | `{ pressId, team, text }` (when "Answers from: phones/both") |
 
-Presence on `room:<code>:phones`: `{ team, nickname, ua }`, giving the roster (FR-027).
+Presence on `room:<code>:phones:<team>`: `{ team, nickname, ua }`, tracked by the phone on its own
+team topic; the stage merges the presence of the eight topics into one roster (FR-027).
+
+Team attribution: `RoomTransport` stamps every inbound phones message with `topicTeam`, the team
+of the topic it arrived on (`ParsedMessage<'phones'>.topicTeam`), and drops (with a logged
+warning) a message whose payload `team` differs from it. The stage (`phoneBridge`) attributes
+presses, actions and typed answers to `topicTeam`. `ack` stays on `room:<code>:stage` and carries
+`team` + `pressId`, so every phone still sees it. `parseTopic` returns `{ code, kind, team? }`
+and `topicFor(code, 'phones', team)` requires the team. The in-memory transports (tests, demo
+mode, Playwright) mirror the same split: a phone's messages carry its own team as the topic team.
 
 Topic `room:<code>:host` (stage ↔ host views):
 
@@ -290,7 +310,8 @@ dependency. The Python generator for the old cues is kept under `scripts/legacy/
   (memory), controllers with fake timers, components with Testing Library.
 - SQL tests (`supabase/tests/*.sql`, run with `supabase test db` when Docker is available, else
   via the Supabase MCP `execute_sql` against a branch): RLS denies cross-tenant reads, phones
-  cannot insert on the stage topic, `join_room` rate limit.
+  cannot insert on the stage topic, a phone on team 2 cannot insert on `:phones:1` but can on
+  `:phones:2`, `join_room` rate limit.
 - Playwright: one browser context hosts stage + host view + two phone pages on the memory
   transport (`?demo=1`): join, buzz, Feud face-off to round win, Wheel spin-letter-solve,
   pause/resume with clock, reload mid-round restores, host command from the host view.

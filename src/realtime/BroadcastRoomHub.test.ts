@@ -74,7 +74,25 @@ describe('BroadcastRoomHub', () => {
     await flush();
 
     expect(seen).toHaveLength(1);
-    expect(seen[0]).toMatchObject({ event: 'press', message: { pressId: 'p1', team: 3, from: 'phone' } });
+    expect(seen[0]).toMatchObject({
+      event: 'press',
+      topicTeam: 3,
+      message: { pressId: 'p1', team: 3, from: 'phone' },
+    });
+  });
+
+  it('keeps the phones topic team across tabs and drops a forged team there too', async () => {
+    const { tabA, tabB } = setup();
+    const stage = new MemoryRoomTransport({ hub: tabA });
+    const phone = new MemoryRoomTransport({ hub: tabB });
+    await stage.connect({ code: 'DMKT', role: 'stage' });
+    await phone.connect({ code: 'DMKT', role: 'phone', team: 2, key: 'phone-1' });
+    const seen: ParsedMessage<'phones'>[] = [];
+    stage.subscribe('phones', (msg) => seen.push(msg));
+    await phone.publish('phones', 'press', { pressId: 'forged', team: 1, at: 1 });
+    await phone.publish('phones', 'press', { pressId: 'honest', team: 2, at: 2 });
+    await flush();
+    expect(seen.map((m) => [m.message.pressId, m.topicTeam])).toEqual([['honest', 2]]);
   });
 
   it('carries stage messages to phones in other tabs and never echoes them back', async () => {

@@ -8,6 +8,10 @@
  *    8 s without any stage message -> `waiting` again;
  *  - 2 minutes in `waiting` -> `onGiveUp` (the app returns to the code screen).
  * Any stage message ends `waiting`. Mount this hook under a `key` of room+team so each room starts fresh.
+ *
+ * The transport joins the phones topic of `team` (`room:<CODE>:phones:<TEAM>`), the only phones
+ * topic RLS lets this phone write to (FR-025). `team` is a dependency of the connection effect, so
+ * a phone that changes team disconnects and reconnects, which moves it to the new team's topic.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useAppServices } from '@/app/AppContext';

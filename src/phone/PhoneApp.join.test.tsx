@@ -172,6 +172,37 @@ describe('PhoneApp team persistence', () => {
     expect(localStorage.getItem(`gst:buzz:team:${code}`)).toBeNull();
   });
 
+  it('Change team reconnects on the new team topic, so presses carry the new team (FR-025)', async () => {
+    const h = createHarness();
+    const { code } = await h.seedRoom(TEAMS);
+    const stage = await connectStage(h.hub, code);
+    const user = userEvent.setup();
+    renderPhone(h, `?room=${code}`);
+    await user.click(await screen.findByRole('option', { name: /Reds/ }));
+    await screen.findByText('Live');
+    await act(async () => {
+      await stage.controls({ buzzTeams: [1, 3] });
+    });
+    await user.click(await screen.findByRole('button', { name: 'BUZZ' }));
+    await waitFor(() => {
+      expect(stage.phones).toHaveLength(1);
+    });
+    expect(stage.phones[0]).toMatchObject({ event: 'press', topicTeam: 1, message: { team: 1 } });
+
+    await user.click(screen.getByRole('button', { name: 'Change team' }));
+    await user.click(await screen.findByRole('option', { name: /Greens/ }));
+    await screen.findByText('Greens');
+    await screen.findByText('Live');
+    await act(async () => {
+      await stage.controls({ buzzTeams: [1, 3] });
+    });
+    await user.click(await screen.findByRole('button', { name: 'BUZZ' }));
+    await waitFor(() => {
+      expect(stage.phones).toHaveLength(2);
+    });
+    expect(stage.phones[1]).toMatchObject({ event: 'press', topicTeam: 3, message: { team: 3 } });
+  });
+
   it('sends the phone back to the picker when the stage removes its team', async () => {
     const h = createHarness();
     const { code } = await h.seedRoom(TEAMS);

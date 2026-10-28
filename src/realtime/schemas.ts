@@ -175,15 +175,29 @@ export type EventNameFor<K extends TopicKind> = keyof MessageMap[K] & string;
 /** What a caller passes to `publish`: the message without its envelope (the transport adds it). */
 export type PayloadFor<K extends TopicKind, E extends EventNameFor<K>> = Body<MessageMap[K][E]>;
 
-export interface ParsedEvent<K extends TopicKind, E extends EventNameFor<K>> {
+interface UnstampedEvent<K extends TopicKind, E extends EventNameFor<K>> {
   topic: K;
   event: E;
   message: MessageMap[K][E];
 }
 
+/**
+ * Phones messages also carry `topicTeam`: the team of the topic they arrived on
+ * (`room:<CODE>:phones:<TEAM>`). RLS only lets a phone publish on its own team's topic, so this,
+ * unlike `message.team`, cannot be forged. The transports guarantee `message.team === topicTeam`
+ * (a mismatch is dropped and logged).
+ */
+export type ParsedEvent<K extends TopicKind, E extends EventNameFor<K>> = UnstampedEvent<K, E> &
+  (K extends 'phones' ? { topicTeam: number } : unknown);
+
 /** Discriminated on `event` for a given topic. */
 export type ParsedMessage<K extends TopicKind> = K extends TopicKind
   ? { [E in EventNameFor<K>]: ParsedEvent<K, E> }[EventNameFor<K>]
+  : never;
+
+/** What `parseMessage` returns: a parsed message that has not been tied to a topic team yet. */
+export type UnstampedMessage<K extends TopicKind> = K extends TopicKind
+  ? { [E in EventNameFor<K>]: UnstampedEvent<K, E> }[EventNameFor<K>]
   : never;
 
 // ---------------------------------------------------------------------------------------------
@@ -256,7 +270,7 @@ export function parseMessage<K extends TopicKind>(
   topic: K,
   event: string,
   raw: unknown,
-): ParsedMessage<K> | null {
+): UnstampedMessage<K> | null {
   try {
     const table: Readonly<Record<string, z.ZodMiniType>> = SCHEMAS[topic];
     if (!Object.hasOwn(table, event)) {
@@ -277,10 +291,30 @@ export function parseMessage<K extends TopicKind>(
       return null;
     }
     // The registry is looked up by string, so the precise per-event type is asserted here once.
-    return { topic, event, message: result.data } as unknown as ParsedMessage<K>;
+    return { topic, event, message: result.data } as unknown as UnstampedMessage<K>;
   } catch {
     return null;
   }
+}
+
+/**
+ * `parseMessage` for the phones topic: stamps the topic's team on the result and drops (with a
+ * warning) a message whose payload `team` differs from it, i.e. a phone claiming another team.
+ */
+export function parsePhonesMessage(
+  event: string,
+  raw: unknown,
+  topicTeam: number,
+): ParsedMessage<'phones'> | null {
+  const parsed = parseMessage('phones', event, raw);
+  if (parsed === null) return null;
+  if (parsed.message.team !== topicTeam) {
+    logger.warn(
+      `[realtime] dropped "${event}" on phones topic of team ${String(topicTeam)}: payload claims team ${String(parsed.message.team)}`,
+    );
+    return null;
+  }
+  return { ...parsed, topicTeam };
 }
 
 /** Validates a presence payload; `null` when it does not match `{ team, nickname, ua }`. */

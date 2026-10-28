@@ -65,7 +65,7 @@ describe('normalizeRoomCode', () => {
 describe('topicFor / parseTopic', () => {
   it('builds the three topics', () => {
     expect(topicFor('BKDX', 'stage')).toBe('room:BKDX:stage');
-    expect(topicFor('BKDX', 'phones')).toBe('room:BKDX:phones');
+    expect(topicFor('BKDX', 'phones', 3)).toBe('room:BKDX:phones:3');
     expect(topicFor('BKDX', 'host')).toBe('room:BKDX:host');
   });
 
@@ -75,8 +75,19 @@ describe('topicFor / parseTopic', () => {
     expect(() => topicFor('bkdx', 'stage')).toThrow(RangeError);
   });
 
+  it('requires a team 1..8 for phones and none for the other kinds', () => {
+    expect(() => topicFor('BKDX', 'phones')).toThrow(RangeError);
+    expect(() => topicFor('BKDX', 'phones', 0)).toThrow(RangeError);
+    expect(() => topicFor('BKDX', 'phones', 9)).toThrow(RangeError);
+    expect(() => topicFor('BKDX', 'phones', 1.5)).toThrow(RangeError);
+    expect(() => topicFor('BKDX', 'stage', 1)).toThrow(RangeError);
+    expect(() => topicFor('BKDX', 'host', 1)).toThrow(RangeError);
+  });
+
   it('round-trips', () => {
-    expect(parseTopic(topicFor('BKDX', 'phones'))).toEqual({ code: 'BKDX', kind: 'phones' });
+    expect(parseTopic(topicFor('BKDX', 'phones', 8))).toEqual({ code: 'BKDX', kind: 'phones', team: 8 });
+    expect(parseTopic(topicFor('BKDX', 'stage'))).toEqual({ code: 'BKDX', kind: 'stage' });
+    expect(parseTopic(topicFor('BKDX', 'host'))).toEqual({ code: 'BKDX', kind: 'host' });
   });
 
   it.each([
@@ -87,6 +98,13 @@ describe('topicFor / parseTopic', () => {
     'room:BKDX:stage:x',
     'room::stage',
     'room:bkdx:host',
+    'room:BKDX:phones', // the old team-less topic
+    'room:BKDX:phones:0',
+    'room:BKDX:phones:9',
+    'room:BKDX:phones:x',
+    'room:BKDX:phones:01',
+    'room:BKDX:phones:1:x',
+    'room:BKDX:host:1',
   ])('rejects %j', (topic) => {
     expect(parseTopic(topic)).toBeNull();
   });

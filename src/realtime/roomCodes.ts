@@ -47,20 +47,52 @@ export function generateRoomCode(rng: () => number): string {
   return code;
 }
 
-/** `room:BKDX:stage`. Throws RangeError for a code that could break out of the topic format. */
-export function topicFor(code: string, kind: TopicKind): string {
+/** Team ids on the wire and in the phones topic: integers 1..8. */
+export const MIN_TEAM = 1;
+export const MAX_TOPIC_TEAM = 8;
+
+export function isTeamId(value: unknown): value is number {
+  return Number.isInteger(value) && (value as number) >= MIN_TEAM && (value as number) <= MAX_TOPIC_TEAM;
+}
+
+/**
+ * `room:BKDX:stage`, `room:BKDX:host` and, for phones, `room:BKDX:phones:3`. The team is part of
+ * the phones topic because RLS cannot read the message payload: the policy compares the topic's
+ * team to the team in the caller's `room_members` row (FR-025, P-004).
+ * Throws RangeError for a code that could break out of the topic format, or for a phones topic
+ * without a team 1..8 (or a team on any other kind).
+ */
+export function topicFor(code: string, kind: TopicKind, team?: number): string {
   if (!TOPIC_CODE_SHAPE.test(code))
     throw new RangeError(`Invalid room code for topic: ${JSON.stringify(code)}`);
+  if (kind === 'phones') {
+    if (!isTeamId(team)) throw new RangeError(`A phones topic needs a team 1..8, got ${String(team)}`);
+    return `room:${code}:phones:${String(team)}`;
+  }
+  if (team !== undefined) throw new RangeError(`The ${kind} topic has no team`);
   return `room:${code}:${kind}`;
 }
 
+export interface ParsedTopic {
+  code: string;
+  kind: TopicKind;
+  /** Present exactly for the `phones` kind. */
+  team?: number;
+}
+
 /** Inverse of `topicFor`; `null` for anything that is not one of our topics. */
-export function parseTopic(topic: string): { code: string; kind: TopicKind } | null {
+export function parseTopic(topic: string): ParsedTopic | null {
   const parts = topic.split(':');
-  if (parts.length !== 3 || parts[0] !== 'room') return null;
+  if (parts[0] !== 'room') return null;
   const code = parts[1];
   const kind = parts[2];
   if (code === undefined || !TOPIC_CODE_SHAPE.test(code) || !isTopicKind(kind)) return null;
+  if (kind === 'phones') {
+    const teamPart = parts[3];
+    if (parts.length !== 4 || teamPart === undefined || !/^[1-8]$/.test(teamPart)) return null;
+    return { code, kind, team: Number(teamPart) };
+  }
+  if (parts.length !== 3) return null;
   return { code, kind };
 }
 

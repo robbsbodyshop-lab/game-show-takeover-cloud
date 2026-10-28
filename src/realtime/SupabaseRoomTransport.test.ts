@@ -48,6 +48,8 @@ function supabaseHarness(): ContractHarness {
 
 runTransportContract('supabase (fake client)', supabaseHarness);
 
+const TEAM_TOPICS = [1, 2, 3, 4, 5, 6, 7, 8].map((team) => `room:BKDX:phones:${String(team)}`);
+
 describe('SupabaseRoomTransport', () => {
   const CODE = 'BKDX';
   let backend: FakeRealtimeBackend;
@@ -76,9 +78,9 @@ describe('SupabaseRoomTransport', () => {
 
   describe('channels', () => {
     it.each([
-      ['stage', ['room:BKDX:stage', 'room:BKDX:phones', 'room:BKDX:host']],
+      ['stage', ['room:BKDX:stage', 'room:BKDX:host', ...TEAM_TOPICS]],
       ['host', ['room:BKDX:stage', 'room:BKDX:host']],
-      ['phone', ['room:BKDX:stage', 'room:BKDX:phones']],
+      ['phone', ['room:BKDX:stage', 'room:BKDX:phones:1']],
     ] as const)('opens the right private channels for %s', async (role, topics) => {
       const t = make();
       await t.connect({ code: CODE, role, team: 1, key: 'k-1' });
@@ -104,7 +106,7 @@ describe('SupabaseRoomTransport', () => {
 
   describe('subscribe status mapping', () => {
     it('is connecting until every channel is SUBSCRIBED', async () => {
-      backend.joinOverride = (topic) => (topic === 'room:BKDX:phones' ? 'PENDING' : undefined);
+      backend.joinOverride = (topic) => (topic === 'room:BKDX:phones:1' ? 'PENDING' : undefined);
       const t = make();
       const pending = t.connect({ code: CODE, role: 'phone', team: 1 });
       const outcome = expect(pending).rejects.toThrow(/disconnected/);
@@ -174,8 +176,8 @@ describe('SupabaseRoomTransport', () => {
       backend.restore();
       await vi.advanceTimersByTimeAsync(1000);
       await settle();
-      // One rebuild: 3 original + 3 new channels.
-      expect(client.created).toHaveLength(6);
+      // One rebuild: 10 original (stage, host, 8 phones topics) + 10 new channels.
+      expect(client.created).toHaveLength(20);
     });
   });
 
@@ -233,7 +235,7 @@ describe('SupabaseRoomTransport', () => {
       await vi.advanceTimersByTimeAsync(1000);
       await settle();
       expect(client.removed).toEqual(expect.arrayContaining(first));
-      expect(client.open).toHaveLength(3);
+      expect(client.open).toHaveLength(10);
     });
 
     it('disconnect during backoff cancels the retry', async () => {
@@ -282,7 +284,7 @@ describe('SupabaseRoomTransport', () => {
       const t = make({ now: () => 1_700_000_000_123 });
       await t.connect({ code: CODE, role: 'phone', team: 3 });
       await t.publish('phones', 'press', { pressId: 'p-1', team: 3, at: 99 });
-      const channel = client.created.find((c) => c.topic === 'room:BKDX:phones');
+      const channel = client.created.find((c) => c.topic === 'room:BKDX:phones:3');
       expect(channel?.sent).toEqual([
         {
           event: 'press',
@@ -299,9 +301,17 @@ describe('SupabaseRoomTransport', () => {
       const byTopic = Object.fromEntries(client.created.map((c) => [c.topic, c.sent.map((s) => s.event)]));
       expect(byTopic).toEqual({
         'room:BKDX:stage': ['ack'],
-        'room:BKDX:phones': [],
         'room:BKDX:host': ['result'],
+        ...Object.fromEntries(TEAM_TOPICS.map((topic) => [topic, []])),
       });
+    });
+
+    it('a phone publishes on its own team channel and nowhere else', async () => {
+      const t = make();
+      await t.connect({ code: CODE, role: 'phone', team: 2 });
+      await t.publish('phones', 'press', { pressId: 'p-1', team: 2, at: 1 });
+      const sentOn = client.created.filter((c) => c.sent.length > 0).map((c) => c.topic);
+      expect(sentOn).toEqual(['room:BKDX:phones:2']);
     });
 
     it('does not touch the network when the role guard rejects', async () => {
@@ -364,12 +374,63 @@ describe('SupabaseRoomTransport', () => {
     it('does not listen to topics its role cannot read', async () => {
       const t = make();
       await t.connect({ code: CODE, role: 'phone', team: 1 });
-      const phonesChannel = client.created.find((c) => c.topic === 'room:BKDX:phones');
+      const phonesChannel = client.created.find((c) => c.topic === 'room:BKDX:phones:1');
       const hostSeen: unknown[] = [];
       const unsubscribe = t.subscribe('phones', (m) => hostSeen.push(m));
       unsubscribe();
       phonesChannel?.receive('press', { v: 1, from: 'phone', sent: 1, pressId: 'p', team: 1, at: 1 });
       expect(hostSeen).toEqual([]);
+    });
+  });
+
+  describe('per-team phones topics (FR-025)', () => {
+    const press = (team: number): Record<string, unknown> => ({
+      v: 1,
+      from: 'phone',
+      sent: 1,
+      pressId: 'p',
+      team,
+      at: 1,
+    });
+
+    it('stamps the topic team on a phones message', async () => {
+      const t = make();
+      await t.connect({ code: CODE, role: 'stage' });
+      const seen: { team: number; topicTeam: number }[] = [];
+      t.subscribe('phones', (m) => {
+        if (m.event === 'press') seen.push({ team: m.message.team, topicTeam: m.topicTeam });
+      });
+      client.created.find((c) => c.topic === 'room:BKDX:phones:5')?.receive('press', press(5));
+      expect(seen).toEqual([{ team: 5, topicTeam: 5 }]);
+    });
+
+    it('drops and logs a message whose payload team differs from its topic team', async () => {
+      const t = make();
+      await t.connect({ code: CODE, role: 'stage' });
+      const seen: unknown[] = [];
+      t.subscribe('phones', (m) => seen.push(m));
+      client.created.find((c) => c.topic === 'room:BKDX:phones:2')?.receive('press', press(1));
+      expect(seen).toEqual([]);
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining('payload claims team 1'));
+    });
+
+    it('merges presence from every team topic into one roster', async () => {
+      const stage = make();
+      let roster: PresenceEntry[] = [];
+      stage.onPresence((r) => {
+        roster = r;
+      });
+      await stage.connect({ code: CODE, role: 'stage' });
+      const phoneClient = backend.createClient();
+      const phoneA = new SupabaseRoomTransport({ client: phoneClient, ua: 'ua', randomKey: () => 'a' });
+      const phoneB = new SupabaseRoomTransport({ client: phoneClient, ua: 'ua', randomKey: () => 'b' });
+      await phoneA.connect({ code: CODE, role: 'phone', team: 2, nickname: 'Ann', key: 'a' });
+      await phoneB.connect({ code: CODE, role: 'phone', team: 7, nickname: 'Bo', key: 'b' });
+      await settle();
+      expect(roster.map((e) => [e.key, e.team])).toEqual([
+        ['a', 2],
+        ['b', 7],
+      ]);
     });
   });
 
@@ -380,7 +441,7 @@ describe('SupabaseRoomTransport', () => {
       const tracked = Object.fromEntries(client.created.map((c) => [c.topic, c.tracked]));
       expect(tracked).toEqual({
         'room:BKDX:stage': [],
-        'room:BKDX:phones': [{ team: 4, nickname: 'Dee', ua: 'test-ua' }],
+        'room:BKDX:phones:4': [{ team: 4, nickname: 'Dee', ua: 'test-ua' }],
       });
     });
 
@@ -417,8 +478,8 @@ describe('SupabaseRoomTransport', () => {
         roster = r;
       });
       await stage.connect({ code: CODE, role: 'stage' });
-      backend.setPresence('room:BKDX:phones', 'bad', { team: 99, nickname: 'x', ua: 'x' });
-      backend.setPresence('room:BKDX:phones', 'good', { team: 2, nickname: 'ok', ua: 'x' });
+      backend.setPresence('room:BKDX:phones:2', 'bad', { team: 99, nickname: 'x', ua: 'x' });
+      backend.setPresence('room:BKDX:phones:2', 'good', { team: 2, nickname: 'ok', ua: 'x' });
       await settle();
       expect(roster.map((e) => e.key)).toEqual(['good']);
       expect(warn).toHaveBeenCalled();

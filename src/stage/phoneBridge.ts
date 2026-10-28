@@ -2,6 +2,8 @@
  * The stage's side of the phone relay, handed to a game as `PhoneBridge` (gameContract.ts).
  *
  *  - Controls are debounced 50 ms and re-sent on every (re)connect (design.md §5).
+ *  - Phones messages are attributed to the team of the topic they arrived on (`topicTeam`), not to
+ *    the `team` in the payload; a mismatch is dropped and logged (FR-025).
  *  - Presses are rate limited to one per 150 ms per team (FR-029) and ignored for teams that are not
  *    in the event, so a stale phone can never act for a removed team (P-004).
  *  - While the stage is locked (paused or a dialog open, FR-015) presses, actions and typed answers
@@ -88,25 +90,35 @@ export function createPhoneBridge(deps: PhoneBridgeDeps): StagePhoneBridge {
 
   const unsubscribe = transport.subscribe('phones', (parsed) => {
     if (disposed) return;
+    // The team comes from the topic the message arrived on (RLS pins a phone to its own team's
+    // topic, FR-025), never from the payload. The transport already drops a mismatch; this is the
+    // same rule again so the bridge does not depend on which transport delivered the message.
+    const team = parsed.topicTeam;
+    if (parsed.message.team !== team) {
+      logger.warn(
+        `[phones] ignored "${parsed.event}" on team ${String(team)}: payload claims team ${String(parsed.message.team)}`,
+      );
+      return;
+    }
     switch (parsed.event) {
       case 'press':
-        deliverPress(parsed.message);
+        deliverPress({ ...parsed.message, team });
         return;
       case 'action': {
-        const { message } = parsed;
-        if (!knownTeam(message.team)) return;
+        const message = { ...parsed.message, team };
+        if (!knownTeam(team)) return;
         if (locked) {
-          ack(message.team, message.pressId, false);
+          ack(team, message.pressId, false);
           return;
         }
         for (const handler of [...actionHandlers]) handler(message);
         return;
       }
       case 'feud-answer': {
-        const { message } = parsed;
-        if (!knownTeam(message.team)) return;
+        const message = { ...parsed.message, team };
+        if (!knownTeam(team)) return;
         if (locked) {
-          ack(message.team, message.pressId, false);
+          ack(team, message.pressId, false);
           return;
         }
         for (const handler of [...answerHandlers]) handler(message);

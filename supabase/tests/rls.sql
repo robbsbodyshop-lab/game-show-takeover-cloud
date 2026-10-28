@@ -21,7 +21,7 @@
 
 begin;
 
-select plan(101);
+select plan(113);
 
 -- ---------------------------------------------------------------------------------------------
 -- Fixtures (as the privileged role)
@@ -381,10 +381,18 @@ declare
     ['P', 'stage',  'broadcast', 'denied'],
     ['P', 'stage',  'presence',  'denied'],
     ['B', 'stage',  'broadcast', 'denied'],
-    ['P', 'phones', 'broadcast', 'ok'],
-    ['P', 'phones', 'presence',  'ok'],
-    ['A', 'phones', 'broadcast', 'denied'],
-    ['B', 'phones', 'broadcast', 'denied'],
+    -- phones topics carry the team: P is on team 2 (see the re-join above)
+    ['P', 'phones:2', 'broadcast', 'ok'],
+    ['P', 'phones:2', 'presence',  'ok'],
+    ['P', 'phones:1', 'broadcast', 'denied'],
+    ['P', 'phones:1', 'presence',  'denied'],
+    ['P', 'phones:8', 'broadcast', 'denied'],
+    ['P', 'phones:9', 'broadcast', 'denied'],
+    ['P', 'phones:abc', 'broadcast', 'denied'],
+    ['P', 'phones:2:x', 'broadcast', 'denied'],
+    ['P', 'phones',   'broadcast', 'denied'],
+    ['A', 'phones:2', 'broadcast', 'denied'],
+    ['B', 'phones:2', 'broadcast', 'denied'],
     ['P', 'host',   'broadcast', 'denied'],
     ['P', 'host',   'presence',  'denied'],
     ['B', 'host',   'broadcast', 'denied'],
@@ -421,7 +429,8 @@ declare
   who text; kind text; sub text; n int;
   cases text[][] := array[
     ['A', 'stage'], ['P', 'stage'], ['B', 'stage'],
-    ['A', 'phones'], ['P', 'phones'], ['B', 'phones'],
+    ['A', 'phones:1'], ['A', 'phones:2'], ['A', 'phones:8'], ['A', 'phones'], ['A', 'phones:2:x'],
+    ['P', 'phones:1'], ['P', 'phones:2'], ['B', 'phones:2'],
     ['A', 'host'], ['P', 'host'], ['B', 'host']
   ];
   i int;
@@ -458,10 +467,17 @@ select is((select v from _rt where k = 'A:stage:presence'),   'ok',     'owner s
 select is((select v from _rt where k = 'P:stage:broadcast'),  'denied', 'a phone member cannot broadcast on :stage');
 select is((select v from _rt where k = 'P:stage:presence'),   'denied', 'a phone member cannot track presence on :stage');
 select is((select v from _rt where k = 'B:stage:broadcast'),  'denied', 'a non-member cannot broadcast on :stage');
-select is((select v from _rt where k = 'P:phones:broadcast'), 'ok',     'a phone can broadcast on :phones');
-select is((select v from _rt where k = 'P:phones:presence'),  'ok',     'a phone can track presence on :phones');
-select is((select v from _rt where k = 'A:phones:broadcast'), 'denied', 'the owner cannot impersonate a phone on :phones');
-select is((select v from _rt where k = 'B:phones:broadcast'), 'denied', 'a non-member cannot broadcast on :phones');
+select is((select v from _rt where k = 'P:phones:2:broadcast'), 'ok',     'a team 2 phone can broadcast on :phones:2');
+select is((select v from _rt where k = 'P:phones:2:presence'),  'ok',     'a team 2 phone can track presence on :phones:2');
+select is((select v from _rt where k = 'P:phones:1:broadcast'), 'denied', 'a team 2 phone cannot broadcast on :phones:1 (FR-025)');
+select is((select v from _rt where k = 'P:phones:1:presence'),  'denied', 'a team 2 phone cannot track presence on :phones:1');
+select is((select v from _rt where k = 'P:phones:8:broadcast'), 'denied', 'a team 2 phone cannot broadcast on :phones:8');
+select is((select v from _rt where k = 'P:phones:9:broadcast'), 'denied', 'team 9 is not a topic');
+select is((select v from _rt where k = 'P:phones:abc:broadcast'), 'denied', 'a non-numeric team part is denied without a cast error');
+select is((select v from _rt where k = 'P:phones:2:x:broadcast'), 'denied', 'extra topic parts are denied');
+select is((select v from _rt where k = 'P:phones:broadcast'),   'denied', 'the old team-less :phones topic is denied');
+select is((select v from _rt where k = 'A:phones:2:broadcast'), 'denied', 'the owner cannot impersonate a phone on :phones:2');
+select is((select v from _rt where k = 'B:phones:2:broadcast'), 'denied', 'a non-member cannot broadcast on :phones:2');
 select is((select v from _rt where k = 'P:host:broadcast'),   'denied', 'a phone cannot broadcast on :host');
 select is((select v from _rt where k = 'P:host:presence'),    'denied', 'a phone cannot track presence on :host');
 select is((select v from _rt where k = 'B:host:broadcast'),   'denied', 'a non-member cannot broadcast on :host');
@@ -470,9 +486,14 @@ select is((select v from _rt where k = 'A:host:presence'),    'ok',     'the own
 select is((select v from _rt where k = 'read:A:stage'),  'visible', 'owner reads :stage');
 select is((select v from _rt where k = 'read:P:stage'),  'visible', 'a phone member reads :stage');
 select is((select v from _rt where k = 'read:B:stage'),  'hidden',  'a non-member cannot read :stage');
-select is((select v from _rt where k = 'read:A:phones'), 'visible', 'owner reads :phones');
-select is((select v from _rt where k = 'read:P:phones'), 'hidden',  'a phone cannot read :phones');
-select is((select v from _rt where k = 'read:B:phones'), 'hidden',  'a non-member cannot read :phones');
+select is((select v from _rt where k = 'read:A:phones:1'), 'visible', 'owner reads :phones:1');
+select is((select v from _rt where k = 'read:A:phones:2'), 'visible', 'owner reads :phones:2');
+select is((select v from _rt where k = 'read:A:phones:8'), 'visible', 'owner reads :phones:8');
+select is((select v from _rt where k = 'read:A:phones'),   'hidden',  'the team-less :phones topic is not readable');
+select is((select v from _rt where k = 'read:A:phones:2:x'), 'hidden', 'extra topic parts are not readable');
+select is((select v from _rt where k = 'read:P:phones:1'), 'hidden',  'a phone cannot read :phones:1');
+select is((select v from _rt where k = 'read:P:phones:2'), 'hidden',  'a phone cannot read even its own :phones:2');
+select is((select v from _rt where k = 'read:B:phones:2'), 'hidden',  'a non-member cannot read :phones:2');
 select is((select v from _rt where k = 'read:A:host'),   'visible', 'owner reads :host');
 select is((select v from _rt where k = 'read:P:host'),   'hidden',  'a phone cannot read :host (hidden information)');
 select is((select v from _rt where k = 'read:B:host'),   'hidden',  'a non-member cannot read :host');

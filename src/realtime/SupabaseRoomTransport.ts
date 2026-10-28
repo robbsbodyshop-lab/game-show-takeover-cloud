@@ -2,7 +2,9 @@
  * RoomTransport over Supabase Realtime private channels (design.md §4, §5, TD-001).
  *
  * One channel per topic the role needs; messages are Broadcast events, the roster is Presence on
- * the phones topic (phones) and the host topic (host views). The client is injected and typed
+ * the phones topics (phones) and the host topic (host views). Phones topics are per team
+ * (`room:<CODE>:phones:<TEAM>`): a phone joins only its own, the stage joins all eight and merges
+ * their presence into one roster, so RLS can pin each phone to its team (FR-025, P-004). The client is injected and typed
  * structurally (`SupabaseLike`) so unit tests pass a fake while the real `SupabaseClient` satisfies
  * the same shape (checked at compile time in the test file).
  *
@@ -15,7 +17,14 @@
 import { logger } from '../lib/logger';
 import { HandlerSet } from './handlerSet';
 import { isRoomCode, topicFor, type TopicKind } from './roomCodes';
-import { JOINED_TOPICS, PRESENCE_READ_TOPICS, PRESENCE_TRACK_TOPIC, canRead, prepareOutgoing } from './roles';
+import {
+  PRESENCE_READ_TOPICS,
+  PRESENCE_TRACK_TOPIC,
+  canRead,
+  channelPlan,
+  prepareOutgoing,
+  type ChannelSpec,
+} from './roles';
 import {
   sortRoster,
   validateConnectOptions,
@@ -30,6 +39,7 @@ import {
   EVENTS_BY_TOPIC,
   MAX_NICKNAME_LENGTH,
   parseMessage,
+  parsePhonesMessage,
   parsePresencePayload,
   type EventNameFor,
   type ParsedMessage,
@@ -88,7 +98,15 @@ interface ActiveConnection {
   code: string;
   role: Role;
   key: string;
+  /** Own team for a phone; selects the phones channel it joins and publishes on. */
+  team: number | undefined;
   presence: PresencePayload | null;
+}
+
+/** One open channel and what it is for. */
+interface OpenChannel {
+  spec: ChannelSpec;
+  channel: RealtimeChannelLike;
 }
 
 export class SupabaseRoomTransport implements RoomTransport {
@@ -105,8 +123,9 @@ export class SupabaseRoomTransport implements RoomTransport {
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private pending: { resolve: () => void; reject: (error: Error) => void } | null = null;
   private authSubscription: { unsubscribe(): void } | null = null;
-  private channels = new Map<TopicKind, RealtimeChannelLike>();
-  private readonly joined = new Set<TopicKind>();
+  /** Keyed by full topic name, for example `room:BKDX:phones:3`. */
+  private channels = new Map<string, OpenChannel>();
+  private readonly joined = new Set<string>();
 
   private readonly messageHandlers: Record<TopicKind, HandlerSet<[AnyParsedMessage]>> = {
     stage: new HandlerSet(),
@@ -138,6 +157,7 @@ export class SupabaseRoomTransport implements RoomTransport {
       code: opts.code,
       role: opts.role,
       key: opts.key ?? this.randomKey(),
+      team: opts.role === 'phone' ? opts.team : undefined,
       presence: this.buildPresence(opts),
     };
     this.attempt = 0;
@@ -169,7 +189,11 @@ export class SupabaseRoomTransport implements RoomTransport {
     const active = this.active;
     const out = prepareOutgoing(active?.role ?? 'stage', topic, event, payload, this.now());
     if (!out.ok) return;
-    const channel = this.channels.get(topic);
+    const channel =
+      active === null
+        ? undefined
+        : this.channels.get(topicFor(active.code, topic, topic === 'phones' ? active.team : undefined))
+            ?.channel;
     if (active === null || channel === undefined || this.currentStatus !== 'connected') {
       logger.warn(`[realtime] dropped "${event}" on topic ${topic}: not connected (${this.currentStatus})`);
       return;
@@ -180,7 +204,7 @@ export class SupabaseRoomTransport implements RoomTransport {
 
   subscribe<K extends TopicKind>(topic: K, handler: (msg: ParsedMessage<K>) => void): () => void {
     if (this.active !== null && !canRead(this.active.role, topic)) {
-      logger.warn(`[realtime] ${this.active.role} cannot read topic ${topicFor(this.active.code, topic)}`);
+      logger.warn(`[realtime] ${this.active.role} cannot read topic room:${this.active.code}:${topic}`);
       return () => undefined;
     }
     // Handlers are stored untyped per topic; `topic` ties each one to its own message union.
@@ -203,25 +227,27 @@ export class SupabaseRoomTransport implements RoomTransport {
     const epoch = ++this.epoch;
     this.joined.clear();
     try {
-      for (const topic of JOINED_TOPICS[active.role]) {
-        const channel = this.client.channel(topicFor(active.code, topic), {
+      for (const spec of channelPlan(active.role, active.team)) {
+        const { kind } = spec;
+        const name = topicFor(active.code, kind, spec.team);
+        const channel = this.client.channel(name, {
           config: { private: true, presence: { key: active.key } },
         });
-        this.channels.set(topic, channel);
-        if (canRead(active.role, topic)) {
-          for (const event of EVENTS_BY_TOPIC[topic]) {
+        this.channels.set(name, { spec, channel });
+        if (canRead(active.role, kind)) {
+          for (const event of EVENTS_BY_TOPIC[kind]) {
             channel.on('broadcast', { event }, (message) => {
-              this.onBroadcast(epoch, topic, event, message.payload);
+              this.onBroadcast(epoch, spec, event, message.payload);
             });
           }
         }
-        if (PRESENCE_READ_TOPICS[active.role].includes(topic)) {
+        if (PRESENCE_READ_TOPICS[active.role].includes(kind)) {
           channel.on('presence', { event: 'sync' }, () => {
             this.onPresenceSync(epoch);
           });
         }
         channel.subscribe((status, error) => {
-          this.onSubscribeStatus(epoch, topic, status, error);
+          this.onSubscribeStatus(epoch, name, status, error);
         });
       }
     } catch (error) {
@@ -229,22 +255,23 @@ export class SupabaseRoomTransport implements RoomTransport {
     }
   }
 
-  private onSubscribeStatus(epoch: number, topic: TopicKind, status: string, error?: Error): void {
+  private onSubscribeStatus(epoch: number, name: string, status: string, error?: Error): void {
     if (epoch !== this.epoch || this.active === null) return;
     switch (status) {
       case 'SUBSCRIBED': {
-        this.joined.add(topic);
-        this.trackPresence(epoch, topic);
-        if (this.joined.size === JOINED_TOPICS[this.active.role].length) this.onFullyConnected();
+        this.joined.add(name);
+        this.trackPresence(epoch, name);
+        if (this.joined.size === channelPlan(this.active.role, this.active.team).length)
+          this.onFullyConnected();
         return;
       }
       case 'CHANNEL_ERROR':
       case 'TIMED_OUT':
       case 'CLOSED':
-        this.fail(epoch, error?.message ?? `${status} on ${topic}`);
+        this.fail(epoch, error?.message ?? `${status} on ${name}`);
         return;
       default:
-        logger.debug(`[realtime] ignoring subscribe status ${status} on ${topic}`);
+        logger.debug(`[realtime] ignoring subscribe status ${status} on ${name}`);
     }
   }
 
@@ -280,7 +307,7 @@ export class SupabaseRoomTransport implements RoomTransport {
   }
 
   private async closeChannels(): Promise<void> {
-    const channels = [...this.channels.values()];
+    const channels = [...this.channels.values()].map((open) => open.channel);
     this.channels = new Map();
     this.joined.clear();
     await Promise.allSettled(channels.map((channel) => this.client.removeChannel(channel)));
@@ -293,18 +320,24 @@ export class SupabaseRoomTransport implements RoomTransport {
 
   // --- inbound -------------------------------------------------------------------------------
 
-  private onBroadcast(epoch: number, topic: TopicKind, event: string, raw: unknown): void {
+  private onBroadcast(epoch: number, spec: ChannelSpec, event: string, raw: unknown): void {
     if (epoch !== this.epoch) return;
-    const parsed = parseMessage(topic, event, raw);
+    if (spec.kind === 'phones') {
+      // The channel, not the payload, says which team spoke; a payload claiming another is dropped.
+      const stamped = spec.team === undefined ? null : parsePhonesMessage(event, raw, spec.team);
+      if (stamped !== null) this.messageHandlers.phones.emit(stamped);
+      return;
+    }
+    const parsed = parseMessage(spec.kind, event, raw);
     if (parsed === null) return;
-    this.messageHandlers[topic].emit(parsed);
+    this.messageHandlers[spec.kind].emit(parsed);
   }
 
-  private trackPresence(epoch: number, topic: TopicKind): void {
+  private trackPresence(epoch: number, name: string): void {
     const active = this.active;
-    const channel = this.channels.get(topic);
-    if (active?.presence == null || channel === undefined || PRESENCE_TRACK_TOPIC[active.role] !== topic)
-      return;
+    const open = this.channels.get(name);
+    if (active?.presence == null || PRESENCE_TRACK_TOPIC[active.role] !== open?.spec.kind) return;
+    const { channel } = open;
     channel.track({ ...active.presence }).then(
       (result) => {
         if (result !== 'ok' && epoch === this.epoch)
@@ -320,15 +353,17 @@ export class SupabaseRoomTransport implements RoomTransport {
     const active = this.active;
     if (epoch !== this.epoch || active === null) return;
     const roster: PresenceEntry[] = [];
-    for (const topic of PRESENCE_READ_TOPICS[active.role]) {
-      const state = this.channels.get(topic)?.presenceState() ?? {};
+    for (const { spec, channel } of this.channels.values()) {
+      if (!PRESENCE_READ_TOPICS[active.role].includes(spec.kind)) continue;
+      // The stage reads eight phones topics; the merged roster is one list, keyed by presence key.
+      const state = channel.presenceState();
       for (const [key, metas] of Object.entries(state)) {
         const payload = parsePresencePayload(metas.at(-1));
         if (payload === null) {
           logger.warn(`[realtime] ignored invalid presence payload for ${key}`);
           continue;
         }
-        roster.push({ key, role: topic === 'host' ? 'host' : 'phone', ...payload });
+        roster.push({ key, role: spec.kind === 'host' ? 'host' : 'phone', ...payload });
       }
     }
     this.presenceHandlers.emit(sortRoster(roster));

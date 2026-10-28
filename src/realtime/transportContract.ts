@@ -181,6 +181,55 @@ export function runTransportContract(label: string, makeHarness: () => ContractH
       });
     });
 
+    describe('per-team phones topics (FR-025, P-004)', () => {
+      it('drops a press whose payload team differs from the sender team, and logs it', async () => {
+        const { stage, phone2 } = await openRoom();
+        const inbox = collect(stage, 'phones');
+        // phone2 is on team 2 and claims to press for team 1
+        await phone2.publish('phones', 'press', { pressId: 'forged', team: 1, at: 1 });
+        await phone2.publish('phones', 'action', { pressId: 'forged-a', team: 1, action: 'buy' });
+        await phone2.publish('phones', 'feud-answer', { pressId: 'forged-f', team: 1, text: 'x' });
+        await h.settle();
+        expect(inbox).toEqual([]);
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('payload claims team 1'));
+      });
+
+      it('stamps every phones message with the team of the topic it arrived on', async () => {
+        const { stage, phone1, phone2 } = await openRoom();
+        const inbox = collect(stage, 'phones');
+        await phone1.publish('phones', 'press', { pressId: 'p-1', team: 1, at: 1 });
+        await phone2.publish('phones', 'press', { pressId: 'p-2', team: 2, at: 2 });
+        await phone2.publish('phones', 'feud-answer', { pressId: 'f-2', team: 2, text: 'ok' });
+        await h.settle();
+        expect(inbox.map((m) => [m.event, m.topicTeam, m.message.team])).toEqual([
+          ['press', 1, 1],
+          ['press', 2, 2],
+          ['feud-answer', 2, 2],
+        ]);
+      });
+
+      it('shows one roster for phones on different team topics', async () => {
+        const stage = h.createTransport();
+        let roster: PresenceEntry[] = [];
+        stage.onPresence((r) => {
+          roster = r;
+        });
+        await stage.connect({ code: h.code, role: 'stage' });
+        const phone3 = h.createTransport();
+        const phone8 = h.createTransport();
+        await phone3.connect({ code: h.code, role: 'phone', team: 3, nickname: 'Cy' });
+        await phone8.connect({ code: h.code, role: 'phone', team: 8, nickname: 'Di' });
+        await h.settle();
+        expect(roster.map((e) => [e.role, e.team, e.nickname])).toEqual([
+          ['phone', 3, 'Cy'],
+          ['phone', 8, 'Di'],
+        ]);
+        await phone3.disconnect();
+        await h.settle();
+        expect(roster.map((e) => e.team)).toEqual([8]);
+      });
+    });
+
     describe('controls fan-out', () => {
       it('sends teams, controls and audience to all phones and host views in order', async () => {
         const { stage, host, phone1, phone2 } = await openRoom();

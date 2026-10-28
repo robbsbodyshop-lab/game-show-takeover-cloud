@@ -62,11 +62,42 @@ describe('phone bridge', () => {
 
   it('ignores teams that are not in the event', async () => {
     const r = await rig();
+    const ghost = new MemoryRoomTransport({ hub: r.hub, now: () => r.clock.t });
+    await ghost.connect({ code: CODE, role: 'phone', team: 7 });
     const seen = vi.fn();
     r.bridge.onPress(seen);
-    await press(r, 7, 'ghost');
+    await ghost.publish('phones', 'press', { pressId: 'ghost', team: 7, at: r.clock.t });
     await flushPromises();
     expect(seen).not.toHaveBeenCalled();
+  });
+
+  it('attributes messages to the topic team and drops a phone claiming another team (FR-025)', async () => {
+    const r = await rig(); // r.phone is on team 1
+    const presses: string[] = [];
+    const actions: string[] = [];
+    const answers: string[] = [];
+    r.bridge.onPress((p) => presses.push(`${String(p.team)}:${p.pressId}`));
+    r.bridge.onAction((a) => actions.push(`${String(a.team)}:${a.pressId}`));
+    r.bridge.onFeudAnswer((a) => answers.push(`${String(a.team)}:${a.pressId}`));
+    await press(r, 2, 'forged');
+    await r.phone.publish('phones', 'action', { pressId: 'forged-a', team: 2, action: 'buy' });
+    await r.phone.publish('phones', 'feud-answer', { pressId: 'forged-f', team: 2, text: 'x' });
+    await flushPromises();
+    expect(presses).toEqual([]);
+    expect(actions).toEqual([]);
+    expect(answers).toEqual([]);
+  });
+
+  it('delivers presses from phones on different teams, each under its own team', async () => {
+    const r = await rig();
+    const second = new MemoryRoomTransport({ hub: r.hub, now: () => r.clock.t });
+    await second.connect({ code: CODE, role: 'phone', team: 2 });
+    const seen: string[] = [];
+    r.bridge.onPress((p) => seen.push(`${String(p.team)}:${p.pressId}`));
+    await press(r, 1, 'a');
+    await second.publish('phones', 'press', { pressId: 'b', team: 2, at: r.clock.t });
+    await flushPromises();
+    expect(seen.sort()).toEqual(['1:a', '2:b']);
   });
 
   it('rate limits presses to one per 150 ms per team, independently per team', async () => {

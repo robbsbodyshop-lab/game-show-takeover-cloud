@@ -18,7 +18,7 @@ import {
   type SimulateDisconnectOptions,
 } from './MemoryRoomTransport';
 import { PRESENCE_READ_TOPICS } from './roles';
-import { isTopicKind, type TopicKind } from './roomCodes';
+import { isTeamId, isTopicKind, type TopicKind } from './roomCodes';
 import { sortRoster, type PresenceEntry } from './RoomTransport';
 import { parsePresencePayload } from './schemas';
 
@@ -42,7 +42,16 @@ export interface BroadcastHubOptions {
 }
 
 type RelayMessage =
-  | { k: 'msg'; from: string; code: string; topic: TopicKind; event: string; wire: unknown }
+  | {
+      k: 'msg';
+      from: string;
+      code: string;
+      topic: TopicKind;
+      event: string;
+      wire: unknown;
+      /** Team of the phones topic the message was published on; absent for other topics. */
+      team?: number;
+    }
   | { k: 'presence'; from: string; code: string; entries: PresenceEntry[] }
   | { k: 'hello'; from: string }
   | { k: 'bye'; from: string };
@@ -76,9 +85,17 @@ const parseRelay = (data: unknown): RelayMessage | null => {
         ? { k: 'presence', from, code: data.code, entries: parseEntries(data.entries) }
         : null;
     case 'msg':
-      return typeof data.code === 'string' && isTopicKind(data.topic) && typeof data.event === 'string'
-        ? { k: 'msg', from, code: data.code, topic: data.topic, event: data.event, wire: data.wire }
-        : null;
+      if (typeof data.code !== 'string' || !isTopicKind(data.topic) || typeof data.event !== 'string')
+        return null;
+      return {
+        k: 'msg',
+        from,
+        code: data.code,
+        topic: data.topic,
+        event: data.event,
+        wire: data.wire,
+        ...(isTeamId(data.team) ? { team: data.team } : {}),
+      };
     default:
       return null;
   }
@@ -123,10 +140,21 @@ export class BroadcastRoomHub extends MemoryRoomHub {
     event: string,
     wire: unknown,
     sender: MemoryRoomTransport | null,
+    topicTeam?: number,
   ): void {
-    super.deliver(code, topic, event, wire, sender);
+    super.deliver(code, topic, event, wire, sender, topicTeam);
     // `sender === null` means the message came from another tab: never echo it back.
-    if (sender !== null) this.post({ k: 'msg', from: this.hubId, code, topic, event, wire });
+    if (sender !== null) {
+      this.post({
+        k: 'msg',
+        from: this.hubId,
+        code,
+        topic,
+        event,
+        wire,
+        ...(topicTeam === undefined ? {} : { team: topicTeam }),
+      });
+    }
   }
 
   override rosterFor(code: string, reader: MemoryRoomTransport): PresenceEntry[] | null {
@@ -179,8 +207,14 @@ export class BroadcastRoomHub extends MemoryRoomHub {
     this.post({ k: 'presence', from: this.hubId, code, entries: this.localEntries(code) });
   }
 
-  private deliverFromRelay(code: string, topic: TopicKind, event: string, wire: unknown): void {
-    super.deliver(code, topic, event, wire, null);
+  private deliverFromRelay(
+    code: string,
+    topic: TopicKind,
+    event: string,
+    wire: unknown,
+    team: number | undefined,
+  ): void {
+    super.deliver(code, topic, event, wire, null, team);
   }
 
   /** Wakes the rosters of this tab's own clients without announcing anything. */
@@ -193,7 +227,7 @@ export class BroadcastRoomHub extends MemoryRoomHub {
     if (message === null || message.from === this.hubId) return;
     switch (message.k) {
       case 'msg':
-        this.deliverFromRelay(message.code, message.topic, message.event, message.wire);
+        this.deliverFromRelay(message.code, message.topic, message.event, message.wire, message.team);
         return;
       case 'presence': {
         let byCode = this.remote.get(message.from);

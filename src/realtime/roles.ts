@@ -8,12 +8,35 @@ import { logger } from '../lib/logger';
 import type { TopicKind } from './roomCodes';
 import { isEventOf, parseMessage, PROTOCOL_VERSION, SENDER_OF, type Role } from './schemas';
 
-/** Channels a client opens (a phone needs `phones` to send even though it cannot read it). */
-export const JOINED_TOPICS: Readonly<Record<Role, readonly TopicKind[]>> = {
-  stage: ['stage', 'phones', 'host'],
-  host: ['stage', 'host'],
-  phone: ['stage', 'phones'],
-};
+/** One Realtime channel: a topic kind and, for `phones`, the team whose topic it is. */
+export interface ChannelSpec {
+  kind: TopicKind;
+  team?: number;
+}
+
+/** Highest team id; the stage joins one phones topic per team. */
+const TEAM_IDS: readonly number[] = [1, 2, 3, 4, 5, 6, 7, 8];
+
+/**
+ * Channels a client opens. A phone joins `stage` (to read) and only its own `phones:<team>` (to
+ * send; it cannot read it). The stage joins `stage`, `host` and all eight `phones:<team>` topics,
+ * so it hears every team; a host view joins `stage` and `host`. Eight plus two channels are far
+ * below the 100 channels per connection limit.
+ */
+export function channelPlan(role: Role, team?: number): ChannelSpec[] {
+  switch (role) {
+    case 'stage':
+      return [
+        { kind: 'stage' },
+        { kind: 'host' },
+        ...TEAM_IDS.map((id): ChannelSpec => ({ kind: 'phones', team: id })),
+      ];
+    case 'host':
+      return [{ kind: 'stage' }, { kind: 'host' }];
+    case 'phone':
+      return team === undefined ? [{ kind: 'stage' }] : [{ kind: 'stage' }, { kind: 'phones', team }];
+  }
+}
 
 /** Topics whose messages a role may receive. */
 export const READABLE_TOPICS: Readonly<Record<Role, readonly TopicKind[]>> = {

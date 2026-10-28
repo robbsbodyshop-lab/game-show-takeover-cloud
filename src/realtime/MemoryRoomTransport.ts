@@ -6,7 +6,7 @@
  */
 import { logger } from '../lib/logger';
 import { HandlerSet } from './handlerSet';
-import { isTopicCode, topicFor, type TopicKind } from './roomCodes';
+import { isTeamId, isTopicCode, type TopicKind } from './roomCodes';
 import { PRESENCE_READ_TOPICS, PRESENCE_TRACK_TOPIC, canRead, prepareOutgoing } from './roles';
 import {
   sortRoster,
@@ -21,6 +21,7 @@ import {
 import {
   MAX_NICKNAME_LENGTH,
   parseMessage,
+  parsePhonesMessage,
   type EventNameFor,
   type ParsedMessage,
   type PayloadFor,
@@ -69,6 +70,8 @@ export class MemoryRoomHub {
   /**
    * @internal Delivers one wire message to every other client that can read the topic. `sender` is
    * `null` for a message that arrived from another browser tab (see `BroadcastRoomHub`).
+   * `topicTeam` is the team in the topic name of a phones message (`room:<CODE>:phones:<TEAM>`),
+   * which is the sender's own team: the real topic carries it, the payload's `team` is not trusted.
    */
   deliver(
     code: string,
@@ -76,13 +79,14 @@ export class MemoryRoomHub {
     event: string,
     wire: unknown,
     sender: MemoryRoomTransport | null,
+    topicTeam?: number,
   ): void {
     // Round-trip through JSON so receivers never share object identity with the sender.
     const text = JSON.stringify(wire);
     for (const client of this.rooms.get(code) ?? []) {
       if (client === sender || !client.isLive || !canRead(client.role, topic)) continue;
       queueMicrotask(() => {
-        client.receive(topic, event, JSON.parse(text) as unknown);
+        client.receive(topic, event, JSON.parse(text) as unknown, topicTeam);
       });
     }
   }
@@ -216,13 +220,15 @@ export class MemoryRoomTransport implements RoomTransport {
       logger.warn(`[realtime] dropped "${event}" on topic ${topic}: not connected (${this.currentStatus})`);
       return;
     }
-    this.hub.deliver(this.code, topic, event, out.wire, this);
+    // A phone publishes on the topic of its own team, whatever the payload says.
+    const topicTeam = topic === 'phones' ? this.presence?.team : undefined;
+    this.hub.deliver(this.code, topic, event, out.wire, this, topicTeam);
     await Promise.resolve();
   }
 
   subscribe<K extends TopicKind>(topic: K, handler: (msg: ParsedMessage<K>) => void): () => void {
     if (!canRead(this.currentRole, topic) && this.code !== null) {
-      logger.warn(`[realtime] ${this.currentRole} cannot read topic ${topicFor(this.code, topic)}`);
+      logger.warn(`[realtime] ${this.currentRole} cannot read topic room:${this.code}:${topic}`);
       return () => undefined;
     }
     // Handlers are stored untyped per topic; `topic` ties each one to its own message union.
@@ -240,8 +246,17 @@ export class MemoryRoomTransport implements RoomTransport {
   // --- hub callbacks -------------------------------------------------------------------------
 
   /** @internal */
-  receive(topic: TopicKind, event: string, raw: unknown): void {
+  receive(topic: TopicKind, event: string, raw: unknown, topicTeam?: number): void {
     if (!this.isLive) return;
+    if (topic === 'phones') {
+      if (!isTeamId(topicTeam)) {
+        logger.warn(`[realtime] dropped "${event}" on a phones topic without a valid team`);
+        return;
+      }
+      const stamped = parsePhonesMessage(event, raw, topicTeam);
+      if (stamped !== null) this.messageHandlers.phones.emit(stamped);
+      return;
+    }
     const parsed = parseMessage(topic, event, raw);
     if (parsed === null) return;
     this.messageHandlers[topic].emit(parsed);

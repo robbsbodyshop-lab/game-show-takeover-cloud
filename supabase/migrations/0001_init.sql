@@ -565,12 +565,18 @@ grant execute on function public.purge_expired_rooms()      to service_role;
 
 -- ---------------------------------------------------------------------------------------------
 -- Realtime authorization (private channels, "Allow public access" off)
--- Topic format: room:<CODE>:<kind> with kind in (stage, phones, host).
---   split_part(topic, ':', 2) = code, split_part(topic, ':', 3) = kind.
+-- Topic format: room:<CODE>:<kind> with kind in (stage, host), and room:<CODE>:phones:<TEAM>
+-- (TEAM 1..8) for phones.
+--   split_part(topic, ':', 2) = code, split_part(topic, ':', 3) = kind,
+--   split_part(topic, ':', 4) = team (phones only).
+-- The team is part of the phones topic because RLS cannot read the message payload: a phone may
+-- only publish on the topic of the team stored in its own room_members row, so it cannot press,
+-- act or answer for another team (FR-025, P-004).
 -- Both Realtime extensions are covered: broadcast (messages) and presence (track / state).
 --   * stage topic : any member reads; owner sessions (role stage|host, user = rooms.owner_id)
 --                   write (broadcast: controls / teams / ack / audience; presence: stage online).
---   * phones topic: phone members write (press / action; presence roster); owner sessions read.
+--   * phones topic: a phone member writes (press / action / feud-answer; presence) only on the
+--                   topic of its own team; owner sessions read every team topic.
 --   * host topic  : owner sessions only, read and write (snapshots carry hidden information).
 -- "Owner session" = a room_members row for the caller in a room whose owner_id is the caller.
 -- Ownership is therefore checked against rooms.owner_id, never against the stored role alone.
@@ -612,11 +618,19 @@ create policy "room phones topic: phones write"
     extension in ('broadcast', 'presence')
     and split_part((select realtime.topic()), ':', 1) = 'room'
     and split_part((select realtime.topic()), ':', 3) = 'phones'
+    and split_part((select realtime.topic()), ':', 4) ~ '^[1-8]$'
+    and split_part((select realtime.topic()), ':', 5) = ''
     and exists (
       select 1 from public.room_members m
       where m.room_code = split_part((select realtime.topic()), ':', 2)
         and m.user_id = (select auth.uid())
         and m.role = 'phone'
+        -- case, not and: the cast must never be evaluated for a non-numeric part
+        and case
+              when split_part((select realtime.topic()), ':', 4) ~ '^[1-8]$'
+              then m.team = split_part((select realtime.topic()), ':', 4)::int
+              else false
+            end
     )
   );
 
@@ -626,6 +640,8 @@ create policy "room phones topic: owner reads"
     extension in ('broadcast', 'presence')
     and split_part((select realtime.topic()), ':', 1) = 'room'
     and split_part((select realtime.topic()), ':', 3) = 'phones'
+    and split_part((select realtime.topic()), ':', 4) ~ '^[1-8]$'
+    and split_part((select realtime.topic()), ':', 5) = ''
     and exists (
       select 1
       from public.room_members m
