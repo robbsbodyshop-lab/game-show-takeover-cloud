@@ -354,4 +354,4 @@ dependency. The Python generator for the old cues is kept under `scripts/legacy/
 - _How do I show something to phones?_ Extend `controls` in `realtime/schemas.ts`; the stage
   computes it in the game controller's `phoneControls()` selector.
 - _How do I run without Supabase?_ `npm run dev -- --mode demo` uses the memory transport
-  and repository; `/play?demo=1&room=DEMO` opens a demo phone in another tab.
+  and repository; `/play?demo=1&room=DMKT` opens a demo phone in another tab.
