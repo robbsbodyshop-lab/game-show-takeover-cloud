@@ -3,6 +3,7 @@
 Collected during implementation. Each has the interim choice the code uses now; say if you want a different one.
 
 ## Event wrapper (from the event engine)
+
 - Q-010 Door game: teams now pick a distinct door directly; the old "guess 1-100, closest picks" step is gone. Keep direct picks?
 - Q-011 Main games are playable once per event (as FR-051). The old app allowed replays. Allow replay?
 - Q-012 Scores and chips clamp at 0 on manual changes. Allow negative scores?
@@ -12,20 +13,24 @@ Collected during implementation. Each has the interim choice the code uses now; 
 - Q-016 Puzzle game: no event scoring; the host awards points/chips manually. OK, or should winning award a chip automatically?
 
 ## Design system
+
 - Q-020 CRT "curve" is a stepped vignette, not true barrel distortion (which costs performance on the stage). OK?
 - Q-021 Buttons use ink text on every bright fill for contrast; teal and plum buttons must stay 18 px or larger. OK?
 
 ## Puzzle game
+
 - Q-001 Working title "Capsule Clinic". Approve or rename?
 - Q-005 Added scoring/level progression/versus garbage the pygame source never had (proposed rules in design.md §8.4). Approve?
 - Q-030 2P versus: both players draw capsules from one shared random stream, so sequences differ. Give each player the identical sequence (fairer, like the classic games)?
 - Q-031 Garbage is sent per cascade step (each chained clear can send more). Alternative: count one lock's clears together. Which?
 
 ## Family Feud (from the engine)
+
 - Q-040 Sudden Death: the winner currently also banks the #1 answer x3 on their game score (so it counts toward event points). Or should Sudden Death decide the game without adding points?
 - Q-041 Fast Money survey groups ("same survey group" duplicates) are not in the content file; duplicates are detected by matching the same answer only. Add groups to the content later?
 
 ## Wheel of Fortune (from the engine; interim readings of the rules doc)
+
 - Q-050 Trip wedge value is not in the rules doc; code uses $5,000. OK?
 - Q-051 Same Letter $1,000 bonus goes into round cash (Bankrupt can take it) rather than being banked at once. OK?
 - Q-052 Mystery flip: a flip gives up the money from that spin; flipped wedge becomes $500, the other $1,000; "keep" leaves both Mystery. OK?
@@ -35,5 +40,6 @@ Collected during implementation. Each has the interim choice the code uses now; 
 - Q-056 Bonus Wheel cash envelope mix and wheel layouts are reconstructions (documented in bonus.ts / wheels.ts). Any values you want changed?
 
 ## Follow-ups I will do unless you object (engineering, not product)
+
 - F-001 Add SPEED_RESET and SPEED_ADJUST(+/-5 s) actions to the event engine so the Speed Round host controls stop routing through the hub.
 - F-002 Put the Speed Round challenge text into the session so it survives reload and reaches the host view.

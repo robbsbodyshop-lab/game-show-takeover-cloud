@@ -6,3 +6,5 @@ src/content/*.json
 scripts/legacy
 playwright-report
 test-results
+.vitest
+**/.vitest
