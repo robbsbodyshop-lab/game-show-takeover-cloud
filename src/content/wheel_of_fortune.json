@@ -1,0 +1,2387 @@
+{
+  "metadata": {
+    "source": "Original puzzles written for Game Show Takeover, using the show's category names",
+    "sourceUrl": "https://github.com/robbsbodyshop-lab/game-show-takeover-",
+    "lastValidated": "2026-09-27"
+  },
+  "puzzles": [
+    {
+      "id": "wof-round-001",
+      "category": "PHRASE",
+      "phrase": "EVERY CLOUD HAS A SILVER LINING",
+      "lines": ["EVERY CLOUD", "HAS A SILVER", "LINING"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-002",
+      "category": "PHRASE",
+      "phrase": "TWO HEADS ARE BETTER THAN ONE",
+      "lines": ["TWO HEADS", "ARE BETTER", "THAN ONE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-003",
+      "category": "PHRASE",
+      "phrase": "PRACTICE MAKES PERFECT",
+      "lines": ["PRACTICE MAKES", "PERFECT"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-004",
+      "category": "PHRASE",
+      "phrase": "THE EARLY BIRD CATCHES THE WORM",
+      "lines": ["THE EARLY", "BIRD CATCHES", "THE WORM"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-005",
+      "category": "PHRASE",
+      "phrase": "ACTIONS SPEAK LOUDER THAN WORDS",
+      "lines": ["ACTIONS", "SPEAK LOUDER", "THAN WORDS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-006",
+      "category": "PHRASE",
+      "phrase": "DON'T PUT ALL YOUR EGGS IN ONE BASKET",
+      "lines": ["DON'T PUT", "ALL YOUR EGGS", "IN ONE BASKET"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-007",
+      "category": "PHRASE",
+      "phrase": "LET'S GET THE BALL ROLLING",
+      "lines": ["LET'S GET THE", "BALL ROLLING"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-008",
+      "category": "PHRASE",
+      "phrase": "A PICTURE IS WORTH A THOUSAND WORDS",
+      "lines": ["A PICTURE IS", "WORTH A", "THOUSAND", "WORDS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-009",
+      "category": "PHRASE",
+      "phrase": "THE BEST IS YET TO COME",
+      "lines": ["THE BEST IS", "YET TO COME"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-010",
+      "category": "PHRASE",
+      "phrase": "TEAMWORK MAKES THE DREAM WORK",
+      "lines": ["TEAMWORK MAKES", "THE DREAM WORK"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-011",
+      "category": "PHRASE",
+      "phrase": "GREAT MINDS THINK ALIKE",
+      "lines": ["GREAT MINDS", "THINK ALIKE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-012",
+      "category": "PHRASE",
+      "phrase": "BACK TO THE DRAWING BOARD",
+      "lines": ["BACK TO THE", "DRAWING BOARD"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-013",
+      "category": "PHRASE",
+      "phrase": "ROME WASN'T BUILT IN A DAY",
+      "lines": ["ROME WASN'T", "BUILT IN A DAY"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-014",
+      "category": "PHRASE",
+      "phrase": "TIME FLIES WHEN YOU'RE HAVING FUN",
+      "lines": ["TIME FLIES", "WHEN YOU'RE", "HAVING FUN"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-015",
+      "category": "PHRASE",
+      "phrase": "A WELL-DESERVED DAY OFF",
+      "lines": ["A WELL-", "DESERVED", "DAY OFF"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-016",
+      "category": "THING",
+      "phrase": "HOMEMADE BIRTHDAY CAKE",
+      "lines": ["HOMEMADE", "BIRTHDAY CAKE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-017",
+      "category": "THING",
+      "phrase": "HANDWRITTEN THANK-YOU NOTE",
+      "lines": ["HANDWRITTEN", "THANK-YOU NOTE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-018",
+      "category": "THING",
+      "phrase": "BRAND-NEW BICYCLE BELL",
+      "lines": ["BRAND-NEW", "BICYCLE BELL"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-019",
+      "category": "THING",
+      "phrase": "GRANDFATHER CLOCK",
+      "lines": ["GRANDFATHER", "CLOCK"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-020",
+      "category": "THING",
+      "phrase": "ANTIQUE TREASURE CHEST",
+      "lines": ["ANTIQUE", "TREASURE CHEST"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-021",
+      "category": "THING",
+      "phrase": "SPARKLING CRYSTAL CHANDELIER",
+      "lines": ["SPARKLING", "CRYSTAL", "CHANDELIER"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-022",
+      "category": "THING",
+      "phrase": "BOUQUET OF FRESH FLOWERS",
+      "lines": ["BOUQUET OF", "FRESH FLOWERS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-023",
+      "category": "THINGS",
+      "phrase": "PAPER CLIPS & RUBBER BANDS",
+      "lines": ["PAPER CLIPS &", "RUBBER BANDS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-024",
+      "category": "THINGS",
+      "phrase": "FALLING AUTUMN LEAVES",
+      "lines": ["FALLING", "AUTUMN LEAVES"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-025",
+      "category": "THINGS",
+      "phrase": "SALT & PEPPER SHAKERS",
+      "lines": ["SALT & PEPPER", "SHAKERS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-026",
+      "category": "THINGS",
+      "phrase": "FUZZY BUNNY SLIPPERS",
+      "lines": ["FUZZY", "BUNNY SLIPPERS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-027",
+      "category": "THINGS",
+      "phrase": "SEASHELLS ON THE SHORE",
+      "lines": ["SEASHELLS", "ON THE SHORE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-028",
+      "category": "PERSON",
+      "phrase": "FRIENDLY NEIGHBORHOOD MAIL CARRIER",
+      "lines": ["FRIENDLY", "NEIGHBORHOOD", "MAIL CARRIER"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-029",
+      "category": "PERSON",
+      "phrase": "TALENTED YOUNG VIOLINIST",
+      "lines": ["TALENTED YOUNG", "VIOLINIST"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-030",
+      "category": "PERSON",
+      "phrase": "WORLD-FAMOUS PASTRY CHEF",
+      "lines": ["WORLD-FAMOUS", "PASTRY CHEF"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-031",
+      "category": "PERSON",
+      "phrase": "MY FAVORITE TEACHER",
+      "lines": ["MY FAVORITE", "TEACHER"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-032",
+      "category": "PERSON",
+      "phrase": "BEST FRIEND SINCE KINDERGARTEN",
+      "lines": ["BEST FRIEND", "SINCE", "KINDERGARTEN"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-033",
+      "category": "PEOPLE",
+      "phrase": "NEXT-DOOR NEIGHBORS",
+      "lines": ["NEXT-DOOR", "NEIGHBORS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-034",
+      "category": "PEOPLE",
+      "phrase": "CHEERING FANS IN THE BLEACHERS",
+      "lines": ["CHEERING", "FANS IN THE", "BLEACHERS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-035",
+      "category": "PEOPLE",
+      "phrase": "CAMP COUNSELORS",
+      "lines": ["CAMP", "COUNSELORS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-036",
+      "category": "PEOPLE",
+      "phrase": "LITTLE LEAGUE COACHES",
+      "lines": ["LITTLE LEAGUE", "COACHES"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-037",
+      "category": "PEOPLE",
+      "phrase": "HOLIDAY CAROLERS",
+      "lines": ["HOLIDAY", "CAROLERS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-038",
+      "category": "PLACE",
+      "phrase": "COUNTRY GENERAL STORE",
+      "lines": ["COUNTRY", "GENERAL STORE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-039",
+      "category": "PLACE",
+      "phrase": "BUSY AIRPORT TERMINAL",
+      "lines": ["BUSY AIRPORT", "TERMINAL"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-040",
+      "category": "PLACE",
+      "phrase": "PUBLIC LIBRARY READING ROOM",
+      "lines": ["PUBLIC LIBRARY", "READING ROOM"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-041",
+      "category": "PLACE",
+      "phrase": "BACKSTAGE AT THE THEATER",
+      "lines": ["BACKSTAGE AT", "THE THEATER"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-042",
+      "category": "PLACE",
+      "phrase": "SANDY BEACH BOARDWALK",
+      "lines": ["SANDY BEACH", "BOARDWALK"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-043",
+      "category": "PLACE",
+      "phrase": "NATIONAL PARK VISITOR CENTER",
+      "lines": ["NATIONAL PARK", "VISITOR CENTER"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-044",
+      "category": "FOOD & DRINK",
+      "phrase": "CHICKEN NOODLE SOUP",
+      "lines": ["CHICKEN NOODLE", "SOUP"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-045",
+      "category": "FOOD & DRINK",
+      "phrase": "FRESHLY SQUEEZED LEMONADE",
+      "lines": ["FRESHLY", "SQUEEZED", "LEMONADE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-046",
+      "category": "FOOD & DRINK",
+      "phrase": "BLUEBERRY PANCAKES WITH MAPLE SYRUP",
+      "lines": ["BLUEBERRY", "PANCAKES WITH", "MAPLE SYRUP"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-047",
+      "category": "FOOD & DRINK",
+      "phrase": "GRILLED CHEESE & TOMATO SOUP",
+      "lines": ["GRILLED CHEESE", "& TOMATO SOUP"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-048",
+      "category": "FOOD & DRINK",
+      "phrase": "HOT COCOA WITH MARSHMALLOWS",
+      "lines": ["HOT COCOA WITH", "MARSHMALLOWS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-049",
+      "category": "FOOD & DRINK",
+      "phrase": "EXTRA-LARGE PEPPERONI PIZZA",
+      "lines": ["EXTRA-LARGE", "PEPPERONI", "PIZZA"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-050",
+      "category": "FOOD & DRINK",
+      "phrase": "ICED TEA WITH LEMON",
+      "lines": ["ICED TEA WITH", "LEMON"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-051",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "PLANTING TOMATOES IN THE GARDEN",
+      "lines": ["PLANTING", "TOMATOES IN", "THE GARDEN"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-052",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "BUILDING A SANDCASTLE",
+      "lines": ["BUILDING A", "SANDCASTLE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-053",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "WRAPPING BIRTHDAY PRESENTS",
+      "lines": ["WRAPPING", "BIRTHDAY", "PRESENTS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-054",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "RAKING LEAVES IN THE YARD",
+      "lines": ["RAKING LEAVES", "IN THE YARD"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-055",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "PACKING FOR A ROAD TRIP",
+      "lines": ["PACKING FOR A", "ROAD TRIP"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-056",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "ROASTING MARSHMALLOWS",
+      "lines": ["ROASTING", "MARSHMALLOWS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-057",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "TAKING A GROUP PHOTO",
+      "lines": ["TAKING A", "GROUP PHOTO"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-058",
+      "category": "AROUND THE HOUSE",
+      "phrase": "FLUFFY THROW PILLOWS",
+      "lines": ["FLUFFY", "THROW PILLOWS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-059",
+      "category": "AROUND THE HOUSE",
+      "phrase": "FRONT-DOOR WELCOME MAT",
+      "lines": ["FRONT-DOOR", "WELCOME MAT"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-060",
+      "category": "AROUND THE HOUSE",
+      "phrase": "LINEN CLOSET SHELVES",
+      "lines": ["LINEN CLOSET", "SHELVES"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-061",
+      "category": "AROUND THE HOUSE",
+      "phrase": "OVERFLOWING LAUNDRY BASKET",
+      "lines": ["OVERFLOWING", "LAUNDRY BASKET"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-062",
+      "category": "FUN & GAMES",
+      "phrase": "A GAME OF HIDE-AND-SEEK",
+      "lines": ["A GAME OF", "HIDE-AND-SEEK"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-063",
+      "category": "FUN & GAMES",
+      "phrase": "FAMILY BOARD GAME NIGHT",
+      "lines": ["FAMILY BOARD", "GAME NIGHT"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-064",
+      "category": "FUN & GAMES",
+      "phrase": "CANNONBALL INTO THE POOL",
+      "lines": ["CANNONBALL", "INTO THE POOL"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-065",
+      "category": "FUN & GAMES",
+      "phrase": "CROSSWORD PUZZLE",
+      "lines": ["CROSSWORD", "PUZZLE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-066",
+      "category": "FUN & GAMES",
+      "phrase": "THREE-LEGGED RACE",
+      "lines": ["THREE-LEGGED", "RACE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-067",
+      "category": "LIVING THING",
+      "phrase": "GIANT SEA TURTLE",
+      "lines": ["GIANT", "SEA TURTLE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-068",
+      "category": "LIVING THING",
+      "phrase": "MAJESTIC BALD EAGLE",
+      "lines": ["MAJESTIC", "BALD EAGLE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-069",
+      "category": "LIVING THING",
+      "phrase": "TOWERING SUNFLOWER",
+      "lines": ["TOWERING", "SUNFLOWER"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-070",
+      "category": "LIVING THINGS",
+      "phrase": "MONARCH BUTTERFLIES",
+      "lines": ["MONARCH", "BUTTERFLIES"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-071",
+      "category": "LIVING THINGS",
+      "phrase": "DOLPHINS PLAYING IN THE WAVES",
+      "lines": ["DOLPHINS", "PLAYING IN", "THE WAVES"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-072",
+      "category": "OCCUPATION",
+      "phrase": "COMMERCIAL AIRLINE PILOT",
+      "lines": ["COMMERCIAL", "AIRLINE PILOT"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-073",
+      "category": "OCCUPATION",
+      "phrase": "ELEMENTARY SCHOOL PRINCIPAL",
+      "lines": ["ELEMENTARY", "SCHOOL", "PRINCIPAL"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-074",
+      "category": "OCCUPATION",
+      "phrase": "WILDLIFE PHOTOGRAPHER",
+      "lines": ["WILDLIFE", "PHOTOGRAPHER"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-075",
+      "category": "EVENT",
+      "phrase": "SURPRISE RETIREMENT PARTY",
+      "lines": ["SURPRISE", "RETIREMENT", "PARTY"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-076",
+      "category": "EVENT",
+      "phrase": "ANNUAL COMPANY PICNIC",
+      "lines": ["ANNUAL", "COMPANY PICNIC"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-077",
+      "category": "EVENT",
+      "phrase": "FOURTH OF JULY FIREWORKS",
+      "lines": ["FOURTH OF JULY", "FIREWORKS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-078",
+      "category": "EVENT",
+      "phrase": "GRAND OPENING CELEBRATION",
+      "lines": ["GRAND OPENING", "CELEBRATION"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-079",
+      "category": "EVENT",
+      "phrase": "TALENT SHOW FINALE",
+      "lines": ["TALENT SHOW", "FINALE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-080",
+      "category": "SAME LETTER",
+      "phrase": "BIG BLUE BEACH BALL",
+      "lines": ["BIG BLUE", "BEACH BALL"],
+      "use": ["round"],
+      "sameLetter": "B"
+    },
+    {
+      "id": "wof-round-081",
+      "category": "SAME LETTER",
+      "phrase": "CHOCOLATE CHIP COOKIES",
+      "lines": ["CHOCOLATE CHIP", "COOKIES"],
+      "use": ["round"],
+      "sameLetter": "C"
+    },
+    {
+      "id": "wof-round-082",
+      "category": "SAME LETTER",
+      "phrase": "PINK PAPER PARTY PLATES",
+      "lines": ["PINK PAPER", "PARTY PLATES"],
+      "use": ["round"],
+      "sameLetter": "P"
+    },
+    {
+      "id": "wof-round-083",
+      "category": "SAME LETTER",
+      "phrase": "MAGNIFICENT MOUNTAIN MEADOWS",
+      "lines": ["MAGNIFICENT", "MOUNTAIN", "MEADOWS"],
+      "use": ["round"],
+      "sameLetter": "M"
+    },
+    {
+      "id": "wof-round-084",
+      "category": "SAME LETTER",
+      "phrase": "SIZZLING SUMMER SUNSETS",
+      "lines": ["SIZZLING", "SUMMER SUNSETS"],
+      "use": ["round"],
+      "sameLetter": "S"
+    },
+    {
+      "id": "wof-round-085",
+      "category": "SAME LETTER",
+      "phrase": "TERRIFIC TEAMWORK",
+      "lines": ["TERRIFIC", "TEAMWORK"],
+      "use": ["round"],
+      "sameLetter": "T"
+    },
+    {
+      "id": "wof-round-086",
+      "category": "SAME LETTER",
+      "phrase": "GRANDMA'S GARDEN GREENHOUSE",
+      "lines": ["GRANDMA'S", "GARDEN", "GREENHOUSE"],
+      "use": ["round"],
+      "sameLetter": "G"
+    },
+    {
+      "id": "wof-round-087",
+      "category": "SAME LETTER",
+      "phrase": "DOGGY DAYCARE DROP-OFF",
+      "lines": ["DOGGY", "DAYCARE", "DROP-OFF"],
+      "use": ["round"],
+      "sameLetter": "D"
+    },
+    {
+      "id": "wof-round-088",
+      "category": "SAME LETTER",
+      "phrase": "HAPPY HIKERS HEADING HOME",
+      "lines": ["HAPPY HIKERS", "HEADING HOME"],
+      "use": ["round"],
+      "sameLetter": "H"
+    },
+    {
+      "id": "wof-round-089",
+      "category": "SAME LETTER",
+      "phrase": "LOVELY LAVENDER LEMONADE",
+      "lines": ["LOVELY", "LAVENDER", "LEMONADE"],
+      "use": ["round"],
+      "sameLetter": "L"
+    },
+    {
+      "id": "wof-round-090",
+      "category": "SAME LETTER",
+      "phrase": "FRIENDLY FARMERS FIXING FENCES",
+      "lines": ["FRIENDLY", "FARMERS", "FIXING FENCES"],
+      "use": ["round"],
+      "sameLetter": "F"
+    },
+    {
+      "id": "wof-round-091",
+      "category": "BEFORE & AFTER",
+      "phrase": "APPLE PIE CHART",
+      "lines": ["APPLE PIE", "CHART"],
+      "use": ["round"],
+      "notes": "APPLE PIE + PIE CHART"
+    },
+    {
+      "id": "wof-round-092",
+      "category": "BEFORE & AFTER",
+      "phrase": "HOUSE PARTY ANIMAL",
+      "lines": ["HOUSE PARTY", "ANIMAL"],
+      "use": ["round"],
+      "notes": "HOUSE PARTY + PARTY ANIMAL"
+    },
+    {
+      "id": "wof-round-093",
+      "category": "BEFORE & AFTER",
+      "phrase": "SPACE STATION WAGON",
+      "lines": ["SPACE STATION", "WAGON"],
+      "use": ["round"],
+      "notes": "SPACE STATION + STATION WAGON"
+    },
+    {
+      "id": "wof-round-094",
+      "category": "BEFORE & AFTER",
+      "phrase": "BASKETBALL COURT JESTER",
+      "lines": ["BASKETBALL", "COURT JESTER"],
+      "use": ["round"],
+      "notes": "BASKETBALL COURT + COURT JESTER"
+    },
+    {
+      "id": "wof-round-095",
+      "category": "BEFORE & AFTER",
+      "phrase": "ICE CREAM CHEESE",
+      "lines": ["ICE CREAM", "CHEESE"],
+      "use": ["round"],
+      "notes": "ICE CREAM + CREAM CHEESE"
+    },
+    {
+      "id": "wof-round-096",
+      "category": "BEFORE & AFTER",
+      "phrase": "FIRE DRILL SERGEANT",
+      "lines": ["FIRE DRILL", "SERGEANT"],
+      "use": ["round"],
+      "notes": "FIRE DRILL + DRILL SERGEANT"
+    },
+    {
+      "id": "wof-round-097",
+      "category": "RHYME TIME",
+      "phrase": "SNUG AS A BUG IN A RUG",
+      "lines": ["SNUG AS A BUG", "IN A RUG"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-098",
+      "category": "RHYME TIME",
+      "phrase": "NAME OF THE GAME",
+      "lines": ["NAME OF THE", "GAME"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-099",
+      "category": "RHYME TIME",
+      "phrase": "MEET & GREET",
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-100",
+      "category": "RHYME TIME",
+      "phrase": "FENDER BENDER",
+      "lines": ["FENDER", "BENDER"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-101",
+      "category": "RHYME TIME",
+      "phrase": "GO WITH THE FLOW",
+      "lines": ["GO WITH", "THE FLOW"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-102",
+      "category": "SHOW BIZ",
+      "phrase": "RED CARPET PREMIERE",
+      "lines": ["RED CARPET", "PREMIERE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-103",
+      "category": "SHOW BIZ",
+      "phrase": "STANDING OVATION",
+      "lines": ["STANDING", "OVATION"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-104",
+      "category": "SHOW BIZ",
+      "phrase": "OPENING NIGHT JITTERS",
+      "lines": ["OPENING NIGHT", "JITTERS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-105",
+      "category": "SHOW BIZ",
+      "phrase": "BEHIND THE SCENES",
+      "lines": ["BEHIND", "THE SCENES"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-106",
+      "category": "TITLE",
+      "phrase": "THE WIZARD OF OZ",
+      "lines": ["THE WIZARD", "OF OZ"],
+      "use": ["round"],
+      "notes": "Novel by L. Frank Baum (1900)"
+    },
+    {
+      "id": "wof-round-107",
+      "category": "TITLE",
+      "phrase": "TREASURE ISLAND",
+      "lines": ["TREASURE", "ISLAND"],
+      "use": ["round"],
+      "notes": "Novel by Robert Louis Stevenson (1883)"
+    },
+    {
+      "id": "wof-round-108",
+      "category": "TITLE",
+      "phrase": "ALICE'S ADVENTURES IN WONDERLAND",
+      "lines": ["ALICE'S", "ADVENTURES IN", "WONDERLAND"],
+      "use": ["round"],
+      "notes": "Novel by Lewis Carroll (1865)"
+    },
+    {
+      "id": "wof-round-109",
+      "category": "TITLE",
+      "phrase": "AROUND THE WORLD IN EIGHTY DAYS",
+      "lines": ["AROUND THE", "WORLD IN", "EIGHTY DAYS"],
+      "use": ["round"],
+      "notes": "Novel by Jules Verne (1872)"
+    },
+    {
+      "id": "wof-round-110",
+      "category": "ON THE MAP",
+      "phrase": "SAN FRANCISCO CALIFORNIA",
+      "lines": ["SAN FRANCISCO", "CALIFORNIA"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-111",
+      "category": "ON THE MAP",
+      "phrase": "THE ROCKY MOUNTAINS",
+      "lines": ["THE ROCKY", "MOUNTAINS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-112",
+      "category": "ON THE MAP",
+      "phrase": "CAPE COD MASSACHUSETTS",
+      "lines": ["CAPE COD", "MASSACHUSETTS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-113",
+      "category": "ON THE MAP",
+      "phrase": "SANTA FE NEW MEXICO",
+      "lines": ["SANTA FE", "NEW MEXICO"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-114",
+      "category": "IN THE KITCHEN",
+      "phrase": "CAST-IRON SKILLET",
+      "lines": ["CAST-IRON", "SKILLET"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-115",
+      "category": "IN THE KITCHEN",
+      "phrase": "WOODEN ROLLING PIN",
+      "lines": ["WOODEN", "ROLLING PIN"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-116",
+      "category": "IN THE KITCHEN",
+      "phrase": "MEASURING CUPS & SPOONS",
+      "lines": ["MEASURING", "CUPS & SPOONS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-117",
+      "category": "CLASSIC TV",
+      "phrase": "I LOVE LUCY",
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-118",
+      "category": "CLASSIC TV",
+      "phrase": "THE BRADY BUNCH",
+      "lines": ["THE BRADY", "BUNCH"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-119",
+      "category": "CLASSIC TV",
+      "phrase": "GILLIGAN'S ISLAND",
+      "lines": ["GILLIGAN'S", "ISLAND"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-120",
+      "category": "CLASSIC TV",
+      "phrase": "THE ANDY GRIFFITH SHOW",
+      "lines": ["THE ANDY", "GRIFFITH SHOW"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-121",
+      "category": "SONG LYRICS",
+      "phrase": "TWINKLE TWINKLE LITTLE STAR",
+      "lines": ["TWINKLE", "TWINKLE", "LITTLE STAR"],
+      "use": ["round"],
+      "notes": "Traditional nursery rhyme"
+    },
+    {
+      "id": "wof-round-122",
+      "category": "SONG LYRICS",
+      "phrase": "ROW ROW ROW YOUR BOAT",
+      "lines": ["ROW ROW ROW", "YOUR BOAT"],
+      "use": ["round"],
+      "notes": "Traditional nursery rhyme"
+    },
+    {
+      "id": "wof-round-123",
+      "category": "SONG LYRICS",
+      "phrase": "TAKE ME OUT TO THE BALL GAME",
+      "lines": ["TAKE ME OUT TO", "THE BALL GAME"],
+      "use": ["round"],
+      "notes": "Norworth & Von Tilzer (1908), public domain"
+    },
+    {
+      "id": "wof-round-124",
+      "category": "SONG LYRICS",
+      "phrase": "JINGLE ALL THE WAY",
+      "lines": ["JINGLE ALL", "THE WAY"],
+      "use": ["round"],
+      "notes": "Jingle Bells, James Lord Pierpont (1857), public domain"
+    },
+    {
+      "id": "wof-round-125",
+      "category": "QUOTATION",
+      "phrase": "KNOWLEDGE IS POWER",
+      "lines": ["KNOWLEDGE", "IS POWER"],
+      "use": ["round"],
+      "notes": "Francis Bacon"
+    },
+    {
+      "id": "wof-round-126",
+      "category": "QUOTATION",
+      "phrase": "TO BE OR NOT TO BE",
+      "lines": ["TO BE OR", "NOT TO BE"],
+      "use": ["round"],
+      "notes": "William Shakespeare, Hamlet"
+    },
+    {
+      "id": "wof-round-127",
+      "category": "QUOTATION",
+      "phrase": "ALL THE WORLD'S A STAGE",
+      "lines": ["ALL THE", "WORLD'S", "A STAGE"],
+      "use": ["round"],
+      "notes": "William Shakespeare, As You Like It"
+    },
+    {
+      "id": "wof-round-128",
+      "category": "QUOTATION",
+      "phrase": "I THINK THEREFORE I AM",
+      "lines": ["I THINK", "THEREFORE I AM"],
+      "use": ["round"],
+      "notes": "Rene Descartes"
+    },
+    {
+      "id": "wof-round-129",
+      "category": "CHARACTER",
+      "phrase": "SHERLOCK HOLMES",
+      "lines": ["SHERLOCK", "HOLMES"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-130",
+      "category": "CHARACTER",
+      "phrase": "LITTLE RED RIDING HOOD",
+      "lines": ["LITTLE RED", "RIDING HOOD"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-131",
+      "category": "CHARACTER",
+      "phrase": "HUMPTY DUMPTY",
+      "lines": ["HUMPTY", "DUMPTY"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-132",
+      "category": "CHARACTER",
+      "phrase": "RIP VAN WINKLE",
+      "lines": ["RIP VAN", "WINKLE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-133",
+      "category": "LANDMARK",
+      "phrase": "THE EIFFEL TOWER",
+      "lines": ["THE EIFFEL", "TOWER"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-134",
+      "category": "LANDMARK",
+      "phrase": "MOUNT RUSHMORE",
+      "lines": ["MOUNT", "RUSHMORE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-135",
+      "category": "LANDMARK",
+      "phrase": "THE GOLDEN GATE BRIDGE",
+      "lines": ["THE GOLDEN", "GATE BRIDGE"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-136",
+      "category": "LANDMARK",
+      "phrase": "THE STATUE OF LIBERTY",
+      "lines": ["THE STATUE", "OF LIBERTY"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-137",
+      "category": "WHAT ARE YOU WEARING?",
+      "phrase": "FUZZY EARMUFFS",
+      "lines": ["FUZZY", "EARMUFFS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-round-138",
+      "category": "WHAT ARE YOU WEARING?",
+      "phrase": "MATCHING FAMILY PAJAMAS",
+      "lines": ["MATCHING", "FAMILY PAJAMAS"],
+      "use": ["round"]
+    },
+    {
+      "id": "wof-prize-01",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SURFING GENTLE WAVES AT SUNRISE",
+      "lines": ["SURFING", "GENTLE WAVES", "AT SUNRISE"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO MAUI",
+        "value": 9800
+      }
+    },
+    {
+      "id": "wof-prize-02",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SIPPING COFFEE AT A SIDEWALK CAFE",
+      "lines": ["SIPPING", "COFFEE AT A", "SIDEWALK CAFE"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO PARIS",
+        "value": 12500
+      }
+    },
+    {
+      "id": "wof-prize-03",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "WATCHING WHALES FROM THE DECK",
+      "lines": ["WATCHING", "WHALES FROM", "THE DECK"],
+      "use": ["prize"],
+      "prize": {
+        "name": "AN ALASKAN CRUISE",
+        "value": 11000
+      }
+    },
+    {
+      "id": "wof-prize-04",
+      "category": "FUN & GAMES",
+      "phrase": "ROLLER COASTER RIDES",
+      "lines": ["ROLLER COASTER", "RIDES"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO ORLANDO",
+        "value": 8500
+      }
+    },
+    {
+      "id": "wof-prize-05",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SEEING A BROADWAY SHOW",
+      "lines": ["SEEING A", "BROADWAY SHOW"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO NEW YORK CITY",
+        "value": 10500
+      }
+    },
+    {
+      "id": "wof-prize-06",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "TOSSING A COIN INTO A FOUNTAIN",
+      "lines": ["TOSSING A", "COIN INTO A", "FOUNTAIN"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO ROME",
+        "value": 13000
+      }
+    },
+    {
+      "id": "wof-prize-07",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SKIING DOWN A SNOWY MOUNTAIN",
+      "lines": ["SKIING DOWN", "A SNOWY", "MOUNTAIN"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO COLORADO",
+        "value": 9000
+      }
+    },
+    {
+      "id": "wof-prize-08",
+      "category": "EVENT",
+      "phrase": "LIVE COUNTRY MUSIC CONCERT",
+      "lines": ["LIVE COUNTRY", "MUSIC CONCERT"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO NASHVILLE",
+        "value": 7500
+      }
+    },
+    {
+      "id": "wof-prize-09",
+      "category": "THING",
+      "phrase": "DOUBLE-DECKER TOUR BUS",
+      "lines": ["DOUBLE-DECKER", "TOUR BUS"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO LONDON",
+        "value": 12000
+      }
+    },
+    {
+      "id": "wof-prize-10",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "HIKING ALONG THE CANYON RIM",
+      "lines": ["HIKING ALONG", "THE CANYON RIM"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO THE GRAND CANYON",
+        "value": 8000
+      }
+    },
+    {
+      "id": "wof-prize-11",
+      "category": "FOOD & DRINK",
+      "phrase": "BEIGNETS WITH POWDERED SUGAR",
+      "lines": ["BEIGNETS WITH", "POWDERED SUGAR"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO NEW ORLEANS",
+        "value": 8800
+      }
+    },
+    {
+      "id": "wof-prize-12",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SPOTTING SEA LIONS ON THE ROCKS",
+      "lines": ["SPOTTING", "SEA LIONS ON", "THE ROCKS"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO SAN DIEGO",
+        "value": 7800
+      }
+    },
+    {
+      "id": "wof-prize-13",
+      "category": "LIVING THINGS",
+      "phrase": "CHERRY BLOSSOM TREES",
+      "lines": ["CHERRY", "BLOSSOM TREES"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO JAPAN",
+        "value": 14500
+      }
+    },
+    {
+      "id": "wof-prize-14",
+      "category": "LANDMARK",
+      "phrase": "THE CLIFFS OF MOHER",
+      "lines": ["THE CLIFFS", "OF MOHER"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO IRELAND",
+        "value": 11500
+      }
+    },
+    {
+      "id": "wof-prize-15",
+      "category": "LIVING THINGS",
+      "phrase": "KANGAROOS & KOALAS",
+      "lines": ["KANGAROOS &", "KOALAS"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO AUSTRALIA",
+        "value": 15000
+      }
+    },
+    {
+      "id": "wof-prize-16",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "CRUISING TOWARD A THUNDERING WATERFALL",
+      "lines": ["CRUISING", "TOWARD A", "THUNDERING", "WATERFALL"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO NIAGARA FALLS",
+        "value": 7200
+      }
+    },
+    {
+      "id": "wof-prize-17",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SNORKELING IN TURQUOISE WATER",
+      "lines": ["SNORKELING", "IN TURQUOISE", "WATER"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A CARIBBEAN CRUISE",
+        "value": 13500
+      }
+    },
+    {
+      "id": "wof-prize-18",
+      "category": "LANDMARK",
+      "phrase": "THE LINCOLN MEMORIAL",
+      "lines": ["THE LINCOLN", "MEMORIAL"],
+      "use": ["prize"],
+      "prize": {
+        "name": "A TRIP TO WASHINGTON, D.C.",
+        "value": 9500
+      }
+    },
+    {
+      "id": "wof-tossup-001",
+      "category": "PHRASE",
+      "phrase": "ALL SMILES",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-002",
+      "category": "PHRASE",
+      "phrase": "SO FAR SO GOOD",
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-003",
+      "category": "PHRASE",
+      "phrase": "LONG TIME NO SEE",
+      "lines": ["LONG TIME", "NO SEE"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-004",
+      "category": "PHRASE",
+      "phrase": "TIME FOR A BREAK",
+      "lines": ["TIME FOR A", "BREAK"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-005",
+      "category": "PHRASE",
+      "phrase": "BETTER SAFE THAN SORRY",
+      "lines": ["BETTER SAFE", "THAN SORRY"],
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-006",
+      "category": "PHRASE",
+      "phrase": "PIECE OF CAKE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-007",
+      "category": "PHRASE",
+      "phrase": "ON THE SAME PAGE",
+      "lines": ["ON THE", "SAME PAGE"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-008",
+      "category": "PHRASE",
+      "phrase": "GIVE IT YOUR BEST SHOT",
+      "lines": ["GIVE IT YOUR", "BEST SHOT"],
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-009",
+      "category": "PHRASE",
+      "phrase": "NO PLACE LIKE HOME",
+      "lines": ["NO PLACE", "LIKE HOME"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-010",
+      "category": "THING",
+      "phrase": "PAPER AIRPLANE",
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-011",
+      "category": "THING",
+      "phrase": "KITCHEN TIMER",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-012",
+      "category": "THING",
+      "phrase": "PICNIC BASKET",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-013",
+      "category": "THING",
+      "phrase": "FLASHLIGHT",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-014",
+      "category": "THING",
+      "phrase": "BIRTHDAY CANDLE",
+      "lines": ["BIRTHDAY", "CANDLE"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-015",
+      "category": "THING",
+      "phrase": "MOUNTAIN BIKE",
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-016",
+      "category": "THING",
+      "phrase": "UMBRELLA STAND",
+      "lines": ["UMBRELLA", "STAND"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-017",
+      "category": "THING",
+      "phrase": "RUBBER DUCKY",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-018",
+      "category": "THING",
+      "phrase": "LUNCH BOX",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-019",
+      "category": "FOOD & DRINK",
+      "phrase": "VEGGIE BURGER",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-020",
+      "category": "FOOD & DRINK",
+      "phrase": "BANANA SPLIT",
+      "lines": ["BANANA", "SPLIT"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-021",
+      "category": "FOOD & DRINK",
+      "phrase": "FISH TACOS",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-022",
+      "category": "FOOD & DRINK",
+      "phrase": "CHOCOLATE MILKSHAKE",
+      "lines": ["CHOCOLATE", "MILKSHAKE"],
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-023",
+      "category": "FOOD & DRINK",
+      "phrase": "GARDEN SALAD",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-024",
+      "category": "FOOD & DRINK",
+      "phrase": "CINNAMON ROLL",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-025",
+      "category": "FOOD & DRINK",
+      "phrase": "ORANGE JUICE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-026",
+      "category": "FOOD & DRINK",
+      "phrase": "BAKED ZITI",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-027",
+      "category": "PLACE",
+      "phrase": "CITY PARK",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-028",
+      "category": "PLACE",
+      "phrase": "TRAIN STATION",
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-029",
+      "category": "PLACE",
+      "phrase": "FARMERS MARKET",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-030",
+      "category": "PLACE",
+      "phrase": "BOWLING ALLEY",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-031",
+      "category": "PLACE",
+      "phrase": "COFFEE SHOP",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-032",
+      "category": "PLACE",
+      "phrase": "ICE-SKATING RINK",
+      "lines": ["ICE-SKATING", "RINK"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-033",
+      "category": "PLACE",
+      "phrase": "SCIENCE MUSEUM",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-034",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "JUMPING ROPE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-035",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "BAKING COOKIES",
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-036",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SKIPPING STONES",
+      "lines": ["SKIPPING", "STONES"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-037",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "WALKING THE DOG",
+      "lines": ["WALKING", "THE DOG"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-038",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "FLYING A KITE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-039",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "TAKING A NAP",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-040",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "DOING JUMPING JACKS",
+      "lines": ["DOING", "JUMPING JACKS"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-041",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "WASHING THE CAR",
+      "lines": ["WASHING", "THE CAR"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-042",
+      "category": "AROUND THE HOUSE",
+      "phrase": "COFFEE TABLE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-043",
+      "category": "AROUND THE HOUSE",
+      "phrase": "SPICE RACK",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-044",
+      "category": "AROUND THE HOUSE",
+      "phrase": "BATH TOWELS",
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-045",
+      "category": "AROUND THE HOUSE",
+      "phrase": "FRONT PORCH",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-046",
+      "category": "AROUND THE HOUSE",
+      "phrase": "BUNK BEDS",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-047",
+      "category": "AROUND THE HOUSE",
+      "phrase": "DESK LAMP",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-048",
+      "category": "AROUND THE HOUSE",
+      "phrase": "WINDOW CURTAINS",
+      "lines": ["WINDOW", "CURTAINS"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-049",
+      "category": "FUN & GAMES",
+      "phrase": "TIC-TAC-TOE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-050",
+      "category": "FUN & GAMES",
+      "phrase": "MINI GOLF",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-051",
+      "category": "FUN & GAMES",
+      "phrase": "MUSICAL CHAIRS",
+      "lines": ["MUSICAL", "CHAIRS"],
+      "use": ["tossup", "tiebreak"]
+    },
+    {
+      "id": "wof-tossup-052",
+      "category": "FUN & GAMES",
+      "phrase": "HOPSCOTCH",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-053",
+      "category": "FUN & GAMES",
+      "phrase": "CARD TRICKS",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-054",
+      "category": "FUN & GAMES",
+      "phrase": "WATER BALLOON FIGHT",
+      "lines": ["WATER BALLOON", "FIGHT"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-055",
+      "category": "FUN & GAMES",
+      "phrase": "SCAVENGER HUNT",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-056",
+      "category": "FUN & GAMES",
+      "phrase": "JIGSAW PUZZLE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-057",
+      "category": "PHRASE",
+      "phrase": "TAKE IT EASY",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-058",
+      "category": "THING",
+      "phrase": "SNOW GLOBE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-059",
+      "category": "FOOD & DRINK",
+      "phrase": "FRUIT SMOOTHIE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-060",
+      "category": "FOOD & DRINK",
+      "phrase": "APPLE CIDER",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-061",
+      "category": "PLACE",
+      "phrase": "POST OFFICE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-062",
+      "category": "PLACE",
+      "phrase": "COUNTY FAIR",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-063",
+      "category": "PLACE",
+      "phrase": "HIKING TRAIL",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-064",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "READING A BOOK",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-065",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "PLANTING TULIPS",
+      "lines": ["PLANTING", "TULIPS"],
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-066",
+      "category": "AROUND THE HOUSE",
+      "phrase": "ALARM CLOCK",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-067",
+      "category": "AROUND THE HOUSE",
+      "phrase": "CEILING FAN",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-068",
+      "category": "AROUND THE HOUSE",
+      "phrase": "BOOKSHELF",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-069",
+      "category": "FUN & GAMES",
+      "phrase": "TUG-OF-WAR",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-tossup-070",
+      "category": "FUN & GAMES",
+      "phrase": "SACK RACE",
+      "use": ["tossup"]
+    },
+    {
+      "id": "wof-triple-01-1",
+      "category": "THING",
+      "phrase": "GRAND PIANO",
+      "use": ["triple"],
+      "set": "triple-01",
+      "theme": "THINGS WITH KEYS"
+    },
+    {
+      "id": "wof-triple-01-2",
+      "category": "THING",
+      "phrase": "COMPUTER KEYBOARD",
+      "lines": ["COMPUTER", "KEYBOARD"],
+      "use": ["triple"],
+      "set": "triple-01",
+      "theme": "THINGS WITH KEYS"
+    },
+    {
+      "id": "wof-triple-01-3",
+      "category": "THING",
+      "phrase": "FRONT-DOOR LOCK",
+      "lines": ["FRONT-DOOR", "LOCK"],
+      "use": ["triple"],
+      "set": "triple-01",
+      "theme": "THINGS WITH KEYS"
+    },
+    {
+      "id": "wof-triple-02-1",
+      "category": "FOOD & DRINK",
+      "phrase": "SCRAMBLED EGGS",
+      "use": ["triple"],
+      "set": "triple-02",
+      "theme": "BREAKFAST"
+    },
+    {
+      "id": "wof-triple-02-2",
+      "category": "FOOD & DRINK",
+      "phrase": "BUTTERED TOAST",
+      "use": ["triple"],
+      "set": "triple-02",
+      "theme": "BREAKFAST"
+    },
+    {
+      "id": "wof-triple-02-3",
+      "category": "FOOD & DRINK",
+      "phrase": "WAFFLES WITH BERRIES",
+      "lines": ["WAFFLES WITH", "BERRIES"],
+      "use": ["triple"],
+      "set": "triple-02",
+      "theme": "BREAKFAST"
+    },
+    {
+      "id": "wof-triple-03-1",
+      "category": "PLACE",
+      "phrase": "LIFEGUARD STAND",
+      "lines": ["LIFEGUARD", "STAND"],
+      "use": ["triple"],
+      "set": "triple-03",
+      "theme": "AT THE BEACH"
+    },
+    {
+      "id": "wof-triple-03-2",
+      "category": "PLACE",
+      "phrase": "SNACK SHACK",
+      "use": ["triple"],
+      "set": "triple-03",
+      "theme": "AT THE BEACH"
+    },
+    {
+      "id": "wof-triple-03-3",
+      "category": "PLACE",
+      "phrase": "SAND DUNES",
+      "use": ["triple"],
+      "set": "triple-03",
+      "theme": "AT THE BEACH"
+    },
+    {
+      "id": "wof-triple-04-1",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "PITCHING A TENT",
+      "lines": ["PITCHING", "A TENT"],
+      "use": ["triple"],
+      "set": "triple-04",
+      "theme": "CAMPING"
+    },
+    {
+      "id": "wof-triple-04-2",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "TELLING GHOST STORIES",
+      "lines": ["TELLING", "GHOST STORIES"],
+      "use": ["triple"],
+      "set": "triple-04",
+      "theme": "CAMPING"
+    },
+    {
+      "id": "wof-triple-04-3",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SLEEPING UNDER THE STARS",
+      "lines": ["SLEEPING UNDER", "THE STARS"],
+      "use": ["triple"],
+      "set": "triple-04",
+      "theme": "CAMPING"
+    },
+    {
+      "id": "wof-triple-05-1",
+      "category": "THINGS",
+      "phrase": "SHOOTING STARS",
+      "use": ["triple"],
+      "set": "triple-05",
+      "theme": "OUTER SPACE"
+    },
+    {
+      "id": "wof-triple-05-2",
+      "category": "THINGS",
+      "phrase": "ROCKET BOOSTERS",
+      "lines": ["ROCKET", "BOOSTERS"],
+      "use": ["triple"],
+      "set": "triple-05",
+      "theme": "OUTER SPACE"
+    },
+    {
+      "id": "wof-triple-05-3",
+      "category": "THINGS",
+      "phrase": "MOON ROCKS",
+      "use": ["triple"],
+      "set": "triple-05",
+      "theme": "OUTER SPACE"
+    },
+    {
+      "id": "wof-triple-06-1",
+      "category": "FUN & GAMES",
+      "phrase": "GO FISH",
+      "use": ["triple"],
+      "set": "triple-06",
+      "theme": "CARD GAMES"
+    },
+    {
+      "id": "wof-triple-06-2",
+      "category": "FUN & GAMES",
+      "phrase": "CRAZY EIGHTS",
+      "use": ["triple"],
+      "set": "triple-06",
+      "theme": "CARD GAMES"
+    },
+    {
+      "id": "wof-triple-06-3",
+      "category": "FUN & GAMES",
+      "phrase": "SOLITAIRE",
+      "use": ["triple"],
+      "set": "triple-06",
+      "theme": "CARD GAMES"
+    },
+    {
+      "id": "wof-triple-07-1",
+      "category": "OCCUPATION",
+      "phrase": "EMERGENCY ROOM NURSE",
+      "lines": ["EMERGENCY", "ROOM NURSE"],
+      "use": ["triple"],
+      "set": "triple-07",
+      "theme": "MEDICAL CAREERS"
+    },
+    {
+      "id": "wof-triple-07-2",
+      "category": "OCCUPATION",
+      "phrase": "FAMILY DOCTOR",
+      "use": ["triple"],
+      "set": "triple-07",
+      "theme": "MEDICAL CAREERS"
+    },
+    {
+      "id": "wof-triple-07-3",
+      "category": "OCCUPATION",
+      "phrase": "PARAMEDIC",
+      "use": ["triple"],
+      "set": "triple-07",
+      "theme": "MEDICAL CAREERS"
+    },
+    {
+      "id": "wof-triple-08-1",
+      "category": "AROUND THE HOUSE",
+      "phrase": "BUBBLE BATH",
+      "use": ["triple"],
+      "set": "triple-08",
+      "theme": "IN THE BATHROOM"
+    },
+    {
+      "id": "wof-triple-08-2",
+      "category": "AROUND THE HOUSE",
+      "phrase": "SHOWER CURTAIN",
+      "lines": ["SHOWER", "CURTAIN"],
+      "use": ["triple"],
+      "set": "triple-08",
+      "theme": "IN THE BATHROOM"
+    },
+    {
+      "id": "wof-triple-08-3",
+      "category": "AROUND THE HOUSE",
+      "phrase": "TOOTHBRUSH HOLDER",
+      "lines": ["TOOTHBRUSH", "HOLDER"],
+      "use": ["triple"],
+      "set": "triple-08",
+      "theme": "IN THE BATHROOM"
+    },
+    {
+      "id": "wof-triple-09-1",
+      "category": "LIVING THING",
+      "phrase": "BENGAL TIGER",
+      "use": ["triple"],
+      "set": "triple-09",
+      "theme": "STRIPES"
+    },
+    {
+      "id": "wof-triple-09-2",
+      "category": "LIVING THING",
+      "phrase": "BUMBLEBEE",
+      "use": ["triple"],
+      "set": "triple-09",
+      "theme": "STRIPES"
+    },
+    {
+      "id": "wof-triple-09-3",
+      "category": "LIVING THING",
+      "phrase": "CHIPMUNK",
+      "use": ["triple"],
+      "set": "triple-09",
+      "theme": "STRIPES"
+    },
+    {
+      "id": "wof-triple-10-1",
+      "category": "THING",
+      "phrase": "FIRE ENGINE",
+      "use": ["triple"],
+      "set": "triple-10",
+      "theme": "THINGS THAT ARE RED"
+    },
+    {
+      "id": "wof-triple-10-2",
+      "category": "THING",
+      "phrase": "STOP SIGN",
+      "use": ["triple"],
+      "set": "triple-10",
+      "theme": "THINGS THAT ARE RED"
+    },
+    {
+      "id": "wof-triple-10-3",
+      "category": "THING",
+      "phrase": "VALENTINE CARD",
+      "use": ["triple"],
+      "set": "triple-10",
+      "theme": "THINGS THAT ARE RED"
+    },
+    {
+      "id": "wof-triple-11-1",
+      "category": "PHRASE",
+      "phrase": "RAINING CATS AND DOGS",
+      "lines": ["RAINING CATS", "AND DOGS"],
+      "use": ["triple"],
+      "set": "triple-11",
+      "theme": "WEATHER"
+    },
+    {
+      "id": "wof-triple-11-2",
+      "category": "PHRASE",
+      "phrase": "CALM BEFORE THE STORM",
+      "lines": ["CALM BEFORE", "THE STORM"],
+      "use": ["triple"],
+      "set": "triple-11",
+      "theme": "WEATHER"
+    },
+    {
+      "id": "wof-triple-11-3",
+      "category": "PHRASE",
+      "phrase": "UNDER THE WEATHER",
+      "lines": ["UNDER THE", "WEATHER"],
+      "use": ["triple"],
+      "set": "triple-11",
+      "theme": "WEATHER"
+    },
+    {
+      "id": "wof-triple-12-1",
+      "category": "EVENT",
+      "phrase": "SNOWBALL FIGHT",
+      "lines": ["SNOWBALL", "FIGHT"],
+      "use": ["triple"],
+      "set": "triple-12",
+      "theme": "WINTER FUN"
+    },
+    {
+      "id": "wof-triple-12-2",
+      "category": "EVENT",
+      "phrase": "SLEIGH RIDE",
+      "use": ["triple"],
+      "set": "triple-12",
+      "theme": "WINTER FUN"
+    },
+    {
+      "id": "wof-triple-12-3",
+      "category": "EVENT",
+      "phrase": "ICE-FISHING DERBY",
+      "lines": ["ICE-FISHING", "DERBY"],
+      "use": ["triple"],
+      "set": "triple-12",
+      "theme": "WINTER FUN"
+    },
+    {
+      "id": "wof-triple-13-1",
+      "category": "FOOD & DRINK",
+      "phrase": "SPAGHETTI & MEATBALLS",
+      "lines": ["SPAGHETTI &", "MEATBALLS"],
+      "use": ["triple"],
+      "set": "triple-13",
+      "theme": "ITALIAN DINNER"
+    },
+    {
+      "id": "wof-triple-13-2",
+      "category": "FOOD & DRINK",
+      "phrase": "GARLIC BREAD",
+      "use": ["triple"],
+      "set": "triple-13",
+      "theme": "ITALIAN DINNER"
+    },
+    {
+      "id": "wof-triple-13-3",
+      "category": "FOOD & DRINK",
+      "phrase": "TIRAMISU",
+      "use": ["triple"],
+      "set": "triple-13",
+      "theme": "ITALIAN DINNER"
+    },
+    {
+      "id": "wof-triple-14-1",
+      "category": "ON THE MAP",
+      "phrase": "YELLOWSTONE",
+      "use": ["triple"],
+      "set": "triple-14",
+      "theme": "NATIONAL PARKS"
+    },
+    {
+      "id": "wof-triple-14-2",
+      "category": "ON THE MAP",
+      "phrase": "GRAND CANYON",
+      "use": ["triple"],
+      "set": "triple-14",
+      "theme": "NATIONAL PARKS"
+    },
+    {
+      "id": "wof-triple-14-3",
+      "category": "ON THE MAP",
+      "phrase": "YOSEMITE",
+      "use": ["triple"],
+      "set": "triple-14",
+      "theme": "NATIONAL PARKS"
+    },
+    {
+      "id": "wof-bonus-001",
+      "category": "THING",
+      "phrase": "BUBBLE WRAP",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-002",
+      "category": "THING",
+      "phrase": "POCKET FLASHLIGHT",
+      "lines": ["POCKET", "FLASHLIGHT"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-003",
+      "category": "THING",
+      "phrase": "CHEWING GUM",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-004",
+      "category": "THING",
+      "phrase": "PAPER LANTERN",
+      "lines": ["PAPER", "LANTERN"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-005",
+      "category": "THING",
+      "phrase": "WOODEN SPOON",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-006",
+      "category": "THING",
+      "phrase": "GOLDEN TICKET",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-007",
+      "category": "THING",
+      "phrase": "MAGIC WAND",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-008",
+      "category": "PHRASE",
+      "phrase": "GOOD THINKING",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-009",
+      "category": "PHRASE",
+      "phrase": "JUST MY LUCK",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-010",
+      "category": "PHRASE",
+      "phrase": "MAKE A WISH",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-011",
+      "category": "PHRASE",
+      "phrase": "KEEP IT SIMPLE",
+      "lines": ["KEEP IT", "SIMPLE"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-012",
+      "category": "PHRASE",
+      "phrase": "COUNT ME IN",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-013",
+      "category": "PHRASE",
+      "phrase": "SWEET DREAMS",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-014",
+      "category": "PHRASE",
+      "phrase": "BEST OF LUCK",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-015",
+      "category": "PLACE",
+      "phrase": "HOTEL LOBBY",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-016",
+      "category": "PLACE",
+      "phrase": "CORNER BAKERY",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-017",
+      "category": "PLACE",
+      "phrase": "PETTING ZOO",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-018",
+      "category": "PLACE",
+      "phrase": "PARKING LOT",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-019",
+      "category": "PLACE",
+      "phrase": "TOWN SQUARE",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-020",
+      "category": "PERSON",
+      "phrase": "GOOD SPORT",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-021",
+      "category": "PERSON",
+      "phrase": "NIGHT OWL",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-022",
+      "category": "PERSON",
+      "phrase": "EARLY RISER",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-023",
+      "category": "PERSON",
+      "phrase": "TEAM CAPTAIN",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-024",
+      "category": "PERSON",
+      "phrase": "PROUD PARENT",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-025",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SIPPING COCOA",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-026",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "TAKING NOTES",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-027",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "FEEDING DUCKS",
+      "lines": ["FEEDING", "DUCKS"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-028",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "HANGING PICTURES",
+      "lines": ["HANGING", "PICTURES"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-029",
+      "category": "WHAT ARE YOU DOING?",
+      "phrase": "SHOVELING SNOW",
+      "lines": ["SHOVELING", "SNOW"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-030",
+      "category": "FOOD & DRINK",
+      "phrase": "FRUIT SALAD",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-031",
+      "category": "FOOD & DRINK",
+      "phrase": "POTATO CHIPS",
+      "lines": ["POTATO", "CHIPS"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-032",
+      "category": "FOOD & DRINK",
+      "phrase": "PEACH COBBLER",
+      "lines": ["PEACH", "COBBLER"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-033",
+      "category": "FOOD & DRINK",
+      "phrase": "WARM PRETZELS",
+      "lines": ["WARM", "PRETZELS"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-034",
+      "category": "FOOD & DRINK",
+      "phrase": "PUMPKIN MUFFINS",
+      "lines": ["PUMPKIN", "MUFFINS"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-035",
+      "category": "FUN & GAMES",
+      "phrase": "BUMPER CARS",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-036",
+      "category": "FUN & GAMES",
+      "phrase": "WATER SLIDE",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-037",
+      "category": "FUN & GAMES",
+      "phrase": "PAPER DOLLS",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-038",
+      "category": "FUN & GAMES",
+      "phrase": "RELAY RACE",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-039",
+      "category": "FUN & GAMES",
+      "phrase": "SNOW ANGELS",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-040",
+      "category": "AROUND THE HOUSE",
+      "phrase": "LAUNDRY ROOM",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-041",
+      "category": "AROUND THE HOUSE",
+      "phrase": "HALLWAY MIRROR",
+      "lines": ["HALLWAY", "MIRROR"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-042",
+      "category": "AROUND THE HOUSE",
+      "phrase": "FRONT STEPS",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-043",
+      "category": "AROUND THE HOUSE",
+      "phrase": "SOFA CUSHION",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-044",
+      "category": "LIVING THING",
+      "phrase": "GARDEN SNAIL",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-045",
+      "category": "LIVING THING",
+      "phrase": "BLUE JAY",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-046",
+      "category": "LIVING THING",
+      "phrase": "POLAR BEAR",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-047",
+      "category": "LIVING THING",
+      "phrase": "GOLDEN RETRIEVER",
+      "lines": ["GOLDEN", "RETRIEVER"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-048",
+      "category": "LIVING THING",
+      "phrase": "BARN OWL",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-049",
+      "category": "OCCUPATION",
+      "phrase": "TOUR GUIDE",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-050",
+      "category": "OCCUPATION",
+      "phrase": "DENTAL HYGIENIST",
+      "lines": ["DENTAL", "HYGIENIST"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-051",
+      "category": "OCCUPATION",
+      "phrase": "PARK RANGER",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-052",
+      "category": "OCCUPATION",
+      "phrase": "BUS DRIVER",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-053",
+      "category": "OCCUPATION",
+      "phrase": "WEDDING PLANNER",
+      "lines": ["WEDDING", "PLANNER"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-054",
+      "category": "EVENT",
+      "phrase": "BAKE SALE",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-055",
+      "category": "EVENT",
+      "phrase": "SPELLING BEE",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-056",
+      "category": "EVENT",
+      "phrase": "FAMILY REUNION",
+      "lines": ["FAMILY", "REUNION"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-057",
+      "category": "EVENT",
+      "phrase": "BOOK FAIR",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-058",
+      "category": "EVENT",
+      "phrase": "TOWN PARADE",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-059",
+      "category": "WHAT ARE YOU WEARING?",
+      "phrase": "RAIN BOOTS",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-060",
+      "category": "WHAT ARE YOU WEARING?",
+      "phrase": "WOOL MITTENS",
+      "lines": ["WOOL", "MITTENS"],
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-061",
+      "category": "WHAT ARE YOU WEARING?",
+      "phrase": "BASEBALL CAP",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-062",
+      "category": "WHAT ARE YOU WEARING?",
+      "phrase": "SUN VISOR",
+      "use": ["bonus"]
+    },
+    {
+      "id": "wof-bonus-063",
+      "category": "WHAT ARE YOU WEARING?",
+      "phrase": "HOLIDAY SWEATER",
+      "lines": ["HOLIDAY", "SWEATER"],
+      "use": ["bonus"]
+    }
+  ]
+}

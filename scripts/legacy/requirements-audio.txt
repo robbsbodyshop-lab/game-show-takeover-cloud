@@ -1,0 +1,4 @@
+# Python dependencies for scripts/generate_sfx.py
+numpy>=1.26
+scipy>=1.11
+lameenc>=1.7

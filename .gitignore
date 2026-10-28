@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-e2e
+coverage
+playwright-report
+test-results
+.env
+.env.*
+!.env.example
+.vercel
+supabase/.temp
+.DS_Store
+*.log

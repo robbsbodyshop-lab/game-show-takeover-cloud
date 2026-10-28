@@ -1,0 +1,20 @@
+# Supabase pauses Free-plan projects after 7 days without database activity. One small query a
+# day keeps the project awake. Set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY as repository
+# secrets. Hosts running real events should consider the Pro plan, which is never paused.
+name: Supabase keep-alive
+on:
+  schedule:
+    - cron: '17 9 * * *'
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call the keepalive RPC
+        run: |
+          curl --fail --silent --show-error -X POST "$SUPABASE_URL/rest/v1/rpc/keepalive" \
+            -H "apikey: $SUPABASE_PUBLISHABLE_KEY" -H "Authorization: Bearer $SUPABASE_PUBLISHABLE_KEY" \
+            -H "Content-Type: application/json" -d '{}'
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
