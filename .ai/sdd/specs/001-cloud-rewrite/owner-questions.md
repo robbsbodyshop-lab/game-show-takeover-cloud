@@ -24,3 +24,12 @@ Collected during implementation. Each has the interim choice the code uses now; 
 ## Family Feud (from the engine)
 - Q-040 Sudden Death: the winner currently also banks the #1 answer x3 on their game score (so it counts toward event points). Or should Sudden Death decide the game without adding points?
 - Q-041 Fast Money survey groups ("same survey group" duplicates) are not in the content file; duplicates are detected by matching the same answer only. Add groups to the content later?
+
+## Wheel of Fortune (from the engine; interim readings of the rules doc)
+- Q-050 Trip wedge value is not in the rules doc; code uses $5,000. OK?
+- Q-051 Same Letter $1,000 bonus goes into round cash (Bankrupt can take it) rather than being banked at once. OK?
+- Q-052 Mystery flip: a flip gives up the money from that spin; flipped wedge becomes $500, the other $1,000; "keep" leaves both Mystery. OK?
+- Q-053 Express run time-out passes the turn without a Bankrupt (doc lists only miss, repeat, wrong solve as Bankrupt). OK?
+- Q-054 Ringing the bell mid-round takes effect at the next choice point and also skips the Triple Toss-Up when rung before it. OK?
+- Q-055 Buying an already-called vowel still costs $250 and passes the turn. OK?
+- Q-056 Bonus Wheel cash envelope mix and wheel layouts are reconstructions (documented in bonus.ts / wheels.ts). Any values you want changed?
