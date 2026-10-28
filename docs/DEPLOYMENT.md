@@ -2,17 +2,17 @@
 
 This is the order to bring the hosted app up, check it, and keep it running. Each step says what
 it needs and how to tell it worked. Sections 1 to 8 are the one-time setup. Section 9 is the
-ongoing operations list.
+ongoing operations list. Section 10 lists the limits that are known today.
 
 ## 0. Status
 
 | Item                                                                              | State                                      |
 | --------------------------------------------------------------------------------- | ------------------------------------------ |
 | Supabase project `qkolbdllyinnycyqygrm`, org "robbsbodyshop-lab's Org", Free plan | Created                                    |
-| Migration `supabase/migrations/0001_init.sql`                                     | Written, **not applied**                   |
+| Migrations `supabase/migrations/0001_init.sql` and `0002_director_lease.sql`      | Written, **not applied**                   |
 | Auth settings (anonymous, email, Site URL, redirect URLs)                         | **Not set**                                |
 | Realtime "Allow public access"                                                    | **Not set** (must be off)                  |
-| GitHub repo `robbsbodyshop-lab/game-show-takeover-cloud`                          | **Not created**                            |
+| GitHub repo `robbsbodyshop-lab/game-show-takeover-cloud`                          | **Not created** (local git only)           |
 | Vercel project linked to that repo                                                | **Not created**                            |
 | GitHub secrets `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`                         | **Not set**                                |
 | Keep-alive workflow (`.github/workflows/keepalive.yml`)                           | In the repo; never run against the project |
@@ -39,12 +39,19 @@ runner, so neither is a secret:
 The publishable key is public by design. Row level security is what protects the data. Do not put a
 secret or service-role key in the repo, in a `VITE_` variable, or in any browser-facing setting.
 
-## 2. Apply the migration
+## 2. Apply the migrations
 
-The migration is `supabase/migrations/0001_init.sql`. It creates the tables, RLS policies, RPCs,
-the Realtime policies on `realtime.messages`, and the sign-up triggers. Apply it once.
+The schema is two files. Apply them **in this order**:
 
-**Option A: Supabase CLI (preferred; later migrations use the same route).**
+1. `supabase/migrations/0001_init.sql` creates the tables, RLS policies, the room and join RPCs, the
+   six Realtime policies on `realtime.messages`, and the sign-up triggers.
+2. `supabase/migrations/0002_director_lease.sql` adds `claim_director` and `release_director`. The
+   stage calls `claim_director` before it opens a room, so a database with only 0001 shows no room
+   code.
+
+Apply each file once.
+
+**Option A: Supabase CLI (preferred).** It applies every pending migration in order.
 
 ```bash
 cd /home/user/game-show-takeover-cloud
@@ -56,8 +63,10 @@ supabase db push
 `db push` asks for the database password that was set when the project was created.
 
 **Option B: dashboard SQL editor.** Open SQL Editor, choose New query, paste the whole contents of
-`supabase/migrations/0001_init.sql`, and run it. Use this only if the CLI is not available. Do not
-apply the same migration both ways.
+`supabase/migrations/0001_init.sql`, run it, then paste the whole contents of
+`supabase/migrations/0002_director_lease.sql` and run it. If 0001 is already applied (an earlier
+attempt, for example), paste only 0002. Do not apply the same file twice, and do not mix the CLI and
+the dashboard for the same migration.
 
 **Check it worked:**
 
@@ -65,10 +74,12 @@ apply the same migration both ways.
   and `join_attempts`.
 - In SQL Editor, `select public.keepalive();` returns `1`.
 - `select policyname from pg_policies where schemaname = 'realtime';` returns six policies.
+- `select proname from pg_proc where pronamespace = 'public'::regnamespace and proname in ('claim_director', 'release_director') order by proname;` returns two rows.
 
-Optional: `supabase/tests/rls.sql` checks the policies. It needs pgTAP, which the file creates, and
-it runs in a transaction that is rolled back. Run it with `psql` (see the file header) only after
-the migration is in.
+Optional SQL tests: `supabase/tests/rls.sql` checks the policies, and `supabase/tests/director.sql`
+checks the stage lease. Both need pgTAP, both run in a transaction that is rolled back, and both
+need the two migrations in place. Run them with `supabase test db` on a local stack, or with `psql`
+(see each file's header).
 
 ## 3. Authentication settings
 
@@ -88,19 +99,20 @@ different local port; it only affects `supabase start` and does not change the h
 ## 4. Realtime settings
 
 Dashboard, Realtime settings: **"Allow public access" must be off.** With it off, a channel can be
-joined only if the RLS policies from the migration allow it. That is what stops a phone from
-joining the stage topic or posing as another team. If this setting is on, the room codes become the
-only protection.
+joined only if the RLS policies from the migration allow it. Each phone joins only its own team's
+topic (`room:<CODE>:phones:<TEAM>`), and the policies check that the team in the topic matches the
+phone's `room_members.team`. That is what stops a phone from joining the stage topic or acting for
+another team. If this setting is on, the room codes become the only protection.
 
 ## 5. Create the GitHub repo and push
 
-The working tree has uncommitted changes. Review `git status`, then commit what belongs in the
-first release. `.env.local` is ignored by git and must stay that way.
+The repo has a local git history (latest commit on `main`) and no remote yet. Check that the
+working tree is clean and that `.env.local` is still ignored, then create the remote and push.
+`.env.local` is ignored by git and must stay that way.
 
 ```bash
 cd /home/user/game-show-takeover-cloud
 git status
-git add -A && git commit -m "feat: cloud rewrite foundation"   # only after review
 gh repo create robbsbodyshop-lab/game-show-takeover-cloud --private --source=. --remote=origin --push
 ```
 
@@ -132,7 +144,10 @@ starts it. Wait for it to pass before continuing.
 Vite writes `VITE_` variables into the bundle at build time. A change to either variable takes
 effect only after a new deployment. Redeploy after every change.
 
-`vercel.json` sets the single-page rewrite, the security headers (`X-Frame-Options: DENY`, no
+The build makes three pages: `index.html` (the stage, `/`), `play.html` (the phone, `/play`) and
+`host.html` (the host view, `/host`). Each is its own chunk, so a phone never downloads the stage.
+`vercel.json` rewrites `/play` and `/play/...` to `play.html`, `/host` and `/host/...` to `host.html`,
+and everything else to `index.html`. It also sets the security headers (`X-Frame-Options: DENY`, no
 camera or geolocation, microphone for this origin only) and the cache headers for `/assets` and
 `/audio`.
 
@@ -166,10 +181,11 @@ Work through this with a real phone on mobile data, not the venue Wi-Fi.
 | 7   | Reload the stage.                                             | The event resumes with the same teams and scores.                          |
 | 8   | In Supabase Table Editor, look at `rooms` and `room_members`. | One room row. Member rows for the stage, the host and the phone.           |
 
-**Blocker for the T27 acceptance test:** the acceptance test asks for a phone to join and buzz. A
-buzz needs a running game. The Family Feud and Wheel screens are not yet registered on the stage
-(see section 10), so steps 1 to 8 can pass but the buzz cannot. Do not record T27 as accepted until
-Family Feud is wired in and a buzz from a mobile phone reaches the stage.
+**Before recording T27 as accepted:** start a Family Feud face-off (Enter, then Enter again to start
+the face-off) and press BUZZ on the phone. The phone should show BUZZED! and the stage should accept
+the press. All the games are registered, so this can be checked now. Step 5 is the test of the
+phone's presence on its team topic under the write-only policies. If step 5 fails, the phone needs a
+presence read policy; see the open risk R1 in `.ai/sdd/specs/001-cloud-rewrite/review.md`.
 
 ## 9. Operations
 
@@ -221,13 +237,13 @@ with the Free limits:
 | Limit (Free)                 | Value     | What uses it                                             |
 | ---------------------------- | --------- | -------------------------------------------------------- |
 | Concurrent connections       | 200       | One stage, a few host views and up to 8 phones per event |
-| Messages per second          | 100       | Presses, controls and the audience clock                 |
+| Messages per second          | 100       | Presses, controls and the audience heartbeat             |
 | Presence messages per second | 20        | Phones and host views joining and leaving                |
 | Broadcast payload            | 256 KB    | The app keeps its own limit at 32 KB                     |
 | Messages per month           | 2 million | Total over the month                                     |
 
-The design (section 13) has the stage show a banner with the connection count when the limit is hit.
-Check the Realtime report if an event sees dropped phones.
+The design (section 13) asks for a banner on the stage with the connection count when the limit is
+hit. That banner is not built yet. Check the Realtime report if an event sees dropped phones.
 
 For browser-side tracing, set `localStorage["gst:debug"] = "1"` in the browser's console and reload.
 This turns on the app's debug logging.
@@ -253,20 +269,32 @@ Rooms expire 12 hours after their last activity. Their phone memberships go with
 
 ### 9.7 Common errors
 
-| What the user sees                                 | Likely cause and fix                                                                  |
-| -------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| "Supabase is not configured" on the production URL | The `VITE_` variables were missing at build time. Add them in Vercel and redeploy.    |
-| The confirmation email links to `localhost`        | The Site URL is wrong. Set it to the production URL (step 3).                         |
-| Phone cannot join: room not found                  | Wrong code, or the room was idle for more than 12 hours. Check the code on the stage. |
-| Phone says "Too many tries, wait a few minutes."   | Five failed joins in 10 minutes from one user. Wait a few minutes.                    |
-| Every request fails and the dashboard says paused  | The project is paused. Restore it (section 9.1).                                      |
+| What the user sees                                 | Likely cause and fix                                                                                        |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| "Supabase is not configured" on the production URL | The `VITE_` variables were missing at build time. Add them in Vercel and redeploy.                          |
+| The confirmation email links to `localhost`        | The Site URL is wrong. Set it to the production URL (step 3).                                               |
+| The stage opens but shows no room code             | Migration 0002 is not applied, so `claim_director` does not exist. Apply it (section 2).                    |
+| The stage says another stage is running this event | Another stage tab holds the event's lease. Close it, wait up to 30 seconds, then press "Reload this event". |
+| Phone cannot join: room not found                  | Wrong code, or the room was idle for more than 12 hours. Check the code on the stage.                       |
+| Phone says "Too many tries, wait a few minutes."   | Five failed joins in 10 minutes from one anonymous session. Wait a few minutes.                             |
+| Every request fails and the dashboard says paused  | The project is paused. Restore it (section 9.1).                                                            |
 
-## 10. Current limits
+## 10. Known limits
 
-- The Family Feud and Wheel of Fortune screens are not registered on the stage yet. Until they are,
-  a game shows a "not connected yet" screen.
-- The Speed Round, Plinko, Capsule Clinic and winner screens exist but are not registered either.
-- The director lease heartbeat is not written, so a second stage tab is noticed only on its first
-  save (see [ARCHITECTURE.md](ARCHITECTURE.md), section 1).
-- The end-to-end suite has one smoke test. The multi-page flows in design section 11 are not written.
-- There is no `docs/HOST_GUIDE.md` yet.
+These are true of the code as it stands. The status of the release is in
+[CHANGELOG.md](../CHANGELOG.md), under Known gaps.
+
+- **Expired rooms are purged lazily.** Rooms are removed when a host opens a room or when the
+  optional cron job runs. Until then an expired room keeps its member rows. New joins are refused
+  after 12 hours, but phones that joined earlier keep read access to that room's stage topic.
+- **Anonymous sessions can write large state.** A phone session (anonymous sign-in) can create an
+  event and save a `state` document of any size. The 1 MB budget in the design is not enforced yet.
+- **Join limits are per anonymous session.** The five-failures limit resets with a new anonymous
+  session. The real cap on sign-ins comes from Supabase Auth, which this runbook does not configure.
+- **Only Chromium is tested end to end.** There is no checklist yet for iOS Safari or Android Chrome.
+- **The bundle-size check measures demo mode.** `e2e/bundle-size.spec.ts` loads the demo build. The
+  Supabase build was measured by hand once: phone 147.0 KB gzipped against a 150 KB budget.
+- **The SQL tests are not run in CI.** Run them by hand (section 2).
+- **Keep-alive has never run** against the project (section 0).
+- **Owner questions are open.** The puzzle game's name and scoring, and the rest of the list in
+  `.ai/sdd/specs/001-cloud-rewrite/owner-questions.md`, await decisions. They do not block deployment.

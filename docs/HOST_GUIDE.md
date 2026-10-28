@@ -44,21 +44,23 @@ the room code, or use "Open host view link" in Settings, which copies `<host>/ho
 ## 2. Screens and keys
 
 **The stage (`/`)** is a 1920 x 1080 screen for the projector. Game and finale screens add a sidebar:
-the scoreboard (score -10 / +10, chips -1 / +1, a LEAD marker), the room code and join address,
-**Pause** (F8), **Music**, **Show mode** (F9), **Settings**, and **Abandon game, back to hub** (Feud
-and Wheel; two taps) or **Back to hub** (Speed Round, Plinko, Puzzle, Winner). The sidebar is hidden in
-show mode and on Setup, which has its own Settings and Back buttons.
+the scoreboard (score -10 / +10, chips -1 / +1, a LEAD marker), the room code, the join address and a
+small QR code of that address (phones scan it, so a team that arrives late can join), **Pause** (F8),
+**Music**, **Show mode** (F9), **Settings**, and **Abandon game, back to hub** (Feud and Wheel; two
+taps) or **Back to hub** (Speed Round, Plinko, Puzzle, Winner). The sidebar is hidden in show mode and
+on Setup, which has its own Settings and Back buttons.
 
 **Host tools drawer (F2)** has a Console tab (the current screen's console) and a Settings tab (the
-stage settings). Escape closes it. F2 does nothing while paused or while a dialog is open.
+stage settings, with the next-game settings for Family Feud and Wheel of Fortune). Escape closes it. F2
+does nothing while paused or while a dialog is open.
 
 **Pause, Stand by (F8)** freezes the game clocks, the Speed Round clock, the Fast Money clock, the Wheel
 bonus clock and the music. Phone presses are refused. Escape or the Resume button (hidden in show mode)
 resumes. While paused, Enter and Space do nothing, so a clicker cannot advance the show.
 
 **Show mode (F9)** hides the sidebar and host buttons. Host controls reappear while the pointer is over
-them or one has focus. Keys keep working, and the "another stage" banner stays. The setting is kept in
-this browser.
+them or one has focus. Keys keep working, and the "another stage" banner stays. The setting is saved to
+your account (section 6), so the host view and the stage agree.
 
 **Buzz keys 1 to 8** buzz for teams 1 to 8, in list order, on the stage and in the host view. They are
 ignored in text boxes and on held keys, and the stage refuses them while paused or a dialog is open.
@@ -182,19 +184,23 @@ this round**. **Undo** (U) steps back up to 30 engine steps, Fast Money included
 pending "Survey says" beat or review. **Abandon game, back to hub** (sidebar, two taps) ends the game with
 no scores; questions already used stay used.
 
-**Typing and voice.** This build runs the Feud controller on fixed defaults: the host types the answers,
-voice is off, and phones cannot type. The host view's **Voice answers** and **Answers from** are saved
-but the game does not read them (check in the app). A typed near miss goes to host review. Steal answers
-and Fast Money never listen. The console's Mic button appears only when voice is on.
+**Typing and voice.** Both are set in the host view's Settings (section 6), and changes apply during a
+game. **Answers from** says who may type: the host (the default), the phones, or the host and the phones.
+With phones, the team that is answering types on its own phone when that phone shows TYPE YOUR ANSWER.
+A typed or phone answer is judged like a spoken one, and a near miss goes to host review. **Voice
+answers** turns on speech recognition for face-off and control answers. It is offered only where the
+browser has speech recognition, and then the console's Mic on/off button appears. A steal answer is
+always your call: the microphone listens during a steal only when you switch it on by hand, and a
+spoken steal answer goes to host review. Fast Money never listens.
 
-**Timers.** The answer timer is 5 seconds on a face-off or control turn. Only the console shows it. When
-it runs out, the turn is a strike, or a face-off miss. Typing holds it for 3 seconds.
+**Timers.** The answer timer runs on a face-off or control turn (5 seconds by default; section 6). Only
+the console shows it. When it runs out, the turn is a strike, or a face-off miss. Typing or speaking
+holds it for 3 seconds.
 
 ### 3.4 Wheel of Fortune
 
-**Status.** The Wheel game and its console are in `src/games/wheel`. `src/app/stageRegistry.ts` registers
-them in the working tree, but that change was not committed when this guide was written. Check in the app
-that the Wheel tile opens the game. The flow below is what the module does.
+**Status.** The Wheel of Fortune tile on the hub opens the game. Its stage screens and console are in
+`src/games/wheel`, registered in `src/app/stageRegistry.ts`. The flow below is what the module does.
 
 **Opening.** Classic: a $1,000 toss-up, then a $2,000 toss-up; the second winner starts Round 1. Or
 Fortune Frenzy: 30 seconds of $1,000 toss-ups, and the last solver starts Round 1.
@@ -282,8 +288,8 @@ game..." (connected, no stage message yet).
 - Wheel stage labels: SPINNING, WAIT FOR A LETTER, CALL A CONSONANT, SOLVING, ROUND OVER, SOLVE NOW, and so on.
 - **Your turn** with Buy, Spin and Solve for the team at the wheel. Solve opens "Solve the puzzle"; the
   phone then shows Sent or Not right now.
-- The Feud "TYPE YOUR ANSWER" box appears only when the stage allows phone answers, which this build does
-  not (section 3.3).
+- The Feud "TYPE YOUR ANSWER" box appears on the answering team's phone when Answers from (section 6)
+  includes phones (section 3.3). Other phones show their usual reason.
 
 **Connection.** The header says Live, Connecting, Reconnecting, Offline or No connection, with a
 "Reconnecting..." banner when the link drops. A phone silent from the stage for eight seconds shows "Waiting
@@ -331,53 +337,71 @@ within half a second.
 
 ## 6. Settings reference
 
-Stage settings open from the hub, the sidebar, Setup and the F2 drawer, and are stored in this browser only.
+Settings are saved to your account, so the stage and the host view read the same values. A copy is
+kept in this browser, so a reload shows them at once.
 
-| Setting         | Default | Notes                                 |
-| --------------- | ------- | ------------------------------------- |
-| Music           | On      | Hub and game music                    |
-| Volume          | 80%     | Master volume                         |
-| Show mode       | Off     | F9; remembered in this browser        |
-| CRT curve       | Off     | Screen overlay                        |
-| Verbose logging | Off     | Debug messages in the browser console |
+Where they are:
 
-Host view Settings are saved to your account. Show mode also goes to the stage.
+- **Stage Settings**: the Settings button on Setup and in the sidebar, and the Settings tab of the F2
+  drawer. It has sound, display, the next-game settings, the hotkeys and the event buttons.
+- **Host view Settings**: the sound and display settings, Voice answers and Answers from, the link that
+  opens the host view, Reset scores & chips, and Sign out.
 
-| Setting                  | Default              | Notes                                                         |
-| ------------------------ | -------------------- | ------------------------------------------------------------- |
-| Music, Volume, CRT curve | On, 80%, Off         | The stage does not read these (check in the app)              |
-| Voice answers            | Off                  | Not read by the Feud game (check in the app)                  |
-| Answers from             | Host types or speaks | Options: Phones; Host and phones. Not read (check in the app) |
+Each change in a settings form saves as you make it, except where the table says "Applies at once" or
+"Save for the next game".
 
-Family Feud settings. No screen changes these, so the game runs on the defaults (check in the app).
+**Sound and display** (stage and host view)
 
-| Setting       | Default                 | Other values            |
-| ------------- | ----------------------- | ----------------------- |
-| Winning score | 300                     | 200, 400, 500           |
-| Match format  | Full game               | One round               |
-| Fast Money    | On                      |                         |
-| Answer timer  | 5 seconds               | 0 turns it off          |
-| Steal huddle  | Untimed (host calls it) | 15 or 30 seconds        |
-| Voice         | Off                     | On                      |
-| Answers from  | Host                    | Phones; Host and phones |
+| Setting         | Default | Notes                                                                                                        |
+| --------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| Music           | On      | Hub and game music. The sidebar has the same switch.                                                         |
+| Volume          | 80%     | Master volume                                                                                                |
+| Show mode       | Off     | F9. Hides the sidebar and host buttons on the stage. Changed in the host view, it reaches the stage at once. |
+| CRT curve       | Off     | Screen overlay                                                                                               |
+| Verbose logging | Off     | Debug messages in the browser console                                                                        |
 
-Wheel settings (Wheel console). The turn timer applies at once. The stage does not pass saved Wheel settings
-into a new game, so each game starts from these defaults (check in the app).
+**Answers** (host view Settings only)
+
+| Setting       | Default              | Other values                                                                    |
+| ------------- | -------------------- | ------------------------------------------------------------------------------- |
+| Voice answers | Off                  | On. Shown only where the browser has speech recognition. Applies at once.       |
+| Answers from  | Host types or speaks | Phones; Host and phones. Applies at once. See section 3.3 for what each allows. |
+
+**Family Feud, next game** (stage and host view). The answer timer and the steal huddle apply at once,
+even during a game. The other fields apply to the next game.
+
+| Setting       | Default                 | Other values                       |
+| ------------- | ----------------------- | ---------------------------------- |
+| Winning score | 300                     | 200, 400, 500                      |
+| Match format  | Full game               | One round                          |
+| Fast Money    | On                      | Off                                |
+| Answer timer  | 5 seconds               | 10 or 15 seconds. Applies at once. |
+| Steal huddle  | Untimed (host calls it) | 15 or 30 seconds. Applies at once. |
+
+**Wheel of Fortune, next game.** The stage Settings and the host view save each change. In the Wheel
+console, the Opening, Speed-Up, Length and Bonus Round are saved with **Save for the next game**. The
+turn timer is live: the console's Turn timer buttons change it during a game.
 
 | Setting     | Default                        | Other values                  |
 | ----------- | ------------------------------ | ----------------------------- |
-| Turn timer  | Off                            | 5 or 10 seconds (live)        |
 | Opening     | $1,000 and $2,000 toss-ups     | Fortune Frenzy (30 seconds)   |
 | Speed-Up    | Host rings the bell in Round 4 | Round 4 opens as the Speed-Up |
 | Length      | Full show                      | Short show                    |
 | Bonus Round | On                             | Off                           |
+| Turn timer  | Off                            | 5 or 10 seconds (live)        |
+
+**Not changeable from a screen**
 
 | Setting               | Default                                      | Changeable?                  |
 | --------------------- | -------------------------------------------- | ---------------------------- |
 | Speed Round length    | 60 seconds                                   | No screen (check in the app) |
 | Plinko slot values    | 100, 200, 300, 500, 1000, 500, 300, 200, 100 | No screen                    |
 | Teams for a new event | 2                                            | Yes, on Setup                |
-| Team colours          | Eight presets, in order                      | Yes, per team                |
+| Team colours          | Eight presets, in order                      | Yes, per team, on Setup      |
+
+Settings flow one way between the two screens. A change on the stage reaches the host view only when the
+host view is reopened. A save from the host view writes its whole settings copy back, so the last save
+wins. Keep one surface for each change during a show.
 
 ## 7. Event scoring
 

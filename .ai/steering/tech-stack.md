@@ -43,7 +43,7 @@
 - **Realtime:** Broadcast and Presence on **private channels** authorised by
   RLS policies on `realtime.messages` ("Allow public access" disabled).
   Two topics per room: `room:<code>:stage` (host writes, everyone reads) and
-  `room:<code>:phones` (phones write, host reads). Postgres Changes are not
+  `room:<code>:phones:<team>` (one per team; a phone writes only on its own team, host reads all eight). Postgres Changes are not
   used.
 - **Client:** `@supabase/supabase-js` 2.x behind a `RoomTransport` interface so
   tests and local demos run on an in-memory transport.
