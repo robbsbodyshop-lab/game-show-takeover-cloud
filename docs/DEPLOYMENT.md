@@ -307,3 +307,7 @@ These are true of the code as it stands. The status of the release is in
 - **Keep-alive has never run** against the project (section 0).
 - **Owner questions are open.** The puzzle game's name and scoring, and the rest of the list in
   `.ai/sdd/specs/001-cloud-rewrite/owner-questions.md`, await decisions. They do not block deployment.
+
+## Live
+
+Production: https://game-show-takeover-cloud.vercel.app (deployed 2026-11-04). Repo: https://github.com/robbsbodyshop-lab/game-show-takeover-cloud

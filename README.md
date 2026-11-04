@@ -1,5 +1,7 @@
 # Game Show Takeover
 
+Live: https://game-show-takeover-cloud.vercel.app
+
 A live, host-run team game show played in the browser and hosted in the cloud. One screen (a
 projector or TV) shows the stage. The host runs the show from a host panel on a laptop or a second
 device. Teams play from their phones after scanning a QR code. Nothing is installed, and no PC acts
