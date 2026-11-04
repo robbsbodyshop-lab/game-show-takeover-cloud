@@ -17,6 +17,15 @@ ongoing operations list. Section 10 lists the limits that are known today.
 | GitHub secrets `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`                         | **Not set**                                |
 | Keep-alive workflow (`.github/workflows/keepalive.yml`)                           | In the repo; never run against the project |
 
+> **Applied 2026-11-04.** Both migrations are live on project `qkolbdllyinnycyqygrm`, applied through
+> the Supabase MCP in three parts (`init_public_schema_rls_rpcs`, `director_lease`,
+> `realtime_room_policies`). One gotcha for a fresh or just-restored project: `realtime.messages`
+> does not exist until the Realtime service has booted the tenant once, so the six channel policies
+> fail with `relation "realtime.messages" does not exist`. Open any Realtime channel from a client
+> (even a throwaway `supabase.channel('probe').subscribe()`), wait a few seconds, then apply the
+> policies. If you later use `supabase db push`, run `supabase migration repair` first so the CLI's
+> history matches what is already applied.
+
 ## 1. Supabase project (done)
 
 | Setting      | Value                                      |
