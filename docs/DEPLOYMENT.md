@@ -6,20 +6,20 @@ ongoing operations list. Section 10 lists the limits that are known today.
 
 ## 0. Status
 
-| Item                                                                              | State                                      |
-| --------------------------------------------------------------------------------- | ------------------------------------------ |
-| Supabase project `qkolbdllyinnycyqygrm`, org "robbsbodyshop-lab's Org", Free plan | Created                                    |
-| Migrations `supabase/migrations/0001_init.sql` and `0002_director_lease.sql`      | Written, **not applied**                   |
-| Auth settings (anonymous, email, Site URL, redirect URLs)                         | **Not set**                                |
-| Realtime "Allow public access"                                                    | **Not set** (must be off)                  |
-| GitHub repo `robbsbodyshop-lab/game-show-takeover-cloud`                          | **Not created** (local git only)           |
-| Vercel project linked to that repo                                                | **Not created**                            |
-| GitHub secrets `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`                         | **Not set**                                |
-| Keep-alive workflow (`.github/workflows/keepalive.yml`)                           | In the repo; never run against the project |
+| Item                                                                                | State                                                              |
+| ----------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Supabase project `qkolbdllyinnycyqygrm`, org "robbsbodyshop-lab's Org", Free plan   | Created                                                            |
+| Migrations `0001_init.sql`, `0002_director_lease.sql`, `0003_phones_topic_read.sql` | Applied to `qkolbdllyinnycyqygrm` (2026-11-04, 0003 on 2026-11-09) |
+| Auth settings (anonymous, email, Site URL, redirect URLs)                           | **Not set**                                                        |
+| Realtime "Allow public access"                                                      | **Not set** (must be off)                                          |
+| GitHub repo `robbsbodyshop-lab/game-show-takeover-cloud`                            | **Not created** (local git only)                                   |
+| Vercel project linked to that repo                                                  | **Not created**                                                    |
+| GitHub secrets `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`                           | **Not set**                                                        |
+| Keep-alive workflow (`.github/workflows/keepalive.yml`)                             | In the repo; never run against the project                         |
 
-> **Applied 2026-11-04.** Both migrations are live on project `qkolbdllyinnycyqygrm`, applied through
+> **Applied 2026-11-04.** All three migrations are live on project `qkolbdllyinnycyqygrm`, applied through
 > the Supabase MCP in three parts (`init_public_schema_rls_rpcs`, `director_lease`,
-> `realtime_room_policies`). One gotcha for a fresh or just-restored project: `realtime.messages`
+> `realtime_room_policies`), plus `phones_topic_read` (0003, 2026-11-09) after the first live phone test showed Realtime refuses to join a private channel without a read policy. One gotcha for a fresh or just-restored project: `realtime.messages`
 > does not exist until the Realtime service has booted the tenant once, so the six channel policies
 > fail with `relation "realtime.messages" does not exist`. Open any Realtime channel from a client
 > (even a throwaway `supabase.channel('probe').subscribe()`), wait a few seconds, then apply the
@@ -54,7 +54,9 @@ The schema is two files. Apply them **in this order**:
 
 1. `supabase/migrations/0001_init.sql` creates the tables, RLS policies, the room and join RPCs, the
    six Realtime policies on `realtime.messages`, and the sign-up triggers.
-2. `supabase/migrations/0002_director_lease.sql` adds `claim_director` and `release_director`. The
+2. `supabase/migrations/0002_director_lease.sql` adds `claim_director` and `release_director`;
+   `0003_phones_topic_read.sql` lets a phone read its own team topic, which Realtime requires before it
+   will let the phone join that private channel at all. The
    stage calls `claim_director` before it opens a room, so a database with only 0001 shows no room
    code.
 

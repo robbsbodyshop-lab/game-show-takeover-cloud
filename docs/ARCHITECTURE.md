@@ -144,7 +144,9 @@ Which channels each role opens (`src/realtime/roles.ts`, `channelPlan`):
 
 ### Topics `room:<CODE>:phones:<TEAM>`: phones to stage
 
-There is one topic per team, 1 to 8. A phone joins and publishes only on its own team's topic.
+There is one topic per team, 1 to 8. A phone joins, reads and publishes only on its own team's topic
+(Realtime refuses to join a private channel without a read policy, so the read policy from 0003 is
+what makes the join possible; the topic carries only that team's own presses and presence).
 The stage joins all eight and merges them into one roster. A message whose payload `team` differs
 from its topic's team is dropped (`parsePhonesMessage`).
 
@@ -200,7 +202,8 @@ network at all: it reads the stage's own host channel and sends commands to it i
 
 ## 5. Data model and row level security
 
-Migrations, applied in order: `supabase/migrations/0001_init.sql`, then `0002_director_lease.sql`.
+Migrations, applied in order: `supabase/migrations/0001_init.sql`, `0002_director_lease.sql`, then
+`0003_phones_topic_read.sql`.
 Neither is applied to the hosted project yet (see [DEPLOYMENT.md](DEPLOYMENT.md), section 2).
 
 | Table           | Purpose                                                                                                                                          |

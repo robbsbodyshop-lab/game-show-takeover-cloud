@@ -134,7 +134,7 @@ Topic `room:<code>:stage` (stage → everyone):
 | `audience` | `{ phase, paused, scores: [...], clock?: { endsAt, label } }`                | 1 Hz and on change; small, no hidden info |
 
 Topics `room:<code>:phones:<team>`, one per team 1..8 (phone → stage). A phone joins `stage` and
-only its own team's phones topic (it cannot read it); the stage joins `stage`, `host` and all
+only its own team's phones topic (and may read it: Realtime requires a read policy to join a private channel, see migration 0003); the stage joins `stage`, `host` and all
 eight phones topics (10 channels, far below the 100 per connection limit); host views join
 `stage` and `host`.
 
