@@ -293,6 +293,8 @@ export class SupabaseRoomTransport implements RoomTransport {
       this.pending = null;
       this.active = null;
       this.unwatchAuth();
+      // The server's reason (for example an RLS refusal) is the one thing that explains a dead join.
+      logger.warn(`[realtime] first connect failed: ${detail}`);
       this.setStatus('error', detail);
       pending.reject(new Error(`SupabaseRoomTransport: could not connect (${detail})`));
       return;
